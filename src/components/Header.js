@@ -2,16 +2,16 @@ import { Component } from "react";
 import logo from "../assets/colabware.svg";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
+import NewProjectButton from "./NewProjectButton";
 
 class Header extends Component {
   render() {
     return (
       <Navbar bg="light" expand="lg">
         <Container>
-          <Navbar.Brand href="#home">
+          <Navbar.Brand href="/">
             <img alt="colabware-logo-main" src={logo} className="logo" />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -29,9 +29,7 @@ class Header extends Component {
               >
                 Connect wallet
               </Button>
-              <Button variant="primary" className="nav-element-margin">
-                New project
-              </Button>
+              <NewProjectButton />
             </Nav>
           </Navbar.Collapse>
         </Container>
