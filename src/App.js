@@ -8,7 +8,6 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
-        <Header />
         <Routes>
           <Route path="/" element={<Home />} exact />
           <Route path="/project/new" element={<NewProject />} exact />
