@@ -5,8 +5,20 @@ import { CSSTransition, SwitchTransition } from "react-transition-group";
 import NewProjectForm from "../../components/forms/NewProjectForm";
 
 class NewProject extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   state = {
     currentPage: 0,
+    projectName: "",
+    projectRepoURL: "",
+    projectDescription: "",
+    tokenName: "",
+    tokenSymbol: "",
+    tokenPrice: 0,
+    tokenSupply: 0,
+    maintainerAllocation: 0.0,
   };
 
   nextStep = () => {
@@ -22,6 +34,12 @@ class NewProject extends Component {
         currentPage: this.state.currentPage - 1,
       });
     }
+  };
+
+  setField = (name, value) => {
+    var field = {};
+    field[name] = value;
+    this.setState(field);
   };
 
   launchProject = () => {
@@ -71,33 +89,46 @@ class NewProject extends Component {
                         }}
                         classNames="fade"
                       >
-                        <NewProjectForm currentPage={this.state.currentPage} />
+                        <NewProjectForm
+                          currentPage={this.state.currentPage}
+                          setField={this.setField}
+                          fields={this.state}
+                        />
                       </CSSTransition>
                     </SwitchTransition>
-                    <Button
-                      onClick={this.prevStep}
-                      variant="secondary"
-                      disabled={this.state.currentPage == 0}
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        marginBottom: "30px",
+                      }}
                     >
-                      Previous
-                    </Button>
+                      <Button
+                        onClick={this.prevStep}
+                        variant="secondary"
+                        disabled={this.state.currentPage == 0}
+                        style={{ marginRight: "10px" }}
+                      >
+                        Previous
+                      </Button>
 
-                    {this.state.currentPage != 5 && (
-                      <Button
-                        style={{ float: "right" }}
-                        onClick={this.nextStep}
-                      >
-                        Next
-                      </Button>
-                    )}
-                    {this.state.currentPage == 5 && (
-                      <Button
-                        style={{ float: "right" }}
-                        onClick={this.launchProject}
-                      >
-                        Launch project
-                      </Button>
-                    )}
+                      {this.state.currentPage != 2 && (
+                        <Button
+                          style={{ float: "right" }}
+                          onClick={this.nextStep}
+                        >
+                          Next
+                        </Button>
+                      )}
+                      {this.state.currentPage == 2 && (
+                        <Button
+                          style={{ float: "right" }}
+                          onClick={this.launchProject}
+                        >
+                          Launch project
+                        </Button>
+                      )}
+                    </div>
                   </Col>
                 </Row>
               </Container>

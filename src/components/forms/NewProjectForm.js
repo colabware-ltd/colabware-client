@@ -1,17 +1,7 @@
 import { Component } from "react";
-import { Col, Row, Form, Card, InputGroup } from "react-bootstrap";
+import { Col, Row, Form, Card, InputGroup, Nav, Tab } from "react-bootstrap";
 
 class NewProjectForm extends Component {
-  state = {
-    projectName: "",
-    projectRepoURL: "",
-    projectDescription: "",
-    tokenName: "",
-    tokenSymbol: "",
-    tokenPrice: 0,
-    tokenSupply: 0,
-    maintainerAllocation: 0.0,
-  };
   render() {
     return (
       <div>
@@ -35,12 +25,10 @@ class NewProjectForm extends Component {
                 <Form.Control
                   type="text"
                   placeholder="Tell us your project's name"
-                  value={this.state.projectName}
-                  onChange={(e) =>
-                    this.setState({
-                      projectName: e.target.value,
-                    })
-                  }
+                  value={this.props.fields.projectName}
+                  onChange={(e) => {
+                    this.props.setField("projectName", e.target.value);
+                  }}
                 />
               </Form.Group>
               <Form.Group className="mb-3" controlId="newProject.projectRepo">
@@ -48,12 +36,10 @@ class NewProjectForm extends Component {
                 <Form.Control
                   type="text"
                   placeholder="Enter the URL of your project's existing repository"
-                  value={this.state.projectURL}
-                  onChange={(e) =>
-                    this.setState({
-                      projectRepoURL: e.target.value,
-                    })
-                  }
+                  value={this.props.fields.projectRepoURL}
+                  onChange={(e) => {
+                    this.props.setField("projectRepoURL", e.target.value);
+                  }}
                 />
               </Form.Group>
               <Form.Group className="mb-3">
@@ -76,12 +62,10 @@ class NewProjectForm extends Component {
                   as="textarea"
                   placeholder="What does your project do?"
                   rows={3}
-                  value={this.state.projectDescription}
-                  onChange={(e) =>
-                    this.setState({
-                      projectDescription: e.target.value,
-                    })
-                  }
+                  value={this.props.fields.projectDescription}
+                  onChange={(e) => {
+                    this.props.setField("projectDescription", e.target.value);
+                  }}
                 />
               </Form.Group>
             </Form.Group>
@@ -107,24 +91,20 @@ class NewProjectForm extends Component {
                   <Form.Label className="field-label">Token name</Form.Label>
                   <Form.Control
                     placeholder="My Project Token"
-                    value={this.state.tokenName}
-                    onChange={(e) =>
-                      this.setState({
-                        tokenName: e.target.value,
-                      })
-                    }
+                    value={this.props.fields.tokenName}
+                    onChange={(e) => {
+                      this.props.setField("tokenName", e.target.value);
+                    }}
                   />
                 </Col>
                 <Col sm={3}>
                   <Form.Label className="field-label">Token symbol</Form.Label>
                   <Form.Control
                     placeholder="MPT"
-                    value={this.state.tokenSymbol}
-                    onChange={(e) =>
-                      this.setState({
-                        tokenSymbol: e.target.value,
-                      })
-                    }
+                    value={this.props.fields.tokenSymbol}
+                    onChange={(e) => {
+                      this.props.setField("tokenSymbol", e.target.value);
+                    }}
                   />
                 </Col>
                 <Col sm={3}>
@@ -134,12 +114,10 @@ class NewProjectForm extends Component {
 
                     <Form.Control
                       placeholder="1"
-                      value={this.state.tokenPrice}
-                      onChange={(e) =>
-                        this.setState({
-                          tokenPrice: e.target.value,
-                        })
-                      }
+                      value={this.props.fields.tokenPrice}
+                      onChange={(e) => {
+                        this.props.setField("tokenPrice", e.target.value);
+                      }}
                     />
                   </InputGroup>
                 </Col>
@@ -160,12 +138,9 @@ class NewProjectForm extends Component {
                   </p>
                   <Form.Control
                     placeholder="1,000,000"
-                    value={this.state.tokenSupply}
+                    value={this.props.fields.tokenSupply}
                     onChange={(e) => {
-                      this.setState({
-                        tokenSupply: e.target.value,
-                      });
-                      // this.formatInput(e.target.value);
+                      this.props.setField("tokenSupply", e.target.value);
                     }}
                   />
                 </Col>
@@ -178,12 +153,13 @@ class NewProjectForm extends Component {
                   <InputGroup>
                     <Form.Control
                       placeholder="20"
-                      value={this.state.maintainerAllocation}
-                      onChange={(e) =>
-                        this.setState({
-                          maintainerAllocation: e.target.value,
-                        })
-                      }
+                      value={this.props.fields.maintainerAllocation}
+                      onChange={(e) => {
+                        this.props.setField(
+                          "maintainerAllocation",
+                          e.target.value
+                        );
+                      }}
                     />
                     <InputGroup.Text id="basic-addon1">%</InputGroup.Text>
                   </InputGroup>
@@ -202,7 +178,8 @@ class NewProjectForm extends Component {
                   <h2>
                     $
                     {(
-                      this.state.tokenPrice * this.state.tokenSupply
+                      this.props.fields.tokenPrice *
+                      this.props.fields.tokenSupply
                     ).toLocaleString("en")}
                   </h2>
                 </Card>
@@ -211,13 +188,82 @@ class NewProjectForm extends Component {
                 <Card className="card-content">
                   <h2>
                     {(
-                      (this.state.maintainerAllocation / 100) *
-                      this.state.tokenSupply
+                      (this.props.fields.maintainerAllocation / 100) *
+                      this.props.fields.tokenSupply
                     ).toLocaleString("en")}{" "}
                   </h2>
                 </Card>
               </Col>
             </Row>
+          </Form>
+        )}
+        {this.props.currentPage == 2 && (
+          <Form>
+            <div style={{ borderBottom: "1px solid red" }}>
+              <h2>Review your project</h2>
+              <p>
+                Have a final look at your configuration before launching your
+                project.
+              </p>
+            </div>
+            <div
+              style={{
+                marginTop: "2rem",
+                marginBottom: "2rem",
+              }}
+            >
+              <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+                <Row>
+                  <Col sm={3}>
+                    <Nav variant="pills" className="flex-column">
+                      <Nav.Item>
+                        <Nav.Link eventKey="first">
+                          Project information
+                        </Nav.Link>
+                      </Nav.Item>
+                      <Nav.Item>
+                        <Nav.Link eventKey="second">
+                          Token configuration
+                        </Nav.Link>
+                      </Nav.Item>
+                    </Nav>
+                  </Col>
+                  <Col sm={9}>
+                    <Tab.Content>
+                      <Tab.Pane eventKey="first">
+                        <Row>
+                          <Col sm={3}>
+                            <p className="field-label">Name</p>
+                          </Col>
+                          <Col sm={9}>
+                            <p>{this.props.fields.projectName}</p>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col sm={3}>
+                            <p className="field-label">Repository URL</p>
+                          </Col>
+                          <Col sm={9}>
+                            <p>{this.props.fields.projectRepoURL}</p>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col sm={3}>
+                            <p className="field-label">Description</p>
+                          </Col>
+                          <Col sm={9}>
+                            <p>{this.props.fields.projectDescription}</p>
+                          </Col>
+                        </Row>
+                      </Tab.Pane>
+                      <Tab.Pane eventKey="second">
+                        <p>Test 2</p>
+                      </Tab.Pane>
+                    </Tab.Content>
+                  </Col>
+                </Row>
+              </Tab.Container>
+            </div>
           </Form>
         )}
       </div>
