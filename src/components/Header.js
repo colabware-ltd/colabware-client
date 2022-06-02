@@ -9,7 +9,7 @@ import NewProjectButton from "./NewProjectButton";
 class Header extends Component {
   render() {
     return (
-      <Navbar bg="light" expand="lg">
+      <Navbar expand="lg" style={{ borderBottom: "1px solid #efefef" }}>
         <Container>
           <Navbar.Brand href="/">
             <img alt="colabware-logo-main" src={logo} className="logo" />
@@ -20,7 +20,10 @@ class Header extends Component {
               <Nav.Link href="#home" className="nav-element-margin">
                 Home
               </Nav.Link>
-              <Nav.Link href="#link" className="nav-element-margin">
+              <Nav.Link
+                href="/project/my-test-project"
+                className="nav-element-margin"
+              >
                 Browse projects
               </Nav.Link>
               <Button

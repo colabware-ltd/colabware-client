@@ -71,16 +71,19 @@ class NewProject extends Component {
             >
               <Row style={{ height: "100%" }}>
                 <Col className="my-auto">
-                  <img
-                    alt="colabware-logo-main"
-                    src={logo}
-                    className="logo-min"
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      marginBottom: "30px",
-                    }}
-                  />
+                  <a href="/">
+                    <img
+                      alt="colabware-logo-main"
+                      src={logo}
+                      className="logo-min"
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        marginBottom: "30px",
+                      }}
+                    />
+                  </a>
+
                   <div>Progress here</div>
                 </Col>
               </Row>

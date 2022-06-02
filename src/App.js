@@ -2,6 +2,7 @@ import Header from "./components/Header";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NewProject from "./views/Projects/NewProject";
+import Project from "./views/Projects/Project";
 import Home from "./views/Home";
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} exact />
+          <Route path="/project/:id" element={<Project />} exact />
           <Route path="/project/new" element={<NewProject />} exact />
         </Routes>
       </div>
