@@ -8,7 +8,7 @@ class NewProjectForm extends Component {
         {this.props.currentPage == 0 && (
           <Form>
             <div style={{ borderBottom: "1px solid red" }}>
-              <h2>Create a new DAO</h2>
+              <h2>Create a new organisation</h2>
               <p>
                 Launch a new decentralised organisation for your project with
                 Colabware
@@ -257,7 +257,46 @@ class NewProjectForm extends Component {
                         </Row>
                       </Tab.Pane>
                       <Tab.Pane eventKey="second">
-                        <p>Test 2</p>
+                        <Row>
+                          <Col sm={3}>
+                            <p className="field-label">Token name</p>
+                          </Col>
+                          <Col sm={9}>
+                            <p>{this.props.fields.tokenName}</p>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col sm={3}>
+                            <p className="field-label">Token symbol</p>
+                          </Col>
+                          <Col sm={9}>
+                            <p>{this.props.fields.tokenSupply}</p>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col sm={3}>
+                            <p className="field-label">Token price</p>
+                          </Col>
+                          <Col sm={9}>
+                            <p>USD${this.props.fields.tokenPrice}</p>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col sm={3}>
+                            <p className="field-label">Token supply</p>
+                          </Col>
+                          <Col sm={9}>
+                            <p>{this.props.fields.tokenSupply}</p>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col sm={3}>
+                            <p className="field-label">Maintainer allocation</p>
+                          </Col>
+                          <Col sm={9}>
+                            <p>{this.props.fields.maintainerAllocation}%</p>
+                          </Col>
+                        </Row>
                       </Tab.Pane>
                     </Tab.Content>
                   </Col>

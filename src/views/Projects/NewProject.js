@@ -25,7 +25,6 @@ class NewProject extends Component {
     this.setState({
       currentPage: this.state.currentPage + 1,
     });
-    console.log(this.state);
   };
 
   prevStep = () => {
@@ -43,7 +42,7 @@ class NewProject extends Component {
   };
 
   launchProject = () => {
-    console.log("Launch!");
+    console.log(this.state);
   };
 
   // formatInput = (nStr) => {
@@ -70,7 +69,21 @@ class NewProject extends Component {
               className="full-length d-none d-lg-block"
               style={{ backgroundColor: "blue", width: "350px" }}
             >
-              <img alt="colabware-logo-main" src={logo} className="logo" />
+              <Row style={{ height: "100%" }}>
+                <Col className="my-auto">
+                  <img
+                    alt="colabware-logo-main"
+                    src={logo}
+                    className="logo-min"
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      marginBottom: "30px",
+                    }}
+                  />
+                  <div>Progress here</div>
+                </Col>
+              </Row>
             </Col>
             <Col className="full-length" style={{ backgroundColor: "red" }}>
               <Container
