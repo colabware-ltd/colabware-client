@@ -7,7 +7,6 @@ import {
   Container,
   Row,
   Tab,
-  Table,
   Tabs,
 } from "react-bootstrap";
 import Header from "../../components/Header";
@@ -170,29 +169,27 @@ class Project extends Component {
           >
             <Tab eventKey="overview" title="Overview">
               <Row style={{ marginTop: "40px" }}>
-                <Col xs={8} className="my-auto">
+                <Col
+                  xs={8}
+                  style={{
+                    maxHeight: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                >
                   <Card
+                    style={{ height: "100%", marginBottom: "30px" }}
                     className="card-content"
-                    style={{ marginTop: "30px", marginBottom: "30px" }}
                   >
-                    <h3>Token</h3>
-                    <p>Project tokens</p>
-                  </Card>
-                  <Card
-                    className="card-content"
-                    style={{ marginTop: "30px", marginBottom: "30px" }}
-                  >
-                    <h3>Projects requests</h3>
+                    <h3>Token overview</h3>
                     <p>
                       View the distribution of controlling tokens allocated for
                       this project.
                     </p>
                   </Card>
-                  <Card
-                    className="card-content"
-                    style={{ marginTop: "30px", marginBottom: "30px" }}
-                  >
-                    <h3>Projects requests</h3>
+                  <Card style={{ height: "100%" }} className="card-content">
+                    <h3>Project requests</h3>
                     <p>
                       View the distribution of controlling tokens allocated for
                       this project.
