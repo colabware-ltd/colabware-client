@@ -9,7 +9,7 @@ const NewProjectButton = () => {
       variant="primary"
       className="nav-element-margin"
       onClick={() => {
-        navigate("/project/new");
+        navigate("/projects/new");
       }}
     >
       New project

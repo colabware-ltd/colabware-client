@@ -21,7 +21,7 @@ class Header extends Component {
                 Home
               </Nav.Link>
               <Nav.Link
-                href="/project/my-test-project"
+                href="/projects/my-test-project"
                 className="nav-element-margin"
               >
                 Browse projects

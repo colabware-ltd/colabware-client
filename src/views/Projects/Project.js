@@ -1,5 +1,6 @@
 import { Component } from "react";
 import {
+  Badge,
   Button,
   Card,
   Col,
@@ -13,8 +14,28 @@ import Header from "../../components/Header";
 import project from "../../assets/project.png";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import Footer from "../../components/Footer";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip);
+
+const plugins = [
+  {
+    beforeDraw: function (chart) {
+      var width = chart.width,
+        height = chart.height,
+        ctx = chart.ctx;
+      ctx.restore();
+      var fontSize = (height / 150).toFixed(2);
+      ctx.font = fontSize + "em sans-serif";
+      ctx.textBaseline = "middle";
+      var text = "83,900",
+        textX = Math.round((width - ctx.measureText(text).width) / 2),
+        textY = height / 2;
+      ctx.fillText(text, textX, textY);
+      ctx.save();
+    },
+  },
+];
 
 const data = {
   labels: [
@@ -31,20 +52,20 @@ const data = {
       label: "# of Votes",
       data: [12, 19, 3, 5, 2, 3],
       backgroundColor: [
-        "rgba(255, 99, 132, 0.2)",
-        "rgba(54, 162, 235, 0.2)",
-        "rgba(255, 206, 86, 0.2)",
-        "rgba(75, 192, 192, 0.2)",
-        "rgba(153, 102, 255, 0.2)",
-        "rgba(255, 159, 64, 0.2)",
+        "rgba(75, 192, 192, 0.5)",
+        "rgba(255, 99, 132, 0.1)",
+        "rgba(54, 162, 235, 0.1)",
+        "rgba(255, 206, 86, 0.1)",
+        "rgba(153, 102, 255, 0.1)",
+        "rgba(255, 159, 64, 0.1)",
       ],
       borderColor: [
-        "rgba(255, 99, 132, 1)",
-        "rgba(54, 162, 235, 1)",
-        "rgba(255, 206, 86, 1)",
         "rgba(75, 192, 192, 1)",
-        "rgba(153, 102, 255, 1)",
-        "rgba(255, 159, 64, 1)",
+        "rgba(255, 99, 132, .5)",
+        "rgba(54, 162, 235, .5)",
+        "rgba(255, 206, 86, .5)",
+        "rgba(153, 102, 255, .5)",
+        "rgba(255, 159, 64, .5)",
       ],
       borderWidth: 1,
     },
@@ -74,7 +95,15 @@ class Project extends Component {
                       />
                     </Col>
                     <Col xs={10} className="my-auto">
-                      <h1>My test project</h1>
+                      <h1 style={{ marginTop: "15px", marginBottom: "15px" }}>
+                        My test project
+                      </h1>
+                      <Badge pill bg="primary">
+                        Blockchain
+                      </Badge>{" "}
+                      <Badge pill bg="primary">
+                        Software development
+                      </Badge>{" "}
                     </Col>
                   </Row>
                   <div
@@ -129,7 +158,7 @@ class Project extends Component {
         </div>
         <Container>
           <Tabs
-            defaultActiveKey="funding"
+            defaultActiveKey="overview"
             id="uncontrolled-tab-example"
             className="mb-3"
             variant="pills"
@@ -139,78 +168,59 @@ class Project extends Component {
               borderBottom: "0.5px solid #e0e0e0",
             }}
           >
-            <Tab eventKey="funding" title="Funding">
+            <Tab eventKey="overview" title="Overview">
               <Row style={{ marginTop: "40px" }}>
-                <Col xs={4} className="my-auto"></Col>
-                <Col xs={8}>
-                  <h4 style={{ textAlign: "center" }}>Token distribution</h4>
-                  <p style={{ textAlign: "center" }}>
-                    View the current distribution of controlling tokens for this
-                    project.
-                  </p>
-                  <Row>
-                    <Col xs={6}>
-                      <Doughnut
-                        data={data}
-                        options={{
-                          plugins: {
-                            legend: {
-                              display: false,
-                            },
+                <Col xs={8} className="my-auto">
+                  <Card
+                    className="card-content"
+                    style={{ marginTop: "30px", marginBottom: "30px" }}
+                  >
+                    <h3>Token</h3>
+                    <p>Project tokens</p>
+                  </Card>
+                  <Card
+                    className="card-content"
+                    style={{ marginTop: "30px", marginBottom: "30px" }}
+                  >
+                    <h3>Projects requests</h3>
+                    <p>
+                      View the distribution of controlling tokens allocated for
+                      this project.
+                    </p>
+                  </Card>
+                  <Card
+                    className="card-content"
+                    style={{ marginTop: "30px", marginBottom: "30px" }}
+                  >
+                    <h3>Projects requests</h3>
+                    <p>
+                      View the distribution of controlling tokens allocated for
+                      this project.
+                    </p>
+                  </Card>
+                </Col>
+                <Col xs={4}>
+                  <Card className="card-content">
+                    <h4 style={{ textAlign: "center" }}>
+                      Distribution of control
+                    </h4>
+                    <p style={{ textAlign: "center" }}>
+                      View the distribution of controlling tokens allocated for
+                      this project.
+                    </p>
+                    <Doughnut
+                      data={data}
+                      options={{
+                        plugins: {
+                          legend: {
+                            display: false,
                           },
-                        }}
-                        style={{ marginTop: "30px" }}
-                      ></Doughnut>
-                    </Col>
-                    <Col xs={6} className="my-auto">
-                      <Table style={{ marginLeft: "20px" }}>
-                        <thead>
-                          <tr>
-                            <th>Holder</th>
-                            <th>Tokens</th>
-                            <th>Stake</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr style={{ backgroundColor: "green" }}>
-                            <td>Maintainer</td>
-                            <td>2,000</td>
-                            <td>20%</td>
-                          </tr>
-                          <tr>
-                            <td>Investor #1</td>
-                            <td>3,000</td>
-                            <td>30%</td>
-                          </tr>
-                          <tr>
-                            <td>Investor #1</td>
-                            <td>3,000</td>
-                            <td>30%</td>
-                          </tr>
-                          <tr>
-                            <td>Investor #1</td>
-                            <td>3,000</td>
-                            <td>30%</td>
-                          </tr>
-                          <tr>
-                            <td>Investor #1</td>
-                            <td>3,000</td>
-                            <td>30%</td>
-                          </tr>
-                          <tr>
-                            <td>Investor #1</td>
-                            <td>3,000</td>
-                            <td>30%</td>
-                          </tr>
-                          <tr>
-                            <td>Investor #1</td>
-                            <td>3,000</td>
-                            <td>30%</td>
-                          </tr>
-                        </tbody>
-                      </Table>
-                    </Col>
-                  </Row>
+                        },
+                      }}
+                      plugins={plugins}
+                      style={{ marginTop: "30px" }}
+                    />
+                  </Card>
                 </Col>
               </Row>
             </Tab>
@@ -249,6 +259,7 @@ class Project extends Component {
             </Tab>
           </Tabs>
         </Container>
+        <Footer />
       </div>
     );
   };
