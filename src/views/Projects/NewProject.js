@@ -6,6 +6,7 @@ import NewProjectForm from "../../components/forms/NewProjectForm";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import axios from "axios";
+import DoughnutChart from "../../components/DoughnutChart";
 
 class NewProject extends Component {
   constructor(props) {
@@ -80,6 +81,20 @@ class NewProject extends Component {
   // };
 
   render = () => {
+    const progressData = {
+      datasets: [
+        {
+          data: [this.state.currentPage, 3 - this.state.currentPage],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+          ],
+          borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+          borderWidth: 1,
+        },
+      ],
+    };
+
     return (
       <div>
         <Row>
@@ -105,60 +120,11 @@ class NewProject extends Component {
                     }}
                   />
                 </a>
-
-                <div
-                  style={{
-                    position: "relative",
-                  }}
-                >
-                  <Doughnut
-                    data={{
-                      datasets: [
-                        {
-                          data: [
-                            this.state.currentPage,
-                            3 - this.state.currentPage,
-                          ],
-                          backgroundColor: [
-                            "rgba(255, 99, 132, 0.2)",
-                            "rgba(54, 162, 235, 0.2)",
-                          ],
-                          borderColor: [
-                            "rgba(255, 99, 132, 1)",
-                            "rgba(54, 162, 235, 1)",
-                          ],
-                          borderWidth: 1,
-                        },
-                      ],
-                    }}
-                    options={{
-                      cutout: "80%",
-                      plugins: {
-                        legend: {
-                          cutout: "90%",
-
-                          display: false,
-                        },
-                      },
-                    }}
-                    style={{ marginTop: "30px" }}
-                  ></Doughnut>
-                  <div
-                    style={{
-                      position: "absolute",
-                      width: "100%",
-                      top: "50%",
-                      left: 0,
-                      textAlign: "center",
-                      marginTop: "-10px",
-                      lineHeight: "20px",
-                    }}
-                  >
-                    <p style={{ fontSize: "20px" }}>
-                      {Math.floor((this.state.currentPage / 3) * 100)}%
-                    </p>
-                  </div>
-                </div>
+                <DoughnutChart
+                  label={this.state.currentPage}
+                  cutout={"60%"}
+                  data={progressData}
+                />
               </Col>
             </Row>
           </Col>

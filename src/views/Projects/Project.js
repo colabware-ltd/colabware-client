@@ -11,70 +11,50 @@ import {
 } from "react-bootstrap";
 import Header from "../../components/Header";
 import project from "../../assets/project.png";
-import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import Footer from "../../components/Footer";
-
-ChartJS.register(ArcElement, Tooltip);
-
-const plugins = [
-  {
-    beforeDraw: function (chart) {
-      var width = chart.width,
-        height = chart.height,
-        ctx = chart.ctx;
-      ctx.restore();
-      var fontSize = (height / 150).toFixed(2);
-      ctx.font = fontSize + "em sans-serif";
-      ctx.textBaseline = "middle";
-      var text = "83,900",
-        textX = Math.round((width - ctx.measureText(text).width) / 2),
-        textY = height / 2;
-      ctx.fillText(text, textX, textY);
-      ctx.save();
-    },
-  },
-];
-
-const data = {
-  labels: [
-    "Maintainer stake",
-    "Investor #1",
-    "Investor #2",
-    "Investor #3",
-    "Investor #4",
-    "Investor #5",
-    "Other investors",
-  ],
-  datasets: [
-    {
-      label: "# of Votes",
-      data: [12, 19, 3, 5, 2, 3],
-      backgroundColor: [
-        "rgba(75, 192, 192, 0.5)",
-        "rgba(255, 99, 132, 0.1)",
-        "rgba(54, 162, 235, 0.1)",
-        "rgba(255, 206, 86, 0.1)",
-        "rgba(153, 102, 255, 0.1)",
-        "rgba(255, 159, 64, 0.1)",
-      ],
-      borderColor: [
-        "rgba(75, 192, 192, 1)",
-        "rgba(255, 99, 132, .5)",
-        "rgba(54, 162, 235, .5)",
-        "rgba(255, 206, 86, .5)",
-        "rgba(153, 102, 255, .5)",
-        "rgba(255, 159, 64, .5)",
-      ],
-      borderWidth: 1,
-    },
-  ],
-};
+import DoughnutChart from "../../components/DoughnutChart";
 
 class Project extends Component {
   constructor(props) {
     super(props);
   }
+
+  state = {
+    chart: {
+      labels: [
+        "Maintainer stake",
+        "Investor #1",
+        "Investor #2",
+        "Investor #3",
+        "Investor #4",
+        "Investor #5",
+        "Other investors",
+      ],
+      datasets: [
+        {
+          label: "# of Votes",
+          data: [12, 19, 3, 5, 2, 3],
+          backgroundColor: [
+            "rgba(75, 192, 192, 0.5)",
+            "rgba(255, 99, 132, 0.1)",
+            "rgba(54, 162, 235, 0.1)",
+            "rgba(255, 206, 86, 0.1)",
+            "rgba(153, 102, 255, 0.1)",
+            "rgba(255, 159, 64, 0.1)",
+          ],
+          borderColor: [
+            "rgba(75, 192, 192, 1)",
+            "rgba(255, 99, 132, .5)",
+            "rgba(54, 162, 235, .5)",
+            "rgba(255, 206, 86, .5)",
+            "rgba(153, 102, 255, .5)",
+            "rgba(255, 159, 64, .5)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    },
+  };
 
   render = () => {
     return (
@@ -94,9 +74,7 @@ class Project extends Component {
                       />
                     </Col>
                     <Col xs={10} className="my-auto">
-                      <h1 style={{ marginTop: "15px", marginBottom: "15px" }}>
-                        My test project
-                      </h1>
+                      <h1 style={{ marginBottom: "15px" }}>My test project</h1>
                       <Badge pill bg="primary">
                         Blockchain
                       </Badge>{" "}
@@ -205,17 +183,10 @@ class Project extends Component {
                       View the distribution of controlling tokens allocated for
                       this project.
                     </p>
-                    <Doughnut
-                      data={data}
-                      options={{
-                        plugins: {
-                          legend: {
-                            display: false,
-                          },
-                        },
-                      }}
-                      plugins={plugins}
-                      style={{ marginTop: "30px" }}
+                    <DoughnutChart
+                      label={"75%"}
+                      cutout={"60%"}
+                      data={this.state.chart}
                     />
                   </Card>
                 </Col>
