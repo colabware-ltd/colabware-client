@@ -96,106 +96,79 @@ class NewProject extends Component {
     };
 
     return (
-      <div>
-        <Row>
-          <Col
-            xs={2}
-            className="full-length d-none d-lg-block"
-            style={{ width: "350px", backgroundColor: "#e0e0e0" }}
-          >
-            <Row style={{ height: "100%" }}>
-              <Col
-                className="my-auto"
-                style={{ paddingLeft: "40px", paddingRight: "40px" }}
-              >
-                <a href="/">
-                  <img
-                    alt="colabware-logo-main"
-                    src={logo}
-                    className="logo-min"
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      marginBottom: "30px",
+      <Row>
+        <Col
+          xs={2}
+          className="full-vh d-none d-lg-block"
+          id="form-progress-container"
+        >
+          <Row className="full-length">
+            <Col className="my-auto">
+              <a href="/">
+                <img alt="colabware-logo-main" src={logo} className="logo-sm" />
+              </a>
+              <DoughnutChart
+                label={this.state.currentPage}
+                cutout={"60%"}
+                data={progressData}
+              />
+            </Col>
+          </Row>
+        </Col>
+        <Col>
+          <Container className="full-length">
+            <Row className="full-length form-padding">
+              <Col className="my-auto">
+                <SwitchTransition mode="out-in">
+                  <CSSTransition
+                    key={this.state.currentPage}
+                    addEndListener={(node, done) => {
+                      node.addEventListener("transitionend", done, false);
                     }}
-                  />
-                </a>
-                <DoughnutChart
-                  label={this.state.currentPage}
-                  cutout={"60%"}
-                  data={progressData}
-                />
+                    classNames="fade"
+                  >
+                    <NewProjectForm
+                      currentPage={this.state.currentPage}
+                      setField={this.setField}
+                      fields={this.state}
+                    />
+                  </CSSTransition>
+                </SwitchTransition>
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    marginBottom: "30px",
+                  }}
+                >
+                  <Button
+                    onClick={this.prevStep}
+                    variant="secondary"
+                    disabled={this.state.currentPage == 0}
+                    style={{ marginRight: "10px" }}
+                  >
+                    Previous
+                  </Button>
+
+                  {this.state.currentPage != 2 && (
+                    <Button style={{ float: "right" }} onClick={this.nextStep}>
+                      Next
+                    </Button>
+                  )}
+                  {this.state.currentPage == 2 && (
+                    <Button
+                      style={{ float: "right" }}
+                      onClick={this.launchProject}
+                    >
+                      Launch project
+                    </Button>
+                  )}
+                </div>
               </Col>
             </Row>
-          </Col>
-          <Col className="full-length">
-            <Container
-              style={{
-                height: "100%",
-              }}
-            >
-              <Row
-                style={{
-                  height: "100%",
-                  paddingLeft: "60px",
-                  paddingRight: "60px",
-                }}
-              >
-                <Col className="my-auto">
-                  <SwitchTransition mode="out-in">
-                    <CSSTransition
-                      key={this.state.currentPage}
-                      addEndListener={(node, done) => {
-                        node.addEventListener("transitionend", done, false);
-                      }}
-                      classNames="fade"
-                    >
-                      <NewProjectForm
-                        currentPage={this.state.currentPage}
-                        setField={this.setField}
-                        fields={this.state}
-                      />
-                    </CSSTransition>
-                  </SwitchTransition>
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: 0,
-                      marginBottom: "30px",
-                    }}
-                  >
-                    <Button
-                      onClick={this.prevStep}
-                      variant="secondary"
-                      disabled={this.state.currentPage == 0}
-                      style={{ marginRight: "10px" }}
-                    >
-                      Previous
-                    </Button>
-
-                    {this.state.currentPage != 2 && (
-                      <Button
-                        style={{ float: "right" }}
-                        onClick={this.nextStep}
-                      >
-                        Next
-                      </Button>
-                    )}
-                    {this.state.currentPage == 2 && (
-                      <Button
-                        style={{ float: "right" }}
-                        onClick={this.launchProject}
-                      >
-                        Launch project
-                      </Button>
-                    )}
-                  </div>
-                </Col>
-              </Row>
-            </Container>
-          </Col>
-        </Row>
-      </div>
+          </Container>
+        </Col>
+      </Row>
     );
   };
 }

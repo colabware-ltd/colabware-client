@@ -13,6 +13,7 @@ import Header from "../../components/Header";
 import project from "../../assets/project.png";
 import Footer from "../../components/Footer";
 import DoughnutChart from "../../components/DoughnutChart";
+import "../../App.css";
 
 class Project extends Component {
   constructor(props) {
@@ -20,7 +21,23 @@ class Project extends Component {
   }
 
   state = {
-    chart: {
+    project: {
+      name: "Declan's test project",
+      categories: ["Blockchain", "Software development"],
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      token: {
+        name: "DToken",
+        symbol: "DTK",
+        price: 1.0,
+        count: 84000,
+        maintainer: 20.0,
+      },
+    },
+  };
+
+  render = () => {
+    let chartData = {
       labels: [
         "Maintainer stake",
         "Investor #1",
@@ -53,78 +70,54 @@ class Project extends Component {
           borderWidth: 1,
         },
       ],
-    },
-  };
+    };
 
-  render = () => {
     return (
       <div>
         <Header />
-        <div style={{ height: "100%", backgroundColor: "#efefef" }}>
-          <Container style={{ height: "100%" }}>
-            <Row style={{ height: "100%" }}>
+        <div className="secondary-background">
+          <Container>
+            <Row>
               <Col xs={8} className="my-auto">
                 <div>
-                  <Row style={{ height: "100%" }}>
+                  <Row>
                     <Col xs={2} className="my-auto">
-                      <img
-                        alt="project-logo"
-                        src={project}
-                        style={{ width: "85%", borderRadius: "50%" }}
-                      />
+                      <img alt="project-logo" src={project} id="project-img" />
                     </Col>
                     <Col xs={10} className="my-auto">
-                      <h1 style={{ marginBottom: "15px" }}>My test project</h1>
-                      <Badge pill bg="primary">
-                        Blockchain
-                      </Badge>{" "}
-                      <Badge pill bg="primary">
-                        Software development
-                      </Badge>{" "}
+                      <h1 className="margin-btm-sm">
+                        {this.state.project.name}
+                      </h1>
+                      {this.state.project.categories.map((o, i) => {
+                        return (
+                          <Badge pill bg="primary" className="margin-right-sm">
+                            {o}
+                          </Badge>
+                        );
+                      })}
                     </Col>
                   </Row>
-                  <div
-                    style={{
-                      border: "0.5px solid #e0e0e0",
-                      marginTop: "25px",
-                      marginBottom: "25px",
-                    }}
-                  ></div>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                  </p>
+                  <div className="content-divider" />
+                  <p>{this.state.project.description}</p>
                 </div>
               </Col>
               <Col xs={4} className="my-auto">
-                <Card
-                  className="card-content"
-                  style={{
-                    marginLeft: "15px",
-                    marginTop: "30px",
-                    marginBottom: "30px",
-                  }}
-                >
-                  <Row style={{ margin: "10px" }}>
+                <Card id="project-header-card" className="card-content">
+                  <Row className="content-margin">
                     <Col>
-                      <div style={{ textAlign: "center" }}>
+                      <div className="text-align-center">
                         <h2>83,900</h2>
                         <p>MTP allocated</p>
                       </div>
                     </Col>
                     <Col>
-                      <div style={{ textAlign: "center" }}>
-                        <h2>20%</h2>
+                      <div className="text-align-center">
+                        <h2>{this.state.project.token.maintainer}%</h2>
                         <p>Maintainer control</p>
                       </div>
                     </Col>
                   </Row>
-                  <Button
-                    variant="outline-secondary"
-                    style={{ marginBottom: "10px" }}
-                  >
+                  <Button variant="outline-secondary" className="margin-btm-sm">
                     Submit a request
                   </Button>
                   <Button>Purchase MTP</Button>
@@ -137,56 +130,36 @@ class Project extends Component {
           <Tabs
             defaultActiveKey="overview"
             id="uncontrolled-tab-example"
-            className="mb-3"
+            className="mb-3 tabs"
             variant="pills"
-            style={{
-              paddingTop: "12px",
-              paddingBottom: "12px",
-              borderBottom: "0.5px solid #e0e0e0",
-            }}
           >
-            <Tab eventKey="overview" title="Overview">
-              <Row style={{ marginTop: "40px" }}>
-                <Col
-                  xs={8}
-                  style={{
-                    maxHeight: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Card
-                    style={{ height: "100%", marginBottom: "30px" }}
-                    className="card-content"
-                  >
+            <Tab
+              eventKey="overview"
+              title="Overview"
+              className="tab-margin-top"
+            >
+              <Row>
+                <Col xs={8} className="container-divided">
+                  <Card className="full-length margin-btm-md card-content">
                     <h3>Token overview</h3>
-                    <p>
-                      View the distribution of controlling tokens allocated for
-                      this project.
-                    </p>
+                    <p>See an overview of the token sold for this project.</p>
                   </Card>
-                  <Card style={{ height: "100%" }} className="card-content">
+                  <Card className="full-length card-content">
                     <h3>Project requests</h3>
-                    <p>
-                      View the distribution of controlling tokens allocated for
-                      this project.
-                    </p>
+                    <p>View the requests submitted for this project so far.</p>
                   </Card>
                 </Col>
                 <Col xs={4}>
-                  <Card className="card-content">
-                    <h4 style={{ textAlign: "center" }}>
-                      Distribution of control
-                    </h4>
-                    <p style={{ textAlign: "center" }}>
+                  <Card className="card-content text-align-center">
+                    <h4>Distribution of control</h4>
+                    <p>
                       View the distribution of controlling tokens allocated for
                       this project.
                     </p>
                     <DoughnutChart
                       label={"75%"}
                       cutout={"60%"}
-                      data={this.state.chart}
+                      data={chartData}
                     />
                   </Card>
                 </Col>
