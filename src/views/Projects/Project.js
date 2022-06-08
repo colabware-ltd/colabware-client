@@ -157,7 +157,10 @@ class Project extends Component {
                       this project.
                     </p>
                     <DoughnutChart
-                      label={"75%"}
+                      tooltip={true}
+                      label={this.state.project.token.count.toLocaleString(
+                        "en"
+                      )}
                       cutout={"60%"}
                       data={chartData}
                     />

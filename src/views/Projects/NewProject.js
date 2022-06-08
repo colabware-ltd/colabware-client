@@ -3,8 +3,6 @@ import { Container, Col, Row, Button } from "react-bootstrap";
 import logo from "../../assets/colabware.svg";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import NewProjectForm from "../../components/forms/NewProjectForm";
-import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import axios from "axios";
 import DoughnutChart from "../../components/DoughnutChart";
 
@@ -15,6 +13,7 @@ class NewProject extends Component {
 
   state = {
     currentPage: 0,
+    progress: "0%",
     projectName: "",
     projectRepoURL: "",
     projectDescription: "",
@@ -28,6 +27,8 @@ class NewProject extends Component {
   nextStep = () => {
     this.setState({
       currentPage: this.state.currentPage + 1,
+      progress:
+        Math.floor(((this.state.currentPage + 1) / 3) * 100).toString() + "%",
     });
   };
 
@@ -35,6 +36,8 @@ class NewProject extends Component {
     if (this.state.currentPage > 0) {
       this.setState({
         currentPage: this.state.currentPage - 1,
+        progress:
+          Math.floor(((this.state.currentPage - 1) / 3) * 100).toString() + "%",
       });
     }
   };
@@ -81,15 +84,15 @@ class NewProject extends Component {
   // };
 
   render = () => {
-    const progressData = {
+    let progressData = {
       datasets: [
         {
           data: [this.state.currentPage, 3 - this.state.currentPage],
           backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
+            "rgba(42, 102, 255, 0.7)",
+            "rgba(42, 102, 255, 0.1)",
           ],
-          borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+          borderColor: ["rgba(42, 102, 255, 0.7)", "rgba(54, 162, 235, 0.1)"],
           borderWidth: 1,
         },
       ],
@@ -108,8 +111,9 @@ class NewProject extends Component {
                 <img alt="colabware-logo-main" src={logo} className="logo-sm" />
               </a>
               <DoughnutChart
-                label={this.state.currentPage}
-                cutout={"60%"}
+                label={this.state.progress}
+                tooltip={false}
+                cutout={"90%"}
                 data={progressData}
               />
             </Col>
