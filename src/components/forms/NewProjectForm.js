@@ -1,5 +1,14 @@
 import { Component } from "react";
-import { Col, Row, Form, Card, InputGroup, Nav, Tab } from "react-bootstrap";
+import {
+  Col,
+  Row,
+  Form,
+  Card,
+  InputGroup,
+  Nav,
+  Tab,
+  FloatingLabel,
+} from "react-bootstrap";
 
 class NewProjectForm extends Component {
   render() {
@@ -7,79 +16,97 @@ class NewProjectForm extends Component {
       <div>
         {this.props.currentPage == 0 && (
           <Form>
-            <div style={{ borderBottom: "1px solid red" }}>
-              <h2>Create a new organisation</h2>
-              <p>
-                Launch a new decentralised organisation for your project with
-                Colabware
-              </p>
-            </div>
+            <h2>Create a new organisation</h2>
+            <p>
+              Launch a new decentralised organisation for your project with
+              Colabware
+            </p>
+            <div className="content-divider" />
             <Form.Group
               style={{
-                marginTop: "1rem",
-                marginBottom: "1rem",
+                marginTop: "2rem",
+                marginBottom: "3rem",
               }}
             >
+              <p style={{ color: "red", fontSize: "12px" }}>* required field</p>
               <Form.Group className="mb-3" controlId="newProject.projectName">
-                <Form.Label className="field-label">Project name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Tell us your project's name"
-                  value={this.props.fields.projectName}
-                  onChange={(e) => {
-                    this.props.setField("projectName", e.target.value);
-                  }}
-                />
+                <FloatingLabel
+                  controlId="floatingInput"
+                  label="Project name *"
+                  className="mb-3"
+                >
+                  <Form.Control
+                    type="text"
+                    placeholder="My test project"
+                    value={this.props.fields.projectName}
+                    onChange={(e) => {
+                      this.props.setField("projectName", e.target.value);
+                    }}
+                  />
+                </FloatingLabel>
               </Form.Group>
               <Form.Group className="mb-3" controlId="newProject.projectRepo">
-                <Form.Label className="field-label">Repository URL</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter the URL of your project's existing repository"
-                  value={this.props.fields.projectRepoURL}
-                  onChange={(e) => {
-                    this.props.setField("projectRepoURL", e.target.value);
-                  }}
-                />
+                <FloatingLabel
+                  controlId="floatingInput"
+                  label="Repository URL *"
+                  className="mb-3"
+                >
+                  <Form.Control
+                    type="text"
+                    placeholder="github.com/my-test-project"
+                    value={this.props.fields.projectRepoURL}
+                    onChange={(e) => {
+                      this.props.setField("projectRepoURL", e.target.value);
+                    }}
+                  />
+                </FloatingLabel>
+              </Form.Group>
+
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlTextarea1"
+              >
+                <FloatingLabel
+                  controlId="floatingInput"
+                  label="Project description *"
+                  className="mb-3"
+                >
+                  <Form.Control
+                    as="textarea"
+                    placeholder="What does your project do?"
+                    rows={3}
+                    value={this.props.fields.projectDescription}
+                    onChange={(e) => {
+                      this.props.setField("projectDescription", e.target.value);
+                    }}
+                  />
+                </FloatingLabel>
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label className="field-label">Project type</Form.Label>
                 <Form.Select aria-label="Default select example">
-                  <option>Select an option</option>
+                  <option>Project category *</option>
                   <option value="1">Blockchain</option>
                   <option value="2">Security</option>
                   <option value="3">Software development</option>
                 </Form.Select>
               </Form.Group>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlTextarea1"
-              >
-                <Form.Label className="field-label">
-                  Project description
-                </Form.Label>
-                <Form.Control
-                  as="textarea"
-                  placeholder="What does your project do?"
-                  rows={3}
-                  value={this.props.fields.projectDescription}
-                  onChange={(e) => {
-                    this.props.setField("projectDescription", e.target.value);
-                  }}
-                />
-              </Form.Group>
+              {this.props.fields.fieldInvalid && (
+                <p style={{ color: "red", fontSize: "14px" }}>
+                  &#9940; Please ensure that you have completed all required
+                  fields.
+                </p>
+              )}
             </Form.Group>
           </Form>
         )}
         {this.props.currentPage == 1 && (
           <Form>
-            <div style={{ borderBottom: "1px solid red" }}>
-              <h2>Fund your project</h2>
-              <p>
-                Raise funds for your project by selling tokens, enabling your
-                users to invest in its future
-              </p>
-            </div>
+            <h2>Fund your project</h2>
+            <p>
+              Raise funds for your project by selling tokens, enabling your
+              users to invest in its future
+            </p>
+            <div className="content-divider" />
             <Form.Group
               style={{
                 marginTop: "2rem",
@@ -199,13 +226,13 @@ class NewProjectForm extends Component {
         )}
         {this.props.currentPage == 2 && (
           <Form>
-            <div style={{ borderBottom: "1px solid red" }}>
-              <h2>Review your project</h2>
-              <p>
-                Have a final look at your configuration before launching your
-                project.
-              </p>
-            </div>
+            <h2>Review your project</h2>
+            <p>
+              Have a final look at your configuration before launching your
+              project.
+            </p>
+            <div className="content-divider" />
+
             <div
               style={{
                 marginTop: "2rem",

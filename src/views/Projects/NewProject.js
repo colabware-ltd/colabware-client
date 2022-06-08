@@ -22,14 +22,38 @@ class NewProject extends Component {
     tokenPrice: 0,
     tokenSupply: 0,
     maintainerAllocation: 0.0,
+    fieldInvalid: false,
   };
 
   nextStep = () => {
-    this.setState({
-      currentPage: this.state.currentPage + 1,
-      progress:
-        Math.floor(((this.state.currentPage + 1) / 3) * 100).toString() + "%",
-    });
+    switch (this.state.currentPage) {
+      case 0:
+        if (
+          this.state.projectName == "" ||
+          this.state.projectRepoURL == "" ||
+          this.state.projectDescription == ""
+        ) {
+          this.setState({
+            fieldInvalid: true,
+          });
+          return;
+        } else {
+          this.setState({
+            currentPage: this.state.currentPage + 1,
+            progress:
+              Math.floor(((this.state.currentPage + 1) / 3) * 100).toString() +
+              "%",
+          });
+        }
+      default:
+        this.setState({
+          fieldInvalid: false,
+          currentPage: this.state.currentPage + 1,
+          progress:
+            Math.floor(((this.state.currentPage + 1) / 3) * 100).toString() +
+            "%",
+        });
+    }
   };
 
   prevStep = () => {
