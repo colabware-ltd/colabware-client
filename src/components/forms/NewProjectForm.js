@@ -9,6 +9,7 @@ import {
   Tab,
   FloatingLabel,
 } from "react-bootstrap";
+import DropdownMultiselect from "react-multiselect-dropdown-bootstrap";
 
 class NewProjectForm extends Component {
   render() {
@@ -42,10 +43,14 @@ class NewProjectForm extends Component {
                     onChange={(e) => {
                       this.props.setField("projectName", e.target.value);
                     }}
+                    isInvalid={this.props.fields.fieldInvalid.projectName}
                   />
                 </FloatingLabel>
               </Form.Group>
-              <Form.Group className="mb-3" controlId="newProject.projectRepo">
+              <Form.Group
+                className="mb-3"
+                controlId="newProject.projectRepository"
+              >
                 <FloatingLabel
                   controlId="floatingInput"
                   label="Repository URL *"
@@ -54,10 +59,11 @@ class NewProjectForm extends Component {
                   <Form.Control
                     type="text"
                     placeholder="github.com/my-test-project"
-                    value={this.props.fields.projectRepoURL}
+                    value={this.props.fields.projectRepository}
                     onChange={(e) => {
-                      this.props.setField("projectRepoURL", e.target.value);
+                      this.props.setField("projectRepository", e.target.value);
                     }}
+                    isInvalid={this.props.fields.fieldInvalid.projectRepository}
                   />
                 </FloatingLabel>
               </Form.Group>
@@ -68,7 +74,7 @@ class NewProjectForm extends Component {
               >
                 <FloatingLabel
                   controlId="floatingInput"
-                  label="Project description *"
+                  label="Project description"
                   className="mb-3"
                 >
                   <Form.Control
@@ -82,20 +88,16 @@ class NewProjectForm extends Component {
                   />
                 </FloatingLabel>
               </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Select aria-label="Default select example">
-                  <option>Project category *</option>
-                  <option value="1">Blockchain</option>
-                  <option value="2">Security</option>
-                  <option value="3">Software development</option>
-                </Form.Select>
-              </Form.Group>
-              {this.props.fields.fieldInvalid && (
-                <p style={{ color: "red", fontSize: "14px" }}>
-                  &#9940; Please ensure that you have completed all required
-                  fields.
-                </p>
-              )}
+              <div className="dropdown-multiselect">
+                <DropdownMultiselect
+                  placeholder="Select a category"
+                  options={["Blockchain", "Security", "Networking"]}
+                  name="countries"
+                  handleOnChange={(selected) => {
+                    this.props.setField("projectCategory", selected);
+                  }}
+                />
+              </div>
             </Form.Group>
           </Form>
         )}
@@ -115,34 +117,48 @@ class NewProjectForm extends Component {
             >
               <Row>
                 <Col sm={6}>
-                  <Form.Label className="field-label">Token name</Form.Label>
-                  <Form.Control
-                    placeholder="My Project Token"
-                    value={this.props.fields.tokenName}
-                    onChange={(e) => {
-                      this.props.setField("tokenName", e.target.value);
-                    }}
-                  />
-                </Col>
-                <Col sm={3}>
-                  <Form.Label className="field-label">Token symbol</Form.Label>
-                  <Form.Control
-                    placeholder="MPT"
-                    value={this.props.fields.tokenSymbol}
-                    onChange={(e) => {
-                      this.props.setField("tokenSymbol", e.target.value);
-                    }}
-                  />
-                </Col>
-                <Col sm={3}>
-                  <Form.Label className="field-label">Token price</Form.Label>
-                  <InputGroup>
-                    <InputGroup.Text id="basic-addon1">USD$</InputGroup.Text>
-
+                  <FloatingLabel
+                    controlId="floatingInput"
+                    label="Token name"
+                    className="mb-3"
+                  >
                     <Form.Control
-                      placeholder="1"
-                      value={this.props.fields.tokenPrice}
+                      placeholder="Token name"
+                      value={this.props.fields.tokenName}
+                      isInvalid={this.props.fields.fieldInvalid.tokenName}
                       onChange={(e) => {
+                        this.props.setField("tokenName", e.target.value);
+                      }}
+                    />
+                  </FloatingLabel>
+                </Col>
+                <Col sm={3}>
+                  <FloatingLabel
+                    controlId="floatingInput"
+                    label="Token symbol"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      placeholder="MPT"
+                      value={this.props.fields.tokenSymbol}
+                      isInvalid={this.props.fields.fieldInvalid.tokenSymbol}
+                      onChange={(e) => {
+                        e.target.value = e.target.value.toUpperCase();
+                        this.props.setField("tokenSymbol", e.target.value);
+                      }}
+                    />
+                  </FloatingLabel>
+                </Col>
+                <Col sm={3}>
+                  <InputGroup id="token-price-input">
+                    <InputGroup.Text id="basic-addon1">USD$</InputGroup.Text>
+                    <Form.Control
+                      type="number"
+                      placeholder="Token price"
+                      value={this.props.fields.tokenPrice}
+                      isInvalid={this.props.fields.fieldInvalid.tokenPrice}
+                      onChange={(e) => {
+                        if (e.target.value <= 0) e.target.value = 0.1;
                         this.props.setField("tokenPrice", e.target.value);
                       }}
                     />
@@ -164,9 +180,12 @@ class NewProjectForm extends Component {
                     by your project's users
                   </p>
                   <Form.Control
+                    type="number"
                     placeholder="1,000,000"
                     value={this.props.fields.tokenSupply}
+                    isInvalid={this.props.fields.fieldInvalid.tokenSupply}
                     onChange={(e) => {
+                      if (e.target.value < 1) e.target.value = 1;
                       this.props.setField("tokenSupply", e.target.value);
                     }}
                   />
@@ -179,9 +198,15 @@ class NewProjectForm extends Component {
                   </p>
                   <InputGroup>
                     <Form.Control
+                      type="number"
                       placeholder="20"
                       value={this.props.fields.maintainerAllocation}
+                      isInvalid={
+                        this.props.fields.fieldInvalid.maintainerAllocation
+                      }
                       onChange={(e) => {
+                        if (e.target.value < 0 || e.target.value > 100)
+                          e.target.value = 1;
                         this.props.setField(
                           "maintainerAllocation",
                           e.target.value
@@ -209,6 +234,7 @@ class NewProjectForm extends Component {
                       this.props.fields.tokenSupply
                     ).toLocaleString("en")}
                   </h2>
+                  <p>Total funds raised</p>
                 </Card>
               </Col>
               <Col sm={6}>
@@ -219,6 +245,7 @@ class NewProjectForm extends Component {
                       this.props.fields.tokenSupply
                     ).toLocaleString("en")}{" "}
                   </h2>
+                  <p>Reserved maintainer tokens</p>
                 </Card>
               </Col>
             </Row>
@@ -271,7 +298,7 @@ class NewProjectForm extends Component {
                             <p className="field-label">Repository URL</p>
                           </Col>
                           <Col sm={9}>
-                            <p>{this.props.fields.projectRepoURL}</p>
+                            <p>{this.props.fields.projectRepository}</p>
                           </Col>
                         </Row>
                         <Row>

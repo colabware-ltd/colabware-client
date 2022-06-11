@@ -16,6 +16,10 @@
   margin-bottom: 35px;
 }
 
+#token-price-input {
+  height: calc(3.5rem + 2px);
+}
+
 .card-content {
   padding: 30px;
 }
@@ -34,6 +38,11 @@
 
 .content-margin {
   margin: 10px;
+}
+
+.dropdown-multiselect {
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
 }
 
 .margin-right-sm {

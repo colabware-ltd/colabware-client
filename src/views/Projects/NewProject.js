@@ -15,29 +15,40 @@ class NewProject extends Component {
     currentPage: 0,
     progress: "0%",
     projectName: "",
-    projectRepoURL: "",
+    projectRepository: "",
     projectDescription: "",
+    projectCategory: [""],
     tokenName: "",
     tokenSymbol: "",
-    tokenPrice: 0,
-    tokenSupply: 0,
-    maintainerAllocation: 0.0,
-    fieldInvalid: false,
+    tokenPrice: null,
+    tokenSupply: null,
+    maintainerAllocation: null,
+    fieldInvalid: {
+      projectName: false,
+      projectRepository: false,
+      tokenName: false,
+      tokenSymbol: false,
+      tokenPrice: false,
+      tokenSupply: false,
+      maintainerAllocation: false,
+    },
   };
 
   nextStep = () => {
     switch (this.state.currentPage) {
       case 0:
-        if (
-          this.state.projectName == "" ||
-          this.state.projectRepoURL == "" ||
-          this.state.projectDescription == ""
-        ) {
-          this.setState({
-            fieldInvalid: true,
-          });
-          return;
-        } else {
+        var projectNameInvalid = this.state.projectName == "" ? true : false;
+        var projectRepositoryInvalid =
+          this.state.projectRepository == "" ? true : false;
+
+        this.setState({
+          fieldInvalid: {
+            projectName: projectNameInvalid,
+            projectRepository: projectRepositoryInvalid,
+          },
+        });
+
+        if (!projectNameInvalid && !projectRepositoryInvalid) {
           this.setState({
             currentPage: this.state.currentPage + 1,
             progress:
@@ -45,14 +56,41 @@ class NewProject extends Component {
               "%",
           });
         }
-      default:
+        break;
+
+      case 1:
+        var tokenNameInvalid = this.state.tokenName == "" ? true : false;
+        var tokenSymbolInvalid = this.state.tokenSymbol == "" ? true : false;
+        var tokenPriceInvalid = this.state.tokenPrice == null ? true : false;
+        var tokenSupplyInvalid = this.state.tokenSupply == null ? true : false;
+        var maintainerAllocationInvalid =
+          this.state.maintainerAllocation == null ? true : false;
+
         this.setState({
-          fieldInvalid: false,
-          currentPage: this.state.currentPage + 1,
-          progress:
-            Math.floor(((this.state.currentPage + 1) / 3) * 100).toString() +
-            "%",
+          fieldInvalid: {
+            tokenName: tokenNameInvalid,
+            tokenSymbol: tokenSymbolInvalid,
+            tokenPrice: tokenPriceInvalid,
+            tokenSupply: tokenSupplyInvalid,
+            maintainerAllocation: maintainerAllocationInvalid,
+          },
         });
+
+        if (
+          !tokenNameInvalid &&
+          !tokenSymbolInvalid &&
+          !tokenPriceInvalid &&
+          !tokenSupplyInvalid &&
+          !maintainerAllocationInvalid
+        ) {
+          this.setState({
+            currentPage: this.state.currentPage + 1,
+            progress:
+              Math.floor(((this.state.currentPage + 1) / 3) * 100).toString() +
+              "%",
+          });
+        }
+        break;
     }
   };
 
@@ -73,18 +111,18 @@ class NewProject extends Component {
   };
 
   launchProject = () => {
-    let url = "http://localhost/project";
+    let url = "http://localhost/api/project";
     let data = {
       name: this.state.projectName,
-      repository: this.state.projectRepoURL,
+      repository: this.state.projectRepository,
       description: this.state.projectDescription,
-      categories: ["blockchain"],
-      maintainers: ["test-user"],
+      categories: this.state.projectCategory,
+      maintainers: ["declan", "nathan"],
       tokenConfig: {
         name: this.state.tokenName,
         symbol: this.state.tokenSymbol,
-        price: this.state.tokenPrice,
-        maintainerAllocation: this.state.maintainerAllocation,
+        price: parseInt(this.state.tokenPrice),
+        maintainerAllocation: parseFloat(this.state.maintainerAllocation),
       },
     };
     let headers = {
