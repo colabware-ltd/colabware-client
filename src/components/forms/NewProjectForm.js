@@ -39,11 +39,14 @@ class NewProjectForm extends Component {
                   <Form.Control
                     type="text"
                     placeholder="My test project"
-                    value={this.props.fields.projectName}
+                    value={this.props.project.name}
                     onChange={(e) => {
-                      this.props.setField("projectName", e.target.value);
+                      this.props.updateProject((previous) => ({
+                        ...previous,
+                        name: e.target.value,
+                      }));
                     }}
-                    isInvalid={this.props.fields.fieldInvalid.projectName}
+                    isInvalid={this.props.fieldInvalid.projectName}
                   />
                 </FloatingLabel>
               </Form.Group>
@@ -59,11 +62,14 @@ class NewProjectForm extends Component {
                   <Form.Control
                     type="text"
                     placeholder="github.com/my-test-project"
-                    value={this.props.fields.projectRepository}
+                    value={this.props.project.repository}
                     onChange={(e) => {
-                      this.props.setField("projectRepository", e.target.value);
+                      this.props.updateProject((previous) => ({
+                        ...previous,
+                        repository: e.target.value,
+                      }));
                     }}
-                    isInvalid={this.props.fields.fieldInvalid.projectRepository}
+                    isInvalid={this.props.fieldInvalid.projectRepository}
                   />
                 </FloatingLabel>
               </Form.Group>
@@ -81,9 +87,12 @@ class NewProjectForm extends Component {
                     as="textarea"
                     placeholder="What does your project do?"
                     rows={3}
-                    value={this.props.fields.projectDescription}
+                    value={this.props.project.description}
                     onChange={(e) => {
-                      this.props.setField("projectDescription", e.target.value);
+                      this.props.updateProject((previous) => ({
+                        ...previous,
+                        description: e.target.value,
+                      }));
                     }}
                   />
                 </FloatingLabel>
@@ -94,7 +103,10 @@ class NewProjectForm extends Component {
                   options={["Blockchain", "Security", "Networking"]}
                   name="countries"
                   handleOnChange={(selected) => {
-                    this.props.setField("projectCategory", selected);
+                    this.props.updateProject((previous) => ({
+                      ...previous,
+                      categories: selected,
+                    }));
                   }}
                 />
               </div>
@@ -124,10 +136,13 @@ class NewProjectForm extends Component {
                   >
                     <Form.Control
                       placeholder="Token name"
-                      value={this.props.fields.tokenName}
-                      isInvalid={this.props.fields.fieldInvalid.tokenName}
+                      value={this.props.project.tokenName}
+                      isInvalid={this.props.fieldInvalid.tokenName}
                       onChange={(e) => {
-                        this.props.setField("tokenName", e.target.value);
+                        this.props.updateProject((previous) => ({
+                          ...previous,
+                          tokenName: e.target.value,
+                        }));
                       }}
                     />
                   </FloatingLabel>
@@ -140,11 +155,14 @@ class NewProjectForm extends Component {
                   >
                     <Form.Control
                       placeholder="MPT"
-                      value={this.props.fields.tokenSymbol}
-                      isInvalid={this.props.fields.fieldInvalid.tokenSymbol}
+                      value={this.props.project.tokenSymbol}
+                      isInvalid={this.props.fieldInvalid.tokenSymbol}
                       onChange={(e) => {
                         e.target.value = e.target.value.toUpperCase();
-                        this.props.setField("tokenSymbol", e.target.value);
+                        this.props.updateProject((previous) => ({
+                          ...previous,
+                          tokenSymbol: e.target.value,
+                        }));
                       }}
                     />
                   </FloatingLabel>
@@ -155,11 +173,14 @@ class NewProjectForm extends Component {
                     <Form.Control
                       type="number"
                       placeholder="Token price"
-                      value={this.props.fields.tokenPrice}
-                      isInvalid={this.props.fields.fieldInvalid.tokenPrice}
+                      value={this.props.project.tokenPrice}
+                      isInvalid={this.props.fieldInvalid.tokenPrice}
                       onChange={(e) => {
-                        if (e.target.value <= 0) e.target.value = 0.1;
-                        this.props.setField("tokenPrice", e.target.value);
+                        if (e.target.value <= 0) e.target.value = 1;
+                        this.props.updateProject((previous) => ({
+                          ...previous,
+                          tokenPrice: e.target.value,
+                        }));
                       }}
                     />
                   </InputGroup>
@@ -182,11 +203,14 @@ class NewProjectForm extends Component {
                   <Form.Control
                     type="number"
                     placeholder="1,000,000"
-                    value={this.props.fields.tokenSupply}
-                    isInvalid={this.props.fields.fieldInvalid.tokenSupply}
+                    value={this.props.project.tokenSupply}
+                    isInvalid={this.props.fieldInvalid.tokenSupply}
                     onChange={(e) => {
-                      if (e.target.value < 1) e.target.value = 1;
-                      this.props.setField("tokenSupply", e.target.value);
+                      if (e.target.value <= 0) e.target.value = 1;
+                      this.props.updateProject((previous) => ({
+                        ...previous,
+                        tokenSupply: e.target.value,
+                      }));
                     }}
                   />
                 </Col>
@@ -200,17 +224,15 @@ class NewProjectForm extends Component {
                     <Form.Control
                       type="number"
                       placeholder="20"
-                      value={this.props.fields.maintainerAllocation}
-                      isInvalid={
-                        this.props.fields.fieldInvalid.maintainerAllocation
-                      }
+                      value={this.props.project.maintainerAllocation}
+                      isInvalid={this.props.fieldInvalid.maintainerAllocation}
                       onChange={(e) => {
                         if (e.target.value < 0 || e.target.value > 100)
                           e.target.value = 1;
-                        this.props.setField(
-                          "maintainerAllocation",
-                          e.target.value
-                        );
+                        this.props.updateProject((previous) => ({
+                          ...previous,
+                          maintainerAllocation: e.target.value,
+                        }));
                       }}
                     />
                     <InputGroup.Text id="basic-addon1">%</InputGroup.Text>
@@ -230,8 +252,8 @@ class NewProjectForm extends Component {
                   <h2>
                     $
                     {(
-                      this.props.fields.tokenPrice *
-                      this.props.fields.tokenSupply
+                      this.props.project.tokenPrice *
+                      this.props.project.tokenSupply
                     ).toLocaleString("en")}
                   </h2>
                   <p>Total funds raised</p>
@@ -241,8 +263,8 @@ class NewProjectForm extends Component {
                 <Card className="card-content">
                   <h2>
                     {(
-                      (this.props.fields.maintainerAllocation / 100) *
-                      this.props.fields.tokenSupply
+                      (this.props.project.maintainerAllocation / 100) *
+                      this.props.project.tokenSupply
                     ).toLocaleString("en")}{" "}
                   </h2>
                   <p>Reserved maintainer tokens</p>
@@ -290,7 +312,7 @@ class NewProjectForm extends Component {
                             <p className="field-label">Name</p>
                           </Col>
                           <Col sm={9}>
-                            <p>{this.props.fields.projectName}</p>
+                            <p>{this.props.project.name}</p>
                           </Col>
                         </Row>
                         <Row>
@@ -298,7 +320,7 @@ class NewProjectForm extends Component {
                             <p className="field-label">Repository URL</p>
                           </Col>
                           <Col sm={9}>
-                            <p>{this.props.fields.projectRepository}</p>
+                            <p>{this.props.project.repository}</p>
                           </Col>
                         </Row>
                         <Row>
@@ -306,7 +328,7 @@ class NewProjectForm extends Component {
                             <p className="field-label">Description</p>
                           </Col>
                           <Col sm={9}>
-                            <p>{this.props.fields.projectDescription}</p>
+                            <p>{this.props.project.description}</p>
                           </Col>
                         </Row>
                       </Tab.Pane>
@@ -316,7 +338,7 @@ class NewProjectForm extends Component {
                             <p className="field-label">Token name</p>
                           </Col>
                           <Col sm={9}>
-                            <p>{this.props.fields.tokenName}</p>
+                            <p>{this.props.project.tokenName}</p>
                           </Col>
                         </Row>
                         <Row>
@@ -324,7 +346,7 @@ class NewProjectForm extends Component {
                             <p className="field-label">Token symbol</p>
                           </Col>
                           <Col sm={9}>
-                            <p>{this.props.fields.tokenSupply}</p>
+                            <p>{this.props.project.tokenSupply}</p>
                           </Col>
                         </Row>
                         <Row>
@@ -332,7 +354,7 @@ class NewProjectForm extends Component {
                             <p className="field-label">Token price</p>
                           </Col>
                           <Col sm={9}>
-                            <p>USD${this.props.fields.tokenPrice}</p>
+                            <p>USD${this.props.project.tokenPrice}</p>
                           </Col>
                         </Row>
                         <Row>
@@ -340,7 +362,7 @@ class NewProjectForm extends Component {
                             <p className="field-label">Token supply</p>
                           </Col>
                           <Col sm={9}>
-                            <p>{this.props.fields.tokenSupply}</p>
+                            <p>{this.props.project.tokenSupply}</p>
                           </Col>
                         </Row>
                         <Row>
@@ -348,7 +370,7 @@ class NewProjectForm extends Component {
                             <p className="field-label">Maintainer allocation</p>
                           </Col>
                           <Col sm={9}>
-                            <p>{this.props.fields.maintainerAllocation}%</p>
+                            <p>{this.props.project.maintainerAllocation}%</p>
                           </Col>
                         </Row>
                       </Tab.Pane>

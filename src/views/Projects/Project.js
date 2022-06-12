@@ -97,13 +97,14 @@ const Project = () => {
                   </Col>
                   <Col xs={10} className="my-auto">
                     <h1 className="margin-btm-sm">{project.name}</h1>
-                    {project.categories.map((o, i) => {
-                      return (
-                        <Badge pill bg="primary" className="margin-right-sm">
-                          {o}
-                        </Badge>
-                      );
-                    })}
+                    {project.categories != null &&
+                      project.categories.map((o, i) => {
+                        return (
+                          <Badge pill bg="primary" className="margin-right-sm">
+                            {o}
+                          </Badge>
+                        );
+                      })}
                   </Col>
                 </Row>
                 <div className="content-divider" />
