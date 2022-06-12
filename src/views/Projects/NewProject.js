@@ -5,6 +5,7 @@ import { CSSTransition, SwitchTransition } from "react-transition-group";
 import NewProjectForm from "../../components/forms/NewProjectForm";
 import axios from "axios";
 import DoughnutChart from "../../components/DoughnutChart";
+import { Navigate } from "react-router-dom";
 
 class NewProject extends Component {
   constructor(props) {
@@ -128,22 +129,15 @@ class NewProject extends Component {
     let headers = {
       "Content-Type": "application/x-www-form-urlencoded",
     };
-    axios.post(url, data, headers);
+    axios.post(url, data, headers).then(
+      (res) => {
+        console.log(res);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   };
-
-  // formatInput = (nStr) => {
-  //   nStr += "";
-  //   let x = nStr.split(".");
-  //   let x1 = x[0];
-  //   let x2 = x.length > 1 ? "." + x[1] : "";
-  //   let rgx = /(\d+)(\d{3})/;
-  //   while (rgx.test(x1)) {
-  //     x1 = x1.replace(rgx, "$1" + "," + "$2");
-  //   }
-  //   this.setState({
-  //     tokenSupplyFormatted: x1 + x2,
-  //   });
-  // };
 
   render = () => {
     let progressData = {

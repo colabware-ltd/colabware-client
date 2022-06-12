@@ -11,8 +11,8 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} exact />
-          <Route path="/projects/:id" element={<Project />} exact />
-          <Route path="/projects/new" element={<NewProject />} exact />
+          <Route path="/project/:projectId" element={<Project />} exact />
+          <Route path="/project/new" element={<NewProject />} exact />
         </Routes>
       </div>
     </BrowserRouter>
