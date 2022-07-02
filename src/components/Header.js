@@ -6,16 +6,50 @@ import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Header = () => {
+const Header = (props) => {
   let navigate = useNavigate();
 
   const loginHandler = async () => {
+    const url = `http://127.0.0.1/login`;
     try {
-      let url = `http://127.0.0.1/login`;
       let res = await axios.get(url);
       window.location.href = res.data.url;
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const logoutHandler = async () => {
+    const url = `http://127.0.0.1/api/user/logout`;
+    try {
+      let res = await axios.get(url);
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const authRender = () => {
+    if (!props.user.authorized) {
+      return (
+        <Button
+          variant="outline-secondary"
+          className="nav-element-margin"
+          onClick={loginHandler}
+        >
+          Log in
+        </Button>
+      );
+    } else {
+      return (
+        <Button
+          variant="outline-secondary"
+          className="nav-element-margin"
+          onClick={logoutHandler}
+        >
+          Log out
+        </Button>
+      );
     }
   };
 
@@ -37,13 +71,7 @@ const Header = () => {
             >
               Browse projects
             </Nav.Link>
-            <Button
-              variant="outline-secondary"
-              className="nav-element-margin"
-              onClick={loginHandler}
-            >
-              Log in
-            </Button>
+            {authRender()}
             <Button
               variant="primary"
               className="nav-element-margin"
