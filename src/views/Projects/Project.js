@@ -72,15 +72,15 @@ const Project = () => {
     let headers = {
       "Content-Type": "application/x-www-form-urlencoded",
     };
-    axios
-      .get(url, headers)
-      .then((res) => {
-        setProject(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-        setProject(err.response.data);
-      });
+    // axios
+    //   .get(url, headers)
+    //   .then((res) => {
+    //     setProject(res.data);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     setProject(err.response.data);
+    //   });
   }, []);
 
   return (

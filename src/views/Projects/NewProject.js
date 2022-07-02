@@ -63,6 +63,8 @@ const NewProject = () => {
               Math.floor(((form.currentPage + 1) / 3) * 100).toString() + "%",
           });
         }
+
+        console.log(project);
         break;
 
       case 1:
@@ -94,6 +96,8 @@ const NewProject = () => {
               Math.floor(((form.currentPage + 1) / 3) * 100).toString() + "%",
           });
         }
+        console.log(project);
+
         break;
     }
   };
@@ -114,7 +118,7 @@ const NewProject = () => {
       name: project.name,
       repository: project.repository,
       description: project.description,
-      categories: project.projectCategory,
+      categories: project.categories,
       maintainers: ["declan", "nathan"],
       tokenConfig: {
         name: project.tokenName,
