@@ -29,26 +29,46 @@ const Header = (props) => {
     }
   };
 
-  const authRender = () => {
+  const authView = () => {
     if (!props.user.authorized) {
       return (
-        <Button
-          variant="outline-secondary"
-          className="nav-element-margin"
-          onClick={loginHandler}
-        >
-          Log in
-        </Button>
+        <div>
+          <Button
+            variant="outline-secondary"
+            className="nav-element-margin"
+            onClick={loginHandler}
+          >
+            Log in
+          </Button>
+          <Button
+            variant="primary"
+            className="nav-element-margin"
+            onClick={loginHandler}
+          >
+            Get started
+          </Button>
+        </div>
       );
     } else {
       return (
-        <Button
-          variant="outline-secondary"
-          className="nav-element-margin"
-          onClick={logoutHandler}
-        >
-          Log out
-        </Button>
+        <div>
+          <Button
+            variant="outline-secondary"
+            className="nav-element-margin"
+            onClick={logoutHandler}
+          >
+            Log out
+          </Button>
+          <Button
+            variant="primary"
+            className="nav-element-margin"
+            onClick={() => {
+              navigate("/project/new");
+            }}
+          >
+            New project
+          </Button>
+        </div>
       );
     }
   };
@@ -62,25 +82,10 @@ const Header = (props) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link href="#home" className="nav-element-margin">
-              Home
-            </Nav.Link>
-            <Nav.Link
-              href="/project/my-test-project"
-              className="nav-element-margin"
-            >
+            <Nav.Link href="/browse" className="nav-element-margin">
               Browse projects
             </Nav.Link>
-            {authRender()}
-            <Button
-              variant="primary"
-              className="nav-element-margin"
-              onClick={() => {
-                navigate("/project/new");
-              }}
-            >
-              New project
-            </Button>
+            {authView()}
           </Nav>
         </Navbar.Collapse>
       </Container>
