@@ -41,7 +41,11 @@ const App = () => {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home user={user} />} exact />
-          <Route path="/project/:projectId" element={<Project />} exact />
+          <Route
+            path="/project/:projectId"
+            element={<Project user={user} />}
+            exact
+          />
           <Route path="/browse" element={<ProjectList user={user} />} exact />
           <Route path="/project/new" element={<NewProject />} exact />
         </Routes>

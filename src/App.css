@@ -91,6 +91,16 @@
   height: 100vh;
 }
 
+.label-link {
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+.label-link:hover {
+  color: #2a66ff;
+  transition: 0.4s;
+}
+
 .logo {
   max-width: 180px;
 }

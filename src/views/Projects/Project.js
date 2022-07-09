@@ -17,14 +17,14 @@ import "../../App.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-const Project = () => {
+const Project = (props) => {
   let { projectId } = useParams();
   let [project, setProject] = useState({
     name: "",
     categories: ["", ""],
     description: "",
     repository: "",
-    tokeconfig: {
+    token: {
       name: "",
       symbol: "",
       price: 0,
@@ -67,25 +67,27 @@ const Project = () => {
     ],
   };
 
+  const getProject = async () => {
+    let url = `http://127.0.0.1/api/project/${encodeURI(projectId)}`;
+    try {
+      const res = await axios.get(url, {
+        validateStatus: function (status) {
+          return (status >= 200 && status <= 302) || status == 401;
+        },
+      });
+      if (res.status == 302) setProject(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
-    let url = `http://localhost/api/project/${encodeURI(projectId)}`;
-    let headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-    };
-    // axios
-    //   .get(url, headers)
-    //   .then((res) => {
-    //     setProject(res.data);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     setProject(err.response.data);
-    //   });
+    getProject();
   }, []);
 
   return (
     <div>
-      <Header />
+      <Header user={props.user} />
       <div className="secondary-background">
         <Container>
           <Row>
@@ -122,7 +124,7 @@ const Project = () => {
                   </Col>
                   <Col>
                     <div className="text-align-center">
-                      <h2>{project.tokeconfig.maintainerallocation}%</h2>
+                      <h2>{project.token.maintainerallocation}%</h2>
                       <p>Maintainer control</p>
                     </div>
                   </Col>
