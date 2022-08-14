@@ -20,6 +20,14 @@
   height: calc(3.5rem + 2px);
 }
 
+#project-desc-trunc {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  background: white;
+}
+
 .card-content {
   padding: 30px;
 }
@@ -129,8 +137,12 @@
   background-color: #efefef;
 }
 
+.secondary-text {
+  color: #6c757d;
+}
+
 .tab-margin-top {
-  margin-top: 40px;
+  margin-top: 50px;
 }
 
 .tabs {

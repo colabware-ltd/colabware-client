@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Badge, Form, Card } from "react-bootstrap";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import List from "../../components/List";
-import PaginationComponent from "../../components/Pagination";
 import axios from "axios";
+import PaginatedList from "../../components/PaginatedList";
 
 const Browse = (props) => {
   let navigate = useNavigate();
@@ -99,7 +98,7 @@ const Browse = (props) => {
               <Card>
                 <Card.Body>
                   <p style={{ fontWeight: "600", marginBottom: 0 }}>
-                    Filter by type
+                    Filter by project type
                   </p>
                   <div style={{ marginTop: "10px", marginBottom: "10px" }}>
                     {categories.map((o, i) => {
@@ -147,73 +146,16 @@ const Browse = (props) => {
             </div>
           </Col>
           <Col xs={9}>
-            <div>
-              <h3 style={{ marginBottom: "15px" }}>
-                {data.total} projects found
-              </h3>
-              {data.results != null &&
-                data.results.map((item, id) => {
-                  return (
-                    <div
-                      style={{
-                        borderBottom: "1px solid #ced4da",
-                        paddingTop: "15px",
-                        paddingBottom: "15px",
-                      }}
-                    >
-                      <Row>
-                        <Col md="auto">
-                          <h5
-                            className="label-link"
-                            onClick={() => {
-                              navigate(`/project/${item.name}`);
-                            }}
-                          >
-                            {item.name}
-                          </h5>
-                        </Col>
-                        <Col>
-                          {item.categories != null &&
-                            item.categories.map((o, i) => {
-                              return (
-                                <Badge
-                                  pill
-                                  bg="primary"
-                                  className="margin-right-sm"
-                                >
-                                  {o}
-                                </Badge>
-                              );
-                            })}
-                        </Col>
-                      </Row>
-                      <Row>
-                        <p id="project-desc-trunc">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit, sed do eiusmod tempor fwekjfknrekfne
-                          ernefklmrelkmfekn rvlerknaffmnslk eklmnreklfmle rleka
-                          vewefklkn knekrfmne fkle nlkrefklewnf
-                        </p>
-                      </Row>
-                    </div>
-                  );
-                })}
-            </div>
-            <div
-              style={{
-                justifyContent: "center",
-                display: "flex",
-                marginTop: "45px",
-              }}
-            >
-              <PaginationComponent
-                itemsCount={data.total}
-                itemsPerPage={pageLimit}
-                currentPage={pageCurrent}
-                setCurrentPage={updatePage}
-                alwaysShown={false}
-              />
-            </div>
+            <h3 style={{ marginBottom: "15px" }}>
+              {data.total} projects found
+            </h3>
+            <PaginatedList
+              data={data}
+              pageLimit={pageLimit}
+              pageCurrent={pageCurrent}
+              updatePage={updatePage}
+              project={navigate}
+            />
           </Col>
         </Row>
       </Container>

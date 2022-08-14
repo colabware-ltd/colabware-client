@@ -6,7 +6,7 @@ import Project from "./views/Projects/Project";
 import Home from "./views/Home";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import ProjectList from "./views/Projects/ProjectList";
+import Browse from "./views/Projects/Browse";
 
 const App = () => {
   let [user, setUser] = useState({
@@ -46,7 +46,7 @@ const App = () => {
             element={<Project user={user} />}
             exact
           />
-          <Route path="/browse" element={<ProjectList user={user} />} exact />
+          <Route path="/browse" element={<Browse user={user} />} exact />
           <Route path="/project/new" element={<NewProject />} exact />
         </Routes>
       </div>
