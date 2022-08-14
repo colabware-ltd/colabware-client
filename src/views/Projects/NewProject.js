@@ -18,12 +18,13 @@ const NewProject = () => {
     repository: "",
     description: "",
     categories: [""],
-    maintainers: ["test_user"],
+    maintainers: [""],
     tokenName: "",
     tokenSymbol: "",
-    tokenPrice: null, // Integer
-    tokenSupply: null, // Integer
-    maintainerAllocation: null, // Float
+    tokenPrice: 1, // Integer
+    tokenSupply: 1000, // Integer
+    maintainerSupply: 200, // Integer
+    maintainerAllocation: 20,
   });
   let [fieldInvalid, updateFieldInvalid] = useState({
     projectName: false,
@@ -113,18 +114,18 @@ const NewProject = () => {
   };
 
   let launchProject = () => {
-    let url = "http://localhost/api/project";
+    let url = "http://127.0.0.1/api/user/project";
     let data = {
       name: project.name,
       repository: project.repository,
       description: project.description,
       categories: project.categories,
-      maintainers: ["declan", "nathan"],
-      tokenConfig: {
+      token: {
         name: project.tokenName,
         symbol: project.tokenSymbol,
         price: parseInt(project.tokenPrice),
-        maintainerAllocation: parseFloat(project.maintainerAllocation),
+        totalSupply: parseInt(project.tokenSupply),
+        maintainerSupply: parseInt(project.maintainerSupply),
       },
     };
     let headers = {

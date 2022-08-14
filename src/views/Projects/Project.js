@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Badge,
   Button,
@@ -8,6 +8,7 @@ import {
   Row,
   Tab,
   Tabs,
+  Form,
 } from "react-bootstrap";
 import Header from "../../components/Header";
 import projectImg from "../../assets/project.png";
@@ -16,9 +17,34 @@ import DoughnutChart from "../../components/DoughnutChart";
 import "../../App.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import NewRequest from "./Request/NewRequest";
+import ViewRequest from "./Request/ViewRequest";
+import PaginatedList from "../../components/PaginatedList";
 
 const Project = (props) => {
+  let [selectedRequest, setSelectedRequest] = useState({
+    name: "2FA",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+  });
+  let [requests, setRequests] = useState({
+    total: 1,
+    results: [
+      {
+        categories: ["New request"],
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        name: "2FA",
+      },
+    ],
+  });
+  let [pageCurrent, setPageCurrent] = useState(1);
+  let [pageLimit, setPageLimit] = useState(10);
   let { projectId } = useParams();
+  let [view, setView] = useState({
+    newRequest: false,
+    viewRequest: false,
+  });
   let [project, setProject] = useState({
     name: "",
     categories: ["", ""],
@@ -28,45 +54,47 @@ const Project = (props) => {
       name: "",
       symbol: "",
       price: 0,
-      maintainerallocation: 0,
+      totalSupply: 0,
+      maintainerSupply: 0,
     },
   });
 
   let chartData = {
-    labels: [
-      "Maintainer stake",
-      "Investor #1",
-      "Investor #2",
-      "Investor #3",
-      "Investor #4",
-      "Investor #5",
-      "Other investors",
-    ],
+    labels: ["Reserved tokens", "Available tokens"],
     datasets: [
       {
         label: "# of Votes",
-        data: [12, 19, 3, 5, 2, 3],
-        backgroundColor: [
-          "rgba(75, 192, 192, 0.5)",
-          "rgba(255, 99, 132, 0.1)",
-          "rgba(54, 162, 235, 0.1)",
-          "rgba(255, 206, 86, 0.1)",
-          "rgba(153, 102, 255, 0.1)",
-          "rgba(255, 159, 64, 0.1)",
-        ],
-        borderColor: [
-          "rgba(75, 192, 192, 1)",
-          "rgba(255, 99, 132, .5)",
-          "rgba(54, 162, 235, .5)",
-          "rgba(255, 206, 86, .5)",
-          "rgba(153, 102, 255, .5)",
-          "rgba(255, 159, 64, .5)",
-        ],
+        data: [project.token.maintainerSupply, project.token.totalSupply],
+        backgroundColor: ["rgba(75, 192, 192, 0.5)", "rgba(255, 99, 132, 0.1)"],
+        borderColor: ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, .5)"],
         borderWidth: 1,
       },
     ],
   };
+  const ref = useRef(null);
 
+  const viewRequest = (isViewRequest) => {
+    setView((previous) => ({
+      ...previous,
+      viewRequest: isViewRequest,
+      activeTab: "requests",
+    }));
+  };
+
+  const newRequest = (isNewRequest) => {
+    setView((previous) => ({
+      ...previous,
+      newRequest: isNewRequest,
+      activeTab: "requests",
+    }));
+  };
+
+  const updatePage = (page) => {
+    setPageCurrent(page);
+    // getProjects(page, pageLimit);
+  };
+
+  // TODO: Expose endpoint to retrieve total number of projects created so far
   const getProject = async () => {
     let url = `http://127.0.0.1/api/project/${encodeURI(projectId)}`;
     try {
@@ -118,32 +146,50 @@ const Project = (props) => {
                 <Row className="content-margin">
                   <Col>
                     <div className="text-align-center">
-                      <h2>83,900</h2>
-                      <p>MTP allocated</p>
+                      <h2>{project.token.totalSupply.toLocaleString("en")}</h2>
+                      <p>{project.token.symbol} allocated</p>
                     </div>
                   </Col>
                   <Col>
                     <div className="text-align-center">
-                      <h2>{project.token.maintainerallocation}%</h2>
+                      <h2>
+                        {Math.round(
+                          (project.token.maintainerSupply /
+                            project.token.totalSupply) *
+                            100
+                        )}
+                        %
+                      </h2>
                       <p>Maintainer control</p>
                     </div>
                   </Col>
                 </Row>
-                <Button variant="outline-secondary" className="margin-btm-sm">
+                <Button
+                  variant="outline-secondary"
+                  className="margin-btm-sm"
+                  onClick={() => {
+                    newRequest(true);
+                    ref.current?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
                   Submit a request
                 </Button>
-                <Button>Purchase MTP</Button>
+                <Button>Purchase {project.token.symbol}</Button>
               </Card>
             </Col>
           </Row>
         </Container>
       </div>
-      <Container>
+      <Container ref={ref}>
         <Tabs
           defaultActiveKey="overview"
+          activeKey={view.activeTab}
           id="uncontrolled-tab-example"
           className="mb-3 tabs"
           variant="pills"
+          onSelect={() => {
+            setView({});
+          }}
         >
           <Tab eventKey="overview" title="Overview" className="tab-margin-top">
             <Row>
@@ -166,8 +212,7 @@ const Project = (props) => {
                   </p>
                   <DoughnutChart
                     tooltip={true}
-                    label="1000"
-                    // label={project.token.count.toLocaleString("en")}
+                    label={project.token.totalSupply.toLocaleString("en")}
                     cutout={"60%"}
                     data={chartData}
                   />
@@ -175,18 +220,58 @@ const Project = (props) => {
               </Col>
             </Row>
           </Tab>
-          <Tab eventKey="profile" title="Requests" disabled>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
+          <Tab eventKey="requests" title="Requests" className="tab-margin-top">
+            <div
+              style={{
+                marginLeft: "120px",
+                marginRight: "120px",
+              }}
+            >
+              {!view.newRequest && !view.viewRequest && (
+                <div>
+                  <Row style={{ marginBottom: "15px" }}>
+                    <Col xs={10}>
+                      <Form.Control
+                        type="search"
+                        placeholder="Search for an issue"
+                      />
+                    </Col>
+                    <Col xs={2}>
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={() => {
+                          newRequest(true);
+                        }}
+                        style={{ height: "100%" }}
+                      >
+                        New Request
+                      </Button>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <PaginatedList
+                      data={requests}
+                      pageLimit={pageLimit}
+                      pageCurrent={pageCurrent}
+                      updatePage={updatePage}
+                      request={viewRequest}
+                    />
+                  </Row>
+                </div>
+              )}
+              {view.newRequest && (
+                <NewRequest ref={ref} newRequest={newRequest} />
+              )}
+              {view.viewRequest && (
+                <ViewRequest
+                  viewRequest={viewRequest}
+                  request={selectedRequest}
+                />
+              )}
+            </div>
           </Tab>
-          <Tab eventKey="profile" title="Roadmap" disabled>
+          <Tab eventKey="roadmap" title="Roadmap" disabled>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
