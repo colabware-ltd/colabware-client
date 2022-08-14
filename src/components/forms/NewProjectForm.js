@@ -176,7 +176,6 @@ class NewProjectForm extends Component {
                       value={this.props.project.tokenPrice}
                       isInvalid={this.props.fieldInvalid.tokenPrice}
                       onChange={(e) => {
-                        if (e.target.value <= 0) e.target.value = 1;
                         this.props.updateProject((previous) => ({
                           ...previous,
                           tokenPrice: e.target.value,
@@ -206,10 +205,12 @@ class NewProjectForm extends Component {
                     value={this.props.project.tokenSupply}
                     isInvalid={this.props.fieldInvalid.tokenSupply}
                     onChange={(e) => {
-                      if (e.target.value <= 0) e.target.value = 1;
                       this.props.updateProject((previous) => ({
                         ...previous,
                         tokenSupply: e.target.value,
+                        maintainerSupply:
+                          (this.props.project.maintainerAllocation / 100) *
+                          e.target.value,
                       }));
                     }}
                   />
@@ -227,11 +228,12 @@ class NewProjectForm extends Component {
                       value={this.props.project.maintainerAllocation}
                       isInvalid={this.props.fieldInvalid.maintainerAllocation}
                       onChange={(e) => {
-                        if (e.target.value < 0 || e.target.value > 100)
-                          e.target.value = 1;
                         this.props.updateProject((previous) => ({
                           ...previous,
                           maintainerAllocation: e.target.value,
+                          maintainerSupply:
+                            (e.target.value / 100) *
+                            this.props.project.tokenSupply,
                         }));
                       }}
                     />
@@ -262,10 +264,7 @@ class NewProjectForm extends Component {
               <Col sm={6}>
                 <Card className="card-content">
                   <h2>
-                    {(
-                      (this.props.project.maintainerAllocation / 100) *
-                      this.props.project.tokenSupply
-                    ).toLocaleString("en")}{" "}
+                    {this.props.project.maintainerSupply.toLocaleString("en")}{" "}
                   </h2>
                   <p>Reserved maintainer tokens</p>
                 </Card>
