@@ -1,3 +1,5 @@
+import { Card } from "react-bootstrap";
+
 const ViewRequest = (props) => {
   return (
     <div>
@@ -5,14 +7,17 @@ const ViewRequest = (props) => {
         style={{ width: "50px" }}
         className="secondary-text label-link"
         onClick={() => {
-          console.log("Hello!");
-          props.viewRequest(false);
+          props.setParentView({
+            current: "request_list",
+          });
         }}
       >
         &lsaquo; Back
       </p>
-      <h3>{props.request.name}</h3>
-      <p>{props.request.description}</p>
+      <Card className="card-content">
+        <h3>{props.request.name}</h3>
+        <p>{props.request.description}</p>
+      </Card>
     </div>
   );
 };

@@ -8,7 +8,6 @@ import {
   Row,
   Tab,
   Tabs,
-  Form,
 } from "react-bootstrap";
 import Header from "../../components/Header";
 import projectImg from "../../assets/project.png";
@@ -17,35 +16,18 @@ import DoughnutChart from "../../components/DoughnutChart";
 import "../../App.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import NewRequest from "./Request/NewRequest";
-import ViewRequest from "./Request/ViewRequest";
-import PaginatedList from "../../components/PaginatedList";
+import ProjectRequests from "./Request/ProjectRequests";
 
 const Project = (props) => {
-  let [selectedRequest, setSelectedRequest] = useState({
-    name: "2FA",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  });
-  let [requests, setRequests] = useState({
-    total: 1,
-    results: [
-      {
-        categories: ["New request"],
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        name: "2FA",
-      },
-    ],
-  });
-  let [pageCurrent, setPageCurrent] = useState(1);
-  let [pageLimit, setPageLimit] = useState(10);
+  const ref = useRef(null);
+  let [view, setView] = useState({});
   let { projectId } = useParams();
-  let [view, setView] = useState({
-    newRequest: false,
-    viewRequest: false,
+  let [requests, setRequests] = useState({
+    total: 0,
+    results: [],
   });
   let [project, setProject] = useState({
+    _id: "",
     name: "",
     categories: ["", ""],
     description: "",
@@ -54,44 +36,75 @@ const Project = (props) => {
       name: "",
       symbol: "",
       price: 0,
-      totalSupply: 0,
-      maintainerSupply: 0,
+      totalsupply: 0,
+      maintainersupply: 0,
     },
+  });
+  let [token, setToken] = useState({
+    investorBalance: 0,
+    maintainerBalance: 0,
+    maintainerReserved: 0,
   });
 
   let chartData = {
-    labels: ["Reserved tokens", "Available tokens"],
+    labels: ["Tokens available", "Tokens reserved", "Tokens purchased"],
     datasets: [
       {
         label: "# of Votes",
-        data: [project.token.maintainerSupply, project.token.totalSupply],
-        backgroundColor: ["rgba(75, 192, 192, 0.5)", "rgba(255, 99, 132, 0.1)"],
-        borderColor: ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, .5)"],
+        data: [
+          token.maintainerBalance - token.maintainerReserved,
+          token.maintainerReserved,
+          token.investorBalance,
+        ],
+        backgroundColor: [
+          "rgba(75, 192, 192, 0.5)",
+          "rgba(75, 192, 192, 0.25)",
+          "rgba(255, 99, 132, 0.1)",
+        ],
+        borderColor: [
+          "rgba(75, 192, 192, 1)",
+          "rgba(75, 192, 192, .5)",
+          "rgba(255, 99, 132, .5)",
+        ],
         borderWidth: 1,
       },
     ],
   };
-  const ref = useRef(null);
 
-  const viewRequest = (isViewRequest) => {
-    setView((previous) => ({
-      ...previous,
-      viewRequest: isViewRequest,
-      activeTab: "requests",
-    }));
+  const getBalances = async (id) => {
+    let url = `http://127.0.0.1/api/project/${id}/balances`;
+    try {
+      const res = await axios.get(url, {
+        validateStatus: function (status) {
+          return (status >= 200 && status <= 302) || status == 401;
+        },
+      });
+      if (res.status == 302) {
+        setToken(res.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const newRequest = (isNewRequest) => {
-    setView((previous) => ({
-      ...previous,
-      newRequest: isNewRequest,
-      activeTab: "requests",
-    }));
-  };
-
-  const updatePage = (page) => {
-    setPageCurrent(page);
-    // getProjects(page, pageLimit);
+  const getRequests = async (page, limit, id) => {
+    let url = `http://127.0.0.1/api/project/${id}/request/list?page=${page}&limit=${limit}`;
+    if (page >= 1) {
+      try {
+        const res = await axios.get(url, {
+          validateStatus: function (status) {
+            return (status >= 200 && status <= 302) || status == 401;
+          },
+        });
+        if (res.status == 302)
+          setRequests({
+            results: res.data.results,
+            total: res.data.total,
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    }
   };
 
   // TODO: Expose endpoint to retrieve total number of projects created so far
@@ -103,7 +116,11 @@ const Project = (props) => {
           return (status >= 200 && status <= 302) || status == 401;
         },
       });
-      if (res.status == 302) setProject(res.data);
+      if (res.status == 302) {
+        setProject(res.data);
+        getRequests(1, 10, res.data._id);
+        getBalances(res.data.projectaddress);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -146,16 +163,20 @@ const Project = (props) => {
                 <Row className="content-margin">
                   <Col>
                     <div className="text-align-center">
-                      <h2>{project.token.totalSupply.toLocaleString("en")}</h2>
-                      <p>{project.token.symbol} allocated</p>
+                      <h2>
+                        {(
+                          token.maintainerBalance - token.maintainerReserved
+                        ).toLocaleString("en")}
+                      </h2>
+                      <p>{project.token.symbol} available</p>
                     </div>
                   </Col>
                   <Col>
                     <div className="text-align-center">
                       <h2>
                         {Math.round(
-                          (project.token.maintainerSupply /
-                            project.token.totalSupply) *
+                          (project.token.maintainersupply /
+                            project.token.totalsupply) *
                             100
                         )}
                         %
@@ -168,8 +189,8 @@ const Project = (props) => {
                   variant="outline-secondary"
                   className="margin-btm-sm"
                   onClick={() => {
-                    newRequest(true);
-                    ref.current?.scrollIntoView({ behavior: "smooth" });
+                    // newRequest(true);
+                    // ref.current?.scrollIntoView({ behavior: "smooth" });
                   }}
                 >
                   Submit a request
@@ -212,7 +233,9 @@ const Project = (props) => {
                   </p>
                   <DoughnutChart
                     tooltip={true}
-                    label={project.token.totalSupply.toLocaleString("en")}
+                    label={(
+                      token.maintainerBalance + token.investorBalance
+                    ).toLocaleString("en")}
                     cutout={"60%"}
                     data={chartData}
                   />
@@ -221,55 +244,11 @@ const Project = (props) => {
             </Row>
           </Tab>
           <Tab eventKey="requests" title="Requests" className="tab-margin-top">
-            <div
-              style={{
-                marginLeft: "120px",
-                marginRight: "120px",
-              }}
-            >
-              {!view.newRequest && !view.viewRequest && (
-                <div>
-                  <Row style={{ marginBottom: "15px" }}>
-                    <Col xs={10}>
-                      <Form.Control
-                        type="search"
-                        placeholder="Search for an issue"
-                      />
-                    </Col>
-                    <Col xs={2}>
-                      <Button
-                        variant="outline-primary"
-                        size="sm"
-                        onClick={() => {
-                          newRequest(true);
-                        }}
-                        style={{ height: "100%" }}
-                      >
-                        New Request
-                      </Button>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <PaginatedList
-                      data={requests}
-                      pageLimit={pageLimit}
-                      pageCurrent={pageCurrent}
-                      updatePage={updatePage}
-                      request={viewRequest}
-                    />
-                  </Row>
-                </div>
-              )}
-              {view.newRequest && (
-                <NewRequest ref={ref} newRequest={newRequest} />
-              )}
-              {view.viewRequest && (
-                <ViewRequest
-                  viewRequest={viewRequest}
-                  request={selectedRequest}
-                />
-              )}
-            </div>
+            <ProjectRequests
+              getRequests={getRequests}
+              requests={requests}
+              projectId={project._id}
+            />
           </Tab>
           <Tab eventKey="roadmap" title="Roadmap" disabled>
             <p>

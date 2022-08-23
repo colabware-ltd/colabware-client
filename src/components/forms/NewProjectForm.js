@@ -196,8 +196,7 @@ class NewProjectForm extends Component {
                 <Col sm={6}>
                   <h5>Token supply</h5>
                   <p>
-                    Specify an initial supply of tokens available for purchase
-                    by your project's users
+                    Specify an initial supply of tokens to mint for your project
                   </p>
                   <Form.Control
                     type="number"
@@ -217,10 +216,7 @@ class NewProjectForm extends Component {
                 </Col>
                 <Col sm={6}>
                   <h5>Maitainer allocation</h5>
-                  <p>
-                    Maintain control over your project by allocating a fixed
-                    maintainer stake
-                  </p>
+                  <p>Reserve a fixed number of tokens for maintainer use</p>
                   <InputGroup>
                     <Form.Control
                       type="number"
@@ -255,7 +251,8 @@ class NewProjectForm extends Component {
                     $
                     {(
                       this.props.project.tokenPrice *
-                      this.props.project.tokenSupply
+                      (this.props.project.tokenSupply *
+                        (1 - this.props.project.maintainerAllocation / 100))
                     ).toLocaleString("en")}
                   </h2>
                   <p>Total funds raised</p>

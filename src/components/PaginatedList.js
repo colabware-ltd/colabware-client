@@ -24,7 +24,10 @@ const PaginatedList = (props) => {
                         if (props.project) {
                           props.project(`/project/${item.name}`);
                         } else if (props.request) {
-                          props.request(true);
+                          props.setParentView({
+                            current: "request_view",
+                          });
+                          props.setSelectedRequest(item);
                         }
                       }}
                     >

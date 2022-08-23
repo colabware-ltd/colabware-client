@@ -1,6 +1,33 @@
 import { Card, Button, Form, InputGroup } from "react-bootstrap";
+import { useState } from "react";
+import axios from "axios";
 
 const NewRequest = (props) => {
+  let [request, updateRequest] = useState({
+    name: "",
+    description: "",
+    category: "",
+    bountyContributions: [],
+  });
+
+  let createRequest = () => {
+    let url = `http://127.0.0.1/api/user/project/${props.projectId}/request`;
+    let headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+    };
+    axios.post(url, request, headers).then(
+      (res) => {
+        console.log(res);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+    props.setParentView({
+      current: "request_list",
+    });
+  };
+
   return (
     <div>
       <p
@@ -8,7 +35,9 @@ const NewRequest = (props) => {
         className="secondary-text label-link"
         onClick={() => {
           console.log("Hello!");
-          props.newRequest(false);
+          props.setParentView({
+            current: "request_list",
+          });
         }}
       >
         &lsaquo; Back
@@ -18,14 +47,33 @@ const NewRequest = (props) => {
         <p>Submit a new feature or enhancement request for this project</p>
         <Form>
           <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Control type="title" placeholder="Title" />
+            <Form.Control
+              type="title"
+              placeholder="Title"
+              onChange={(e) => {
+                updateRequest((previous) => ({
+                  ...previous,
+                  name: e.target.value,
+                }));
+              }}
+            />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Select aria-label="Default select example">
+            <Form.Select
+              aria-label="Default select example"
+              onChange={(e) => {
+                updateRequest((previous) => ({
+                  ...previous,
+                  categories: [e.target.value],
+                }));
+              }}
+            >
               <option>Select the request type</option>
-              <option value="1">New feature</option>
-              <option value="2">Existing feature enhancement</option>
-              <option value="3">Bug fix</option>
+              <option value="New feature">New feature</option>
+              <option value="Existing feature enhancement">
+                Existing feature enhancement
+              </option>
+              <option value="Bug fix">Bug fix</option>
             </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -34,6 +82,12 @@ const NewRequest = (props) => {
               placeholder="Description"
               rows={3}
               style={{ marginBottom: "20px" }}
+              onChange={(e) => {
+                updateRequest((previous) => ({
+                  ...previous,
+                  description: e.target.value,
+                }));
+              }}
             />
           </Form.Group>
           <Form.Group>
@@ -48,10 +102,24 @@ const NewRequest = (props) => {
                 placeholder="1,000"
                 aria-label="1,000"
                 aria-describedby="basic-addon1"
+                onChange={(e) => {
+                  updateRequest((previous) => ({
+                    ...previous,
+                    bountyContributions: [
+                      {
+                        amount: parseFloat(e.target.value),
+                      },
+                    ],
+                  }));
+                }}
               />
             </InputGroup>
           </Form.Group>
-          <Button variant="primary" type="submit" style={{ marginTop: "10px" }}>
+          <Button
+            variant="primary"
+            style={{ marginTop: "10px" }}
+            onClick={createRequest}
+          >
             Submit
           </Button>
         </Form>
