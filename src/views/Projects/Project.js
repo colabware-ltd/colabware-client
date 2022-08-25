@@ -18,6 +18,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import ProjectRequests from "./Request/ProjectRequests";
 
+
 const Project = (props) => {
   const ref = useRef(null);
   let [view, setView] = useState({});
@@ -72,7 +73,7 @@ const Project = (props) => {
   };
 
   const getBalances = async (id) => {
-    let url = `http://127.0.0.1/api/project/${id}/balances`;
+    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/project/${id}/balances`;
     try {
       const res = await axios.get(url, {
         validateStatus: function (status) {
@@ -88,7 +89,7 @@ const Project = (props) => {
   };
 
   const getRequests = async (page, limit, id) => {
-    let url = `http://127.0.0.1/api/project/${id}/request/list?page=${page}&limit=${limit}`;
+    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/project/${id}/request/list?page=${page}&limit=${limit}`;
     if (page >= 1) {
       try {
         const res = await axios.get(url, {
@@ -109,7 +110,7 @@ const Project = (props) => {
 
   // TODO: Expose endpoint to retrieve total number of projects created so far
   const getProject = async () => {
-    let url = `http://127.0.0.1/api/project/${encodeURI(projectId)}`;
+    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/project/${encodeURI(projectId)}`;
     try {
       const res = await axios.get(url, {
         validateStatus: function (status) {

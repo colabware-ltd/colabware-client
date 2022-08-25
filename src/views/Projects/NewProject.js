@@ -7,6 +7,7 @@ import axios from "axios";
 import DoughnutChart from "../../components/DoughnutChart";
 import { useNavigate } from "react-router-dom";
 
+
 const NewProject = () => {
   let navigate = useNavigate();
   let [form, updateForm] = useState({
@@ -114,7 +115,7 @@ const NewProject = () => {
   };
 
   let launchProject = () => {
-    let url = "http://127.0.0.1/api/user/project";
+    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/project`;
     let data = {
       name: project.name,
       repository: project.repository,

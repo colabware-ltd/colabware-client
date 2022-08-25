@@ -2,6 +2,7 @@ import { Card, Button, Form, InputGroup } from "react-bootstrap";
 import { useState } from "react";
 import axios from "axios";
 
+
 const NewRequest = (props) => {
   let [request, updateRequest] = useState({
     name: "",
@@ -11,7 +12,7 @@ const NewRequest = (props) => {
   });
 
   let createRequest = () => {
-    let url = `http://127.0.0.1/api/user/project/${props.projectId}/request`;
+    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/project/${props.projectId}/request`;
     let headers = {
       "Content-Type": "application/x-www-form-urlencoded",
     };

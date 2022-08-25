@@ -6,6 +6,7 @@ import Footer from "../../components/Footer";
 import axios from "axios";
 import PaginatedList from "../../components/PaginatedList";
 
+
 const Browse = (props) => {
   let navigate = useNavigate();
 
@@ -36,7 +37,7 @@ const Browse = (props) => {
   ];
 
   const getProjects = async (page, limit) => {
-    let url = `http://127.0.0.1/api/project/list?page=${page}&limit=${limit}`;
+    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/project/list?page=${page}&limit=${limit}`;
     if (page >= 1) {
       try {
         const res = await axios.get(url, {

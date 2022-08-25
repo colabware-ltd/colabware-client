@@ -17,7 +17,7 @@ const App = () => {
   useEffect(() => {
     const getUser = async () => {
       // TODO: Update request URL
-      let url = "http://127.0.0.1/api/user/";
+      let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/`;
       try {
         const res = await axios.get(url, {
           validateStatus: function (status) {

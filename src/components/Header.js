@@ -6,11 +6,12 @@ import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+
 const Header = (props) => {
   let navigate = useNavigate();
 
   const loginHandler = async () => {
-    const url = `http://127.0.0.1/login`;
+    const url = `http://${process.env.REACT_APP_BACKEND_URL}/api/login`;
     try {
       let res = await axios.get(url);
       window.location.href = res.data.url;
@@ -20,7 +21,7 @@ const Header = (props) => {
   };
 
   const logoutHandler = async () => {
-    const url = `http://127.0.0.1/api/user/logout`;
+    const url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/logout`;
     try {
       let res = await axios.get(url);
       window.location.reload();
