@@ -15,7 +15,7 @@ class NewProjectForm extends Component {
   render() {
     return (
       <div>
-        {this.props.currentPage == 0 && (
+        {this.props.form.currentPage == 0 && (
           <Form>
             <h2>Create a new organisation</h2>
             <p>
@@ -50,30 +50,54 @@ class NewProjectForm extends Component {
                   />
                 </FloatingLabel>
               </Form.Group>
-              <Form.Group
-                className="mb-3"
-                controlId="newProject.projectRepository"
-              >
-                <FloatingLabel
-                  controlId="floatingInput"
-                  label="Repository URL *"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="github.com/my-test-project"
-                    value={this.props.project.repository}
-                    onChange={(e) => {
-                      this.props.updateProject((previous) => ({
-                        ...previous,
-                        repository: e.target.value,
-                      }));
-                    }}
-                    isInvalid={this.props.fieldInvalid.projectRepository}
-                  />
-                </FloatingLabel>
-              </Form.Group>
-
+              <Row>
+                <Form.Group as={Col} controlId="newProject.repositoryOwner">
+                  <FloatingLabel
+                    controlId="floatingInput"
+                    label="GitHub repository owner *"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="colabware"
+                      value={this.props.project.github.repoOwner}
+                      onChange={(e) => {
+                        this.props.updateProject((previous) => ({
+                          ...previous,
+                          github: {
+                            ...previous.github,
+                            repoOwner: e.target.value,
+                          },
+                        }));
+                      }}
+                      isInvalid={this.props.fieldInvalid.repositoryOwner}
+                    />
+                  </FloatingLabel>
+                </Form.Group>
+                <Form.Group as={Col} controlId="newProject.repositoryName">
+                  <FloatingLabel
+                    controlId="floatingInput"
+                    label="GitHub repository name *"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="my-project"
+                      value={this.props.project.github.repoName}
+                      onChange={(e) => {
+                        this.props.updateProject((previous) => ({
+                          ...previous,
+                          github: {
+                            ...previous.github,
+                            repoName: e.target.value,
+                          },
+                        }));
+                      }}
+                      isInvalid={this.props.fieldInvalid.repositoryName}
+                    />
+                  </FloatingLabel>
+                </Form.Group>
+              </Row>
               <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlTextarea1"
@@ -113,7 +137,7 @@ class NewProjectForm extends Component {
             </Form.Group>
           </Form>
         )}
-        {this.props.currentPage == 1 && (
+        {this.props.form.currentPage == 1 && (
           <Form>
             <h2>Fund your project</h2>
             <p>
@@ -136,12 +160,15 @@ class NewProjectForm extends Component {
                   >
                     <Form.Control
                       placeholder="Token name"
-                      value={this.props.project.tokenName}
+                      value={this.props.project.token.name}
                       isInvalid={this.props.fieldInvalid.tokenName}
                       onChange={(e) => {
                         this.props.updateProject((previous) => ({
                           ...previous,
-                          tokenName: e.target.value,
+                          token: {
+                            ...previous.token,
+                            name: e.target.value,
+                          },
                         }));
                       }}
                     />
@@ -155,13 +182,16 @@ class NewProjectForm extends Component {
                   >
                     <Form.Control
                       placeholder="MPT"
-                      value={this.props.project.tokenSymbol}
+                      value={this.props.project.token.symbol}
                       isInvalid={this.props.fieldInvalid.tokenSymbol}
                       onChange={(e) => {
                         e.target.value = e.target.value.toUpperCase();
                         this.props.updateProject((previous) => ({
                           ...previous,
-                          tokenSymbol: e.target.value,
+                          token: {
+                            ...previous.token,
+                            symbol: e.target.value,
+                          },
                         }));
                       }}
                     />
@@ -173,12 +203,15 @@ class NewProjectForm extends Component {
                     <Form.Control
                       type="number"
                       placeholder="Token price"
-                      value={this.props.project.tokenPrice}
+                      value={this.props.project.token.price}
                       isInvalid={this.props.fieldInvalid.tokenPrice}
                       onChange={(e) => {
                         this.props.updateProject((previous) => ({
                           ...previous,
-                          tokenPrice: e.target.value,
+                          token: {
+                            ...previous.token,
+                            price: e.target.value,
+                          },
                         }));
                       }}
                     />
@@ -201,15 +234,18 @@ class NewProjectForm extends Component {
                   <Form.Control
                     type="number"
                     placeholder="1,000,000"
-                    value={this.props.project.tokenSupply}
+                    value={this.props.project.token.totalSupply}
                     isInvalid={this.props.fieldInvalid.tokenSupply}
                     onChange={(e) => {
                       this.props.updateProject((previous) => ({
                         ...previous,
-                        tokenSupply: e.target.value,
-                        maintainerSupply:
-                          (this.props.project.maintainerAllocation / 100) *
-                          e.target.value,
+                        token: {
+                          ...previous.token,
+                          totalSupply: e.target.value,
+                          maintainerSupply:
+                            (this.props.form.maintainerAllocation / 100) *
+                            e.target.value,
+                        },
                       }));
                     }}
                   />
@@ -221,15 +257,21 @@ class NewProjectForm extends Component {
                     <Form.Control
                       type="number"
                       placeholder="20"
-                      value={this.props.project.maintainerAllocation}
+                      value={this.props.form.maintainerAllocation}
                       isInvalid={this.props.fieldInvalid.maintainerAllocation}
                       onChange={(e) => {
-                        this.props.updateProject((previous) => ({
+                        this.props.updateForm((previous) => ({
                           ...previous,
                           maintainerAllocation: e.target.value,
-                          maintainerSupply:
-                            (e.target.value / 100) *
-                            this.props.project.tokenSupply,
+                        }));
+                        this.props.updateProject((previous) => ({
+                          ...previous,
+                          token: {
+                            ...previous.token,
+                            maintainerSupply:
+                              (e.target.value / 100) *
+                              this.props.project.token.totalSupply,
+                          },
                         }));
                       }}
                     />
@@ -250,9 +292,9 @@ class NewProjectForm extends Component {
                   <h2>
                     $
                     {(
-                      this.props.project.tokenPrice *
-                      (this.props.project.tokenSupply *
-                        (1 - this.props.project.maintainerAllocation / 100))
+                      this.props.project.token.price *
+                      (this.props.project.token.totalSupply *
+                        (1 - this.props.form.maintainerAllocation / 100))
                     ).toLocaleString("en")}
                   </h2>
                   <p>Total funds raised</p>
@@ -261,7 +303,9 @@ class NewProjectForm extends Component {
               <Col sm={6}>
                 <Card className="card-content">
                   <h2>
-                    {this.props.project.maintainerSupply.toLocaleString("en")}{" "}
+                    {this.props.project.token.maintainerSupply.toLocaleString(
+                      "en"
+                    )}{" "}
                   </h2>
                   <p>Reserved maintainer tokens</p>
                 </Card>
@@ -269,7 +313,7 @@ class NewProjectForm extends Component {
             </Row>
           </Form>
         )}
-        {this.props.currentPage == 2 && (
+        {this.props.form.currentPage == 2 && (
           <Form>
             <h2>Review your project</h2>
             <p>
@@ -313,10 +357,22 @@ class NewProjectForm extends Component {
                         </Row>
                         <Row>
                           <Col sm={3}>
-                            <p className="field-label">Repository URL</p>
+                            <p className="field-label">
+                              GitHub repository owner
+                            </p>
                           </Col>
                           <Col sm={9}>
-                            <p>{this.props.project.repository}</p>
+                            <p>{this.props.project.github.repoOwner}</p>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col sm={3}>
+                            <p className="field-label">
+                              GitHub repository name
+                            </p>
+                          </Col>
+                          <Col sm={9}>
+                            <p>{this.props.project.github.repoName}</p>
                           </Col>
                         </Row>
                         <Row>
@@ -334,7 +390,7 @@ class NewProjectForm extends Component {
                             <p className="field-label">Token name</p>
                           </Col>
                           <Col sm={9}>
-                            <p>{this.props.project.tokenName}</p>
+                            <p>{this.props.project.token.name}</p>
                           </Col>
                         </Row>
                         <Row>
@@ -342,7 +398,7 @@ class NewProjectForm extends Component {
                             <p className="field-label">Token symbol</p>
                           </Col>
                           <Col sm={9}>
-                            <p>{this.props.project.tokenSupply}</p>
+                            <p>{this.props.project.token.symbol}</p>
                           </Col>
                         </Row>
                         <Row>
@@ -350,7 +406,7 @@ class NewProjectForm extends Component {
                             <p className="field-label">Token price</p>
                           </Col>
                           <Col sm={9}>
-                            <p>USD${this.props.project.tokenPrice}</p>
+                            <p>USD${this.props.project.token.price}</p>
                           </Col>
                         </Row>
                         <Row>
@@ -358,15 +414,15 @@ class NewProjectForm extends Component {
                             <p className="field-label">Token supply</p>
                           </Col>
                           <Col sm={9}>
-                            <p>{this.props.project.tokenSupply}</p>
+                            <p>{this.props.project.token.totalSupply}</p>
                           </Col>
                         </Row>
                         <Row>
                           <Col sm={3}>
-                            <p className="field-label">Maintainer allocation</p>
+                            <p className="field-label">Maintainer supply</p>
                           </Col>
                           <Col sm={9}>
-                            <p>{this.props.project.maintainerAllocation}%</p>
+                            <p>{this.props.project.token.maintainerSupply}</p>
                           </Col>
                         </Row>
                       </Tab.Pane>
