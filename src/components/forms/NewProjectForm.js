@@ -8,6 +8,7 @@ import {
   Nav,
   Tab,
   FloatingLabel,
+  Alert,
 } from "react-bootstrap";
 import DropdownMultiselect from "react-multiselect-dropdown-bootstrap";
 
@@ -98,6 +99,13 @@ class NewProjectForm extends Component {
                   </FloatingLabel>
                 </Form.Group>
               </Row>
+              {this.props.form.error != "" && (
+                <Row>
+                  <Form.Group>
+                    <Alert variant="danger">{this.props.form.error}</Alert>
+                  </Form.Group>
+                </Row>
+              )}
               <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlTextarea1"

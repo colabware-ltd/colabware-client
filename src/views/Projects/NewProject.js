@@ -13,6 +13,7 @@ const NewProject = () => {
     currentPage: 0,
     progress: "0%",
     maintainerAllocation: 20,
+    error: "",
   });
   let [project, updateProject] = useState({
     name: "",
@@ -52,6 +53,23 @@ const NewProject = () => {
     ],
   };
 
+  const getProject = async () => {
+    const url = `https://api.github.com/repos/${project.github.repoOwner}/${project.github.repoName}`;
+    // const headers = {
+    //   Accept: "application/vnd.github+json",
+    // };
+    try {
+      const res = await axios.get(url, {
+        validateStatus: function (status) {
+          return (status >= 200 && status <= 302) || status == 404;
+        },
+      });
+      return res;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   let nextStep = () => {
     switch (form.currentPage) {
       case 0:
@@ -62,27 +80,41 @@ const NewProject = () => {
           project.github.repoName == "" ? true : false;
 
         // TODO: Make request to GitHub API to validate repo details
-
-        updateFieldInvalid({
-          projectName: projectNameInvalid,
-          repositoryOwner: repositoryOwnerInvalid,
-          repositoryName: repositoryNameInvalid,
+        getProject().then((data) => {
+          if (data.status == 404) {
+            repositoryNameInvalid = true;
+            repositoryOwnerInvalid = true;
+            updateForm((previous) => ({
+              ...previous,
+              error:
+                "Please ensure the details of your GitHub repository have been entered correctly.",
+            }));
+          } else {
+            repositoryNameInvalid = false;
+            repositoryOwnerInvalid = false;
+            updateForm((previous) => ({
+              ...previous,
+              error: "",
+            }));
+          }
+          updateFieldInvalid({
+            projectName: projectNameInvalid,
+            repositoryOwner: repositoryOwnerInvalid,
+            repositoryName: repositoryNameInvalid,
+          });
+          if (
+            !projectNameInvalid &&
+            !repositoryNameInvalid &&
+            !repositoryOwnerInvalid
+          ) {
+            updateForm((previous) => ({
+              ...previous,
+              currentPage: form.currentPage + 1,
+              progress:
+                Math.floor(((form.currentPage + 1) / 3) * 100).toString() + "%",
+            }));
+          }
         });
-
-        if (
-          !projectNameInvalid &&
-          !repositoryNameInvalid &&
-          !repositoryOwnerInvalid
-        ) {
-          updateForm((previous) => ({
-            ...previous,
-            currentPage: form.currentPage + 1,
-            progress:
-              Math.floor(((form.currentPage + 1) / 3) * 100).toString() + "%",
-          }));
-        }
-
-        console.log(project);
         break;
 
       case 1:
@@ -116,8 +148,6 @@ const NewProject = () => {
               Math.floor(((form.currentPage + 1) / 3) * 100).toString() + "%",
           }));
         }
-        console.log(project);
-
         break;
     }
   };
