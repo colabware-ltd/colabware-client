@@ -24,6 +24,8 @@ const NewProject = () => {
     description: "",
     categories: [""],
     maintainers: [""],
+    requests: [""],
+    roadmap: [""],
     token: {
       name: "",
       symbol: "",

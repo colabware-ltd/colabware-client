@@ -65,6 +65,11 @@ const ProjectRequests = (props) => {
           ref={ref}
           setParentView={setView}
           projectId={props.projectId}
+          project={props.project}
+          stripeOptions={props.stripeOptions}
+          stripePromise={props.stripePromise}
+          stripeClientSecret={props.stripeClientSecret}
+          setStripeClientSecret={props.setStripeClientSecret}
         />
       )}
       {view.current == "request_view" && (

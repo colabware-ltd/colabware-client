@@ -249,7 +249,7 @@ class NewProjectForm extends Component {
                         ...previous,
                         token: {
                           ...previous.token,
-                          totalSupply: e.target.value,
+                          totalSupply: parseInt(e.target.value),
                           maintainerSupply:
                             (this.props.form.maintainerAllocation / 100) *
                             e.target.value,

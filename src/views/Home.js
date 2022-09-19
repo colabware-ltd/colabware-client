@@ -1,4 +1,4 @@
-import { Container, Row } from "react-bootstrap";
+import { Button, Container, Row, Col } from "react-bootstrap";
 import Header from "../components/Header";
 
 const Home = (props) => {
@@ -7,14 +7,16 @@ const Home = (props) => {
       return <h3>Welcome to Colabware</h3>;
     } else {
       return (
-        <Row>
-          <h3>
-            Welcome back,{" "}
-            <span style={{ fontWeight: "bold" }}>
-              {props.user.current.email}
-            </span>
-          </h3>
-        </Row>
+        <div>
+          <Row>
+            <h3>
+              Welcome back,{" "}
+              <span style={{ fontWeight: "bold" }}>
+                @{props.user.current.login}
+              </span>
+            </h3>
+          </Row>
+        </div>
       );
     }
   };
