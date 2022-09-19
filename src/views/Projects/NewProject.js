@@ -7,29 +7,37 @@ import axios from "axios";
 import DoughnutChart from "../../components/DoughnutChart";
 import { useNavigate } from "react-router-dom";
 
-
 const NewProject = () => {
   let navigate = useNavigate();
   let [form, updateForm] = useState({
     currentPage: 0,
     progress: "0%",
+    maintainerAllocation: 20,
+    error: "",
   });
   let [project, updateProject] = useState({
     name: "",
-    repository: "",
+    github: {
+      repoOwner: "",
+      repoName: "",
+    },
     description: "",
     categories: [""],
     maintainers: [""],
-    tokenName: "",
-    tokenSymbol: "",
-    tokenPrice: 1, // Integer
-    tokenSupply: 1000, // Integer
-    maintainerSupply: 200, // Integer
-    maintainerAllocation: 20,
+    requests: [""],
+    roadmap: [""],
+    token: {
+      name: "",
+      symbol: "",
+      price: 1.0,
+      totalSupply: 1000,
+      maintainerSupply: 200,
+    },
   });
   let [fieldInvalid, updateFieldInvalid] = useState({
     projectName: false,
-    projectRepository: false,
+    repositoryOwner: false,
+    repositoryName: false,
     tokenName: false,
     tokenSymbol: false,
     tokenPrice: false,
@@ -47,35 +55,78 @@ const NewProject = () => {
     ],
   };
 
+  const getProject = async () => {
+    const url = `https://api.github.com/repos/${project.github.repoOwner}/${project.github.repoName}`;
+    // const headers = {
+    //   Accept: "application/vnd.github+json",
+    // };
+    try {
+      const res = await axios.get(url, {
+        validateStatus: function (status) {
+          return (status >= 200 && status <= 302) || status == 404;
+        },
+      });
+      return res;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   let nextStep = () => {
     switch (form.currentPage) {
       case 0:
         var projectNameInvalid = project.name == "" ? true : false;
-        var projectRepositoryInvalid = project.repository == "" ? true : false;
+        var repositoryOwnerInvalid =
+          project.github.repoOwner == "" ? true : false;
+        var repositoryNameInvalid =
+          project.github.repoName == "" ? true : false;
 
-        updateFieldInvalid({
-          projectName: projectNameInvalid,
-          projectRepository: projectRepositoryInvalid,
-        });
-
-        if (!projectNameInvalid && !projectRepositoryInvalid) {
-          updateForm({
-            currentPage: form.currentPage + 1,
-            progress:
-              Math.floor(((form.currentPage + 1) / 3) * 100).toString() + "%",
+        // TODO: Make request to GitHub API to validate repo details
+        getProject().then((data) => {
+          if (data.status == 404) {
+            repositoryNameInvalid = true;
+            repositoryOwnerInvalid = true;
+            updateForm((previous) => ({
+              ...previous,
+              error:
+                "Please ensure the details of your GitHub repository have been entered correctly.",
+            }));
+          } else {
+            repositoryNameInvalid = false;
+            repositoryOwnerInvalid = false;
+            updateForm((previous) => ({
+              ...previous,
+              error: "",
+            }));
+          }
+          updateFieldInvalid({
+            projectName: projectNameInvalid,
+            repositoryOwner: repositoryOwnerInvalid,
+            repositoryName: repositoryNameInvalid,
           });
-        }
-
-        console.log(project);
+          if (
+            !projectNameInvalid &&
+            !repositoryNameInvalid &&
+            !repositoryOwnerInvalid
+          ) {
+            updateForm((previous) => ({
+              ...previous,
+              currentPage: form.currentPage + 1,
+              progress:
+                Math.floor(((form.currentPage + 1) / 3) * 100).toString() + "%",
+            }));
+          }
+        });
         break;
 
       case 1:
-        var tokenNameInvalid = project.tokenName == "" ? true : false;
-        var tokenSymbolInvalid = project.tokenSymbol == "" ? true : false;
-        var tokenPriceInvalid = project.tokenPrice == null ? true : false;
-        var tokenSupplyInvalid = project.tokenSupply == null ? true : false;
+        var tokenNameInvalid = project.token.name == "" ? true : false;
+        var tokenSymbolInvalid = project.token.symbol == "" ? true : false;
+        var tokenPriceInvalid = project.token.price == null ? true : false;
+        var tokenSupplyInvalid =
+          project.token.totalSupply == null ? true : false;
         var maintainerAllocationInvalid =
-          project.maintainerAllocation == null ? true : false;
+          form.maintainerAllocation == null ? true : false;
 
         updateFieldInvalid({
           tokenName: tokenNameInvalid,
@@ -92,47 +143,34 @@ const NewProject = () => {
           !tokenSupplyInvalid &&
           !maintainerAllocationInvalid
         ) {
-          updateForm({
+          updateForm((previous) => ({
+            ...previous,
             currentPage: form.currentPage + 1,
             progress:
               Math.floor(((form.currentPage + 1) / 3) * 100).toString() + "%",
-          });
+          }));
         }
-        console.log(project);
-
         break;
     }
   };
 
   let prevStep = () => {
     if (form.currentPage > 0) {
-      updateForm({
+      updateForm((previous) => ({
+        ...previous,
         currentPage: form.currentPage - 1,
         progress:
           Math.floor(((form.currentPage - 1) / 3) * 100).toString() + "%",
-      });
+      }));
     }
   };
 
   let launchProject = () => {
     let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/project`;
-    let data = {
-      name: project.name,
-      repository: project.repository,
-      description: project.description,
-      categories: project.categories,
-      token: {
-        name: project.tokenName,
-        symbol: project.tokenSymbol,
-        price: parseInt(project.tokenPrice),
-        totalSupply: parseInt(project.tokenSupply),
-        maintainerSupply: parseInt(project.maintainerSupply),
-      },
-    };
     let headers = {
       "Content-Type": "application/x-www-form-urlencoded",
     };
-    axios.post(url, data, headers).then(
+    axios.post(url, project, headers).then(
       (res) => {
         console.log(res);
         navigate(`/project/${encodeURI(res.data.name)}`);
@@ -177,7 +215,8 @@ const NewProject = () => {
                   classNames="fade"
                 >
                   <NewProjectForm
-                    currentPage={form.currentPage}
+                    form={form}
+                    updateForm={updateForm}
                     project={project}
                     updateProject={updateProject}
                     fieldInvalid={fieldInvalid}

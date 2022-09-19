@@ -18,7 +18,6 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import ProjectRequests from "./Request/ProjectRequests";
 
-
 const Project = (props) => {
   const ref = useRef(null);
   let [view, setView] = useState({});
@@ -32,7 +31,10 @@ const Project = (props) => {
     name: "",
     categories: ["", ""],
     description: "",
-    repository: "",
+    github: {
+      repoowner: "",
+      reponame: "",
+    },
     token: {
       name: "",
       symbol: "",
@@ -110,7 +112,9 @@ const Project = (props) => {
 
   // TODO: Expose endpoint to retrieve total number of projects created so far
   const getProject = async () => {
-    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/project/${encodeURI(projectId)}`;
+    let url = `http://${
+      process.env.REACT_APP_BACKEND_URL
+    }/api/project/${encodeURI(projectId)}`;
     try {
       const res = await axios.get(url, {
         validateStatus: function (status) {
@@ -249,6 +253,11 @@ const Project = (props) => {
               getRequests={getRequests}
               requests={requests}
               projectId={project._id}
+              project={project}
+              stripeOptions={props.stripeOptions}
+              stripePromise={props.stripePromise}
+              stripeClientSecret={props.stripeClientSecret}
+              setStripeClientSecret={props.setStripeClientSecret}
             />
           </Tab>
           <Tab eventKey="roadmap" title="Roadmap" disabled>
