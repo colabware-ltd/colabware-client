@@ -8,6 +8,8 @@ import {
   Row,
   Tab,
   Tabs,
+  Modal,
+  Form,
 } from "react-bootstrap";
 import Header from "../../components/Header";
 import projectImg from "../../assets/project.png";
@@ -17,9 +19,21 @@ import "../../App.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import ProjectRequests from "./Request/ProjectRequests";
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from "../../components/forms/CheckoutForm";
 
 const Project = (props) => {
   const ref = useRef(null);
+  let [payment, setPayment] = useState(false);
+  const handleClosePayment = () => {
+    setPayment(false);
+  };
+  const handleShowPayment = () => setPayment(true);
+  let [transaction, setTransaction] = useState({
+    tokens: 1,
+    project: "",
+    type: "token",
+  });
   let [view, setView] = useState({});
   let { projectId } = useParams();
   let [requests, setRequests] = useState({
@@ -123,12 +137,32 @@ const Project = (props) => {
       });
       if (res.status == 302) {
         setProject(res.data);
+        setTransaction((previous) => ({
+          ...previous,
+          project: res.data._id,
+        }));
         getRequests(1, 10, res.data._id);
         getBalances(res.data.projectaddress);
       }
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const createPaymentIntent = () => {
+    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/payment-intent`;
+    let headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+    };
+    axios.post(url, transaction, headers).then(
+      (res) => {
+        props.setStripeClientSecret(res.data.clientSecret);
+        handleShowPayment();
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   };
 
   useEffect(() => {
@@ -190,17 +224,21 @@ const Project = (props) => {
                     </div>
                   </Col>
                 </Row>
-                <Button
-                  variant="outline-secondary"
+                <Form.Control
+                  type="number"
+                  placeholder="Tokens"
                   className="margin-btm-sm"
-                  onClick={() => {
-                    // newRequest(true);
-                    // ref.current?.scrollIntoView({ behavior: "smooth" });
+                  value={transaction.tokens}
+                  onChange={(e) => {
+                    setTransaction((previous) => ({
+                      ...previous,
+                      tokens: parseInt(e.target.value),
+                    }));
                   }}
-                >
-                  Submit a request
+                />
+                <Button onClick={createPaymentIntent}>
+                  Purchase {project.token.symbol}
                 </Button>
-                <Button>Purchase {project.token.symbol}</Button>
               </Card>
             </Col>
           </Row>
@@ -285,6 +323,22 @@ const Project = (props) => {
         </Tabs>
       </Container>
       <Footer />
+      <Modal show={payment} onHide={handleClosePayment}>
+        <div style={{ padding: "40px" }}>
+          {props.stripeClientSecret && (
+            <Elements
+              options={props.stripeOptions}
+              stripe={props.stripePromise}
+            >
+              <CheckoutForm
+                returnUrl={`http://localhost:3000/project/${encodeURIComponent(
+                  project.name
+                )}`}
+              />
+            </Elements>
+          )}
+        </div>
+      </Modal>
     </div>
   );
 };
