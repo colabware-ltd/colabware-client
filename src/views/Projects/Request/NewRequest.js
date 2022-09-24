@@ -32,7 +32,7 @@ const NewRequest = (props) => {
   let [request, updateRequest] = useState({
     name: "",
     description: "",
-    type: "",
+    categories: [],
     github: {
       repoOwner: "",
       repoName: "",
@@ -111,7 +111,7 @@ const NewRequest = (props) => {
               onChange={(e) => {
                 updateRequest((previous) => ({
                   ...previous,
-                  type: e.target.value,
+                  categories: [e.target.value],
                 }));
               }}
             >
