@@ -4,6 +4,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import Spinner from "react-bootstrap/Spinner";
 
 const CheckoutForm = (props) => {
   const stripe = useStripe();
@@ -83,12 +84,30 @@ const CheckoutForm = (props) => {
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" />
-      <button disabled={isLoading || !stripe || !elements} id="submit">
+      <button
+        disabled={isLoading || !stripe || !elements}
+        style={{ width: "100%", marginTop: "30px" }}
+        className="btn btn-primary"
+        id="submit"
+      >
         <span id="button-text">
           {isLoading ? (
-            <div className="spinner" id="spinner"></div>
+            <Spinner animation="border" variant="light" />
           ) : (
-            "Complete payment"
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-lock"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" />
+              </svg>
+              {"  "}
+              Complete payment
+            </span>
           )}
         </span>
       </button>

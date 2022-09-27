@@ -77,11 +77,18 @@ const ViewRequest = (props) => {
             </Row>
             <Row style={{ marginTop: "5px" }}>
               <Col>
-                <span>Created by </span>
+                <span>
+                  Created by <b>@{props.request.creatorname}</b>
+                </span>
               </Col>
               <Col>
                 <span>
                   Created on <b>{props.request.created.split("T")[0]}</b>
+                </span>
+              </Col>
+              <Col>
+                <span>
+                  Expires on <b>{props.request.expiry.split("T")[0]}</b>
                 </span>
               </Col>
             </Row>
@@ -90,7 +97,16 @@ const ViewRequest = (props) => {
             </Row>
             <Row style={{ marginTop: "20px" }}>
               <Col>
-                <Button variant="outline-secondary">View in GitHub</Button>
+                <Button
+                  variant="outline-secondary"
+                  onClick={() => {
+                    window.open(
+                      `https://github.com/${props.project.github.repoowner}/${props.project.github.reponame}/issues/${props.request.githubissue}`
+                    );
+                  }}
+                >
+                  View in GitHub
+                </Button>
               </Col>
               <Col style={{ textAlign: "right" }}>
                 <Button>Complete request</Button>
