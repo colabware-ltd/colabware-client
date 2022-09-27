@@ -73,7 +73,15 @@ const ProjectRequests = (props) => {
         />
       )}
       {view.current == "request_view" && (
-        <ViewRequest setParentView={setView} request={selectedRequest} />
+        <ViewRequest
+          setParentView={setView}
+          request={selectedRequest}
+          project={props.project}
+          stripeOptions={props.stripeOptions}
+          stripePromise={props.stripePromise}
+          stripeClientSecret={props.stripeClientSecret}
+          setStripeClientSecret={props.setStripeClientSecret}
+        />
       )}
     </div>
   );

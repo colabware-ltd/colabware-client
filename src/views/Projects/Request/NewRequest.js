@@ -12,9 +12,14 @@ import { useState } from "react";
 import axios from "axios";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../../../components/forms/CheckoutForm";
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const NewRequest = (props) => {
+  const defaultExpiry = new Date();
+  defaultExpiry.setDate(defaultExpiry.getDate() + 7);
   let [payment, setPayment] = useState(false);
+  const [startDate, setStartDate] = useState(defaultExpiry);
   const handleClosePayment = () => {
     setPayment(false);
     props.setParentView({
@@ -32,7 +37,8 @@ const NewRequest = (props) => {
   let [request, updateRequest] = useState({
     name: "",
     description: "",
-    type: "",
+    categories: [],
+    expiry: defaultExpiry.toISOString(),
     github: {
       repoOwner: "",
       repoName: "",
@@ -111,7 +117,7 @@ const NewRequest = (props) => {
               onChange={(e) => {
                 updateRequest((previous) => ({
                   ...previous,
-                  type: e.target.value,
+                  categories: [e.target.value],
                 }));
               }}
             >
@@ -139,27 +145,56 @@ const NewRequest = (props) => {
               }}
             />
           </Form.Group>
-          <Form.Group style={{ marginBottom: "40px" }}>
-            <h5>Set a bounty</h5>
-            <p>
-              Attach a starting bounty to attract project contributors to your
-              request
-            </p>
-            <InputGroup className="mb-3">
-              <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
-              <Form.Control
-                placeholder="1,000"
-                aria-label="1,000"
-                aria-describedby="basic-addon1"
-                onChange={(e) => {
-                  setTransaction((previous) => ({
-                    ...previous,
-                    amount: parseFloat(e.target.value),
-                  }));
-                }}
-              />
-            </InputGroup>
-          </Form.Group>
+          <Row>
+            <Col>
+              {" "}
+              <Form.Group style={{ marginBottom: "40px" }}>
+                <h5>Set a bounty</h5>
+                <p>
+                  Attach a starting bounty to attract project contributors to
+                  your request
+                </p>
+                <InputGroup className="mb-3">
+                  <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
+                  <Form.Control
+                    placeholder="1,000"
+                    aria-label="1,000"
+                    aria-describedby="basic-addon1"
+                    onChange={(e) => {
+                      setTransaction((previous) => ({
+                        ...previous,
+                        amount: parseFloat(e.target.value),
+                      }));
+                    }}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col>
+              {" "}
+              <Form.Group style={{ marginBottom: "40px" }}>
+                <h5>Set an expiry date</h5>
+                <p>
+                  Set a date after which your project request will expire, and
+                  all contributed funds are refunded
+                </p>
+                <InputGroup className="mb-3">
+                  <ReactDatePicker
+                    className="form-control"
+                    selected={startDate}
+                    onChange={(date) => {
+                      updateRequest((previous) => ({
+                        ...previous,
+                        expiry: date.toISOString(),
+                      }));
+                      setStartDate(date);
+                    }}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+          </Row>
+
           <Form.Group style={{ marginBottom: "40px" }}>
             <h5>Merge options</h5>
             <p>

@@ -1,10 +1,23 @@
-import { Row, Col, Badge } from "react-bootstrap";
+import { Row, Col, Badge, Card } from "react-bootstrap";
 import PaginationComponent from "./Pagination";
 import { useNavigate } from "react-router-dom";
 
 const PaginatedList = (props) => {
   return (
     <div>
+      {props.data.results == null && (
+        <div>
+          <h3
+            style={{
+              textAlign: "center",
+              marginTop: "70px",
+              marginBottom: "70px",
+            }}
+          >
+            No results found
+          </h3>
+        </div>
+      )}
       <div>
         {props.data.results != null &&
           props.data.results.map((item, id) => {
