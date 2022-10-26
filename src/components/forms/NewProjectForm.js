@@ -218,10 +218,11 @@ class NewProjectForm extends Component {
                           ...previous,
                           token: {
                             ...previous.token,
-                            price: e.target.value,
+                            price: parseInt(e.target.value),
                           },
                         }));
                       }}
+                      s
                     />
                   </InputGroup>
                 </Col>

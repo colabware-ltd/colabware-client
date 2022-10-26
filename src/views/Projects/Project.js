@@ -142,7 +142,7 @@ const Project = (props) => {
           project: res.data._id,
         }));
         getRequests(1, 10, res.data._id);
-        getBalances(res.data.projectaddress);
+        getBalances(res.data.projectAddress);
       }
     } catch (err) {
       console.log(err);
@@ -214,8 +214,8 @@ const Project = (props) => {
                     <div className="text-align-center">
                       <h2>
                         {Math.round(
-                          (project.token.maintainersupply /
-                            project.token.totalsupply) *
+                          (token.maintainerReserved /
+                            (token.maintainerBalance + token.investorBalance)) *
                             100
                         )}
                         %
@@ -296,6 +296,7 @@ const Project = (props) => {
               stripePromise={props.stripePromise}
               stripeClientSecret={props.stripeClientSecret}
               setStripeClientSecret={props.setStripeClientSecret}
+              user={props.user}
             />
           </Tab>
           <Tab eventKey="roadmap" title="Roadmap" disabled>
