@@ -81,6 +81,7 @@ const ProjectRequests = (props) => {
           stripePromise={props.stripePromise}
           stripeClientSecret={props.stripeClientSecret}
           setStripeClientSecret={props.setStripeClientSecret}
+          user={props.user}
         />
       )}
     </div>
