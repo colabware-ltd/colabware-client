@@ -21,6 +21,7 @@ import axios from "axios";
 import ProjectRequests from "./Request/ProjectRequests";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../../components/forms/CheckoutForm";
+import TokenPreview from "../../components/TokenPreview";
 
 const Project = (props) => {
   const ref = useRef(null);
@@ -58,9 +59,9 @@ const Project = (props) => {
     },
   });
   let [token, setToken] = useState({
-    investorBalance: 0,
-    maintainerBalance: 0,
-    maintainerReserved: 0,
+    investorBalance: null,
+    maintainerBalance: null,
+    maintainerReserved: null,
   });
 
   let chartData = {
@@ -198,48 +199,11 @@ const Project = (props) => {
               </div>
             </Col>
             <Col xs={4} className="my-auto">
-              <Card id="project-header-card" className="card-content">
-                <Row className="content-margin">
-                  <Col>
-                    <div className="text-align-center">
-                      <h2>
-                        {(
-                          token.maintainerBalance - token.maintainerReserved
-                        ).toLocaleString("en")}
-                      </h2>
-                      <p>{project.token.symbol} available</p>
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className="text-align-center">
-                      <h2>
-                        {Math.round(
-                          (token.maintainerReserved /
-                            (token.maintainerBalance + token.investorBalance)) *
-                            100
-                        )}
-                        %
-                      </h2>
-                      <p>Maintainer control</p>
-                    </div>
-                  </Col>
-                </Row>
-                <Form.Control
-                  type="number"
-                  placeholder="Tokens"
-                  className="margin-btm-sm"
-                  value={transaction.tokens}
-                  onChange={(e) => {
-                    setTransaction((previous) => ({
-                      ...previous,
-                      tokens: parseInt(e.target.value),
-                    }));
-                  }}
-                />
-                <Button onClick={createPaymentIntent}>
-                  Purchase {project.token.symbol}
-                </Button>
-              </Card>
+              <TokenPreview
+                token={token}
+                setTransaction={setTransaction}
+                transaction={transaction}
+              />
             </Col>
           </Row>
         </Container>
