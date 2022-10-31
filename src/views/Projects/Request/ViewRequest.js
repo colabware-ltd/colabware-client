@@ -244,7 +244,7 @@ const ViewRequest = (props) => {
                           Submission by <b>@{item.creator_name}</b>
                         </Col>
                         <Col style={{ textAlign: "center" }}>
-                          <b>{(item.contribution_total/props.request.contribution_total) * 100}%</b> pledged{" "}
+                          <b>{Math.round((item.contribution_total/props.request.contribution_total) * 100)}%</b> pledged{" "}
                           <OverlayTrigger
                             placement="bottom"
                             overlay={

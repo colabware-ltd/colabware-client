@@ -6,13 +6,11 @@ import {
   Row,
   Col,
   Modal,
-  Alert,
 } from "react-bootstrap";
 import { useState } from "react";
 import axios from "axios";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../../../components/forms/CheckoutForm";
-import GitHubBranch from "../../../components/GitHubBranch"
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -40,16 +38,8 @@ const NewRequest = (props) => {
     description: "",
     categories: [],
     expiry: defaultExpiry.toISOString(),
-    // github_fork: props.project.github.forks[0],
-    // github_branch: {
-    //   name: ""
-    // },
     contributions: [],
     status: "open",
-  });
-  const [form, setForm] = useState({
-    repositoryValid: true,
-    error: "",
   });
 
   let createRequest = () => {
@@ -66,9 +56,6 @@ const NewRequest = (props) => {
         console.log(err);
       }
     );
-    // props.setParentView({
-    //   current: "request_list",
-    // });
   };
 
   const createPaymentIntent = () => {
@@ -200,28 +187,6 @@ const NewRequest = (props) => {
               </Form.Group>
             </Col>
           </Row>
-
-          {/* <Form.Group style={{ marginBottom: "40px" }}>
-            <h5>Merge options</h5>
-            <p>
-              Specify a fork where you would like the requested changes merged
-            </p>
-            <Row>
-              <GitHubBranch project={props.project} request={request} setRequest={setRequest} />
-            </Row>
-            <p style={{ fontWeight: "600" }}>
-              If no fork is specified, any changes made as part of your feature
-              request will only be merged into the original project, subject to
-              a vote by token holders.
-            </p>
-            {!form.repositoryValid && (
-              <Row>
-                <Form.Group>
-                  <Alert variant="danger">{form.error}</Alert>
-                </Form.Group>
-              </Row>
-            )}
-          </Form.Group> */}
           <Button variant="primary" onClick={createRequest}>
             Submit
           </Button>
