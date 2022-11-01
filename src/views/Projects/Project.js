@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import {
   Badge,
-  Button,
   Card,
   Col,
   Container,
@@ -9,12 +8,10 @@ import {
   Tab,
   Tabs,
   Modal,
-  Form,
 } from "react-bootstrap";
 import Header from "../../components/Header";
 import projectImg from "../../assets/project.png";
 import Footer from "../../components/Footer";
-import DoughnutChart from "../../components/DoughnutChart";
 import "../../App.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -22,6 +19,7 @@ import ProjectRequests from "./Request/ProjectRequests";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../../components/forms/CheckoutForm";
 import TokenPreview from "../../components/TokenPreview";
+import TokenDistribution from "../../components/TokenDistribution";
 
 const Project = (props) => {
   const ref = useRef(null);
@@ -63,31 +61,6 @@ const Project = (props) => {
     maintainerBalance: null,
     maintainerReserved: null,
   });
-
-  let chartData = {
-    labels: ["Tokens available", "Tokens reserved", "Tokens purchased"],
-    datasets: [
-      {
-        label: "# of Votes",
-        data: [
-          token.maintainerBalance - token.maintainerReserved,
-          token.maintainerReserved,
-          token.investorBalance,
-        ],
-        backgroundColor: [
-          "rgba(75, 192, 192, 0.5)",
-          "rgba(75, 192, 192, 0.25)",
-          "rgba(255, 99, 132, 0.1)",
-        ],
-        borderColor: [
-          "rgba(75, 192, 192, 1)",
-          "rgba(75, 192, 192, .5)",
-          "rgba(255, 99, 132, .5)",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
 
   const getBalances = async (id) => {
     let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/project/${id}/balances`;
@@ -223,12 +196,42 @@ const Project = (props) => {
             <Row>
               <Col xs={8} className="container-divided">
                 <Card className="full-length margin-btm-md card-content">
-                  <h3>Token overview</h3>
-                  <p>See an overview of the token sold for this project.</p>
+                  <h4>Funding and finances</h4>
+                  <p>
+                    Overview of this project's finances and funding activity
+                  </p>
+                  <Row style={{ textAlign: "center", marginTop: "20px" }}>
+                    <Col>
+                      <h2>$1,000</h2>
+                      <p>Funds raised</p>
+                    </Col>
+                    <Col>
+                      <h2>$750</h2>
+                      <p>Treasury balance</p>
+                    </Col>
+                    <Col>
+                      <h2>14</h2>
+                      <p>Token holders</p>
+                    </Col>
+                  </Row>
                 </Card>
                 <Card className="full-length card-content">
-                  <h3>Project requests</h3>
-                  <p>View the requests submitted for this project so far.</p>
+                  <h3>Roadmap and requests</h3>
+                  <p>Overview of this project's development activity</p>
+                  <Row style={{ textAlign: "center", marginTop: "20px" }}>
+                    <Col>
+                      <h2>8</h2>
+                      <p>Open requests</p>
+                    </Col>
+                    <Col>
+                      <h2>2</h2>
+                      <p>Pending requests</p>
+                    </Col>
+                    <Col>
+                      <h2>13</h2>
+                      <p>Closed requests</p>
+                    </Col>
+                  </Row>
                 </Card>
               </Col>
               <Col xs={4}>
@@ -238,18 +241,12 @@ const Project = (props) => {
                     View the distribution of controlling tokens allocated for
                     this project.
                   </p>
-                  <DoughnutChart
-                    tooltip={true}
-                    label={(
-                      token.maintainerBalance + token.investorBalance
-                    ).toLocaleString("en")}
-                    cutout={"60%"}
-                    data={chartData}
-                  />
+                  <TokenDistribution token={token} />
                 </Card>
               </Col>
             </Row>
           </Tab>
+          <Tab eventKey="roadmap" title="Roadmap" disabled></Tab>
           <Tab eventKey="requests" title="Requests" className="tab-margin-top">
             <ProjectRequests
               getRequests={getRequests}
@@ -263,28 +260,7 @@ const Project = (props) => {
               user={props.user}
             />
           </Tab>
-          <Tab eventKey="roadmap" title="Roadmap" disabled>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-          </Tab>
-          <Tab eventKey="contact" title="About">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-          </Tab>
+          <Tab eventKey="manage" title="Manage" disabled></Tab>
         </Tabs>
       </Container>
       <Footer />
