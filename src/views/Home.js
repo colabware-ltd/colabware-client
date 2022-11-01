@@ -4,14 +4,14 @@ import axios from "axios";
 
 const Home = (props) => {
   const stripeHandler = async () => {
-    const url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/stripe`;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/user/stripe`;
     try {
       let res = await axios.get(url);
       window.location.href = res.data.url;
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   const authView = () => {
     if (!props.user.authorized) {

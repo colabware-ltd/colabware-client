@@ -30,7 +30,7 @@ const App = () => {
   useEffect(() => {
     const getUser = async () => {
       // TODO: Update request URL
-      let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/`;
+      let url = `${process.env.REACT_APP_BACKEND_URL}/user/`;
       try {
         const res = await axios.get(url, {
           validateStatus: function (status) {
@@ -61,7 +61,7 @@ const App = () => {
                 stripeOptions={stripeOptions}
                 stripePromise={stripePromise}
                 stripeClientSecret={clientSecret}
-                setStripeClientSecret={setClientSecret}
+                setClientSecret={setClientSecret}
                 user={user}
               />
             }

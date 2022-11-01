@@ -1,40 +1,22 @@
 import { useEffect, useState, useRef } from "react";
-import {
-  Badge,
-  Card,
-  Col,
-  Container,
-  Row,
-  Tab,
-  Tabs,
-  Modal,
-} from "react-bootstrap";
+import { Badge, Card, Col, Container, Row, Tab, Tabs } from "react-bootstrap";
 import Header from "../../components/Header";
 import projectImg from "../../assets/project.png";
 import Footer from "../../components/Footer";
 import "../../App.css";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import ProjectRequests from "./Request/ProjectRequests";
-import { Elements } from "@stripe/react-stripe-js";
-import CheckoutForm from "../../components/forms/CheckoutForm";
 import TokenPreview from "../../components/TokenPreview";
 import TokenDistribution from "../../components/TokenDistribution";
 
+import { get } from "../../utils/Api";
+
 const Project = (props) => {
+  const params = useParams();
+
   const ref = useRef(null);
-  let [payment, setPayment] = useState(false);
-  const handleClosePayment = () => {
-    setPayment(false);
-  };
-  const handleShowPayment = () => setPayment(true);
-  let [transaction, setTransaction] = useState({
-    tokens: 1,
-    project: "",
-    type: "token",
-  });
+
   let [view, setView] = useState({});
-  let { projectId } = useParams();
   let [requests, setRequests] = useState({
     total: 0,
     results: [],
@@ -62,86 +44,19 @@ const Project = (props) => {
     maintainerReserved: null,
   });
 
-  const getBalances = async (id) => {
-    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/project/${id}/balances`;
-    try {
-      const res = await axios.get(url, {
-        validateStatus: function (status) {
-          return (status >= 200 && status <= 302) || status == 401;
-        },
-      });
-      if (res.status == 302) {
-        setToken(res.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const getRequests = async (page, limit, id) => {
-    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/project/${id}/request/list?page=${page}&limit=${limit}`;
-    if (page >= 1) {
-      try {
-        const res = await axios.get(url, {
-          validateStatus: function (status) {
-            return (status >= 200 && status <= 302) || status == 401;
-          },
-        });
-        if (res.status == 302)
-          setRequests({
-            results: res.data.results,
-            total: res.data.total,
-          });
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  };
-
-  // TODO: Expose endpoint to retrieve total number of projects created so far
-  const getProject = async () => {
-    let url = `http://${
-      process.env.REACT_APP_BACKEND_URL
-    }/api/project/${encodeURI(projectId)}`;
-    try {
-      const res = await axios.get(url, {
-        validateStatus: function (status) {
-          return (status >= 200 && status <= 302) || status == 401;
-        },
-      });
-      if (res.status == 302) {
-        setProject(res.data);
-        setTransaction((previous) => ({
-          ...previous,
-          project: res.data._id,
-        }));
-        getRequests(1, 10, res.data._id);
-        getBalances(res.data.projectAddress);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const createPaymentIntent = () => {
-    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/payment-intent`;
-    let headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-    };
-    axios.post(url, transaction, headers).then(
-      (res) => {
-        props.setStripeClientSecret(res.data.clientSecret);
-        handleShowPayment();
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
-  };
-
   useEffect(() => {
-    getProject();
-  }, []);
+    (async () => {
+      const project = (await get("project", params.projectId)).data;
+      setProject(project);
+      const balances = (await get("balances", project.projectAddress)).data;
+      setToken(balances);
+      const requests = (await get("requests", params.projectId, 1, 10)).data;
+      setRequests({
+        results: requests.results,
+        total: requests.total,
+      });
+    })();
+  }, [params.projectId]);
 
   return (
     <div>
@@ -174,8 +89,8 @@ const Project = (props) => {
             <Col xs={4} className="my-auto">
               <TokenPreview
                 token={token}
-                setTransaction={setTransaction}
-                transaction={transaction}
+                project={project}
+                setClientSecret={props.setClientSecret}
               />
             </Col>
           </Row>
@@ -249,9 +164,7 @@ const Project = (props) => {
           <Tab eventKey="roadmap" title="Roadmap" disabled></Tab>
           <Tab eventKey="requests" title="Requests" className="tab-margin-top">
             <ProjectRequests
-              getRequests={getRequests}
               requests={requests}
-              projectId={project._id}
               project={project}
               stripeOptions={props.stripeOptions}
               stripePromise={props.stripePromise}
@@ -264,22 +177,6 @@ const Project = (props) => {
         </Tabs>
       </Container>
       <Footer />
-      <Modal show={payment} onHide={handleClosePayment}>
-        <div style={{ padding: "40px" }}>
-          {props.stripeClientSecret && (
-            <Elements
-              options={props.stripeOptions}
-              stripe={props.stripePromise}
-            >
-              <CheckoutForm
-                returnUrl={`http://localhost:3000/project/${encodeURIComponent(
-                  project.name
-                )}`}
-              />
-            </Elements>
-          )}
-        </div>
-      </Modal>
     </div>
   );
 };
