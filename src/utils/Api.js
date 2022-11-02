@@ -8,6 +8,8 @@ const endpoints = {
     `${entrypoint}/project/${address}/balances`,
   requests: (entrypoint, project, page, limit) =>
     `${entrypoint}/project/${project}/request/list?page=${page}&limit=${limit}`,
+  request: (entrypoint, project) =>
+    `${entrypoint}/user/project/${project}/request`,
   paymentIntent: (entrypoint) => `${entrypoint}/user/payment-intent`,
 };
 
@@ -45,5 +47,13 @@ export const get = (name, ...params) => {
 
 export const post = (name, ...params) => {
   if (params.length === 0) params[0] = {};
-  return requestCsr(name, "POST", params[0].headers, params[0].body, ...params);
+  return requestCsr(
+    name,
+    "POST",
+    params[0].headers,
+    params[0].body,
+    ...(Object.prototype.hasOwnProperty.call(params[0], "params")
+      ? params[0].params
+      : params)
+  );
 };

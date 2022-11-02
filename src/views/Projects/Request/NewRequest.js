@@ -8,17 +8,18 @@ import {
   Modal,
 } from "react-bootstrap";
 import { useState } from "react";
-import axios from "axios";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../../../components/forms/CheckoutForm";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { post } from "../../../utils/Api";
 
 const NewRequest = (props) => {
   const defaultExpiry = new Date();
   defaultExpiry.setDate(defaultExpiry.getDate() + 7);
-  let [payment, setPayment] = useState(false);
   const [startDate, setStartDate] = useState(defaultExpiry);
+
+  let [payment, setPayment] = useState(false);
   const handleClosePayment = () => {
     setPayment(false);
     props.setParentView({
@@ -30,9 +31,7 @@ const NewRequest = (props) => {
     amount: 0,
     type: "bounty",
   });
-  let [createdRequest, setCreatedRequest] = useState({
-    _id: "",
-  });
+  let [requestId, setRequestId] = useState("");
   let [request, setRequest] = useState({
     name: "",
     description: "",
@@ -42,36 +41,21 @@ const NewRequest = (props) => {
     status: "open",
   });
 
-  let createRequest = () => {
-    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/project/${props.projectId}/request`;
-    let headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-    };
-    axios.post(url, request, headers).then(
-      (res) => {
-        setCreatedRequest(res.data);
-        createPaymentIntent();
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+  let createRequest = async () => {
+    const res = await post("request", {
+      params: [props.project._id],
+      body: request,
+    });
+    setRequestId(res.data._id);
+    createPaymentIntent();
   };
 
-  const createPaymentIntent = () => {
-    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/payment-intent`;
-    let headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-    };
-    axios.post(url, transaction, headers).then(
-      (res) => {
-        props.setStripeClientSecret(res.data.client_secret);
-        handleShowPayment();
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+  const createPaymentIntent = async () => {
+    const res = await post("paymentIntent", {
+      body: transaction,
+    });
+    props.setStripeClientSecret(res.data.client_secret);
+    handleShowPayment();
   };
 
   return (
@@ -80,7 +64,6 @@ const NewRequest = (props) => {
         style={{ width: "50px" }}
         className="secondary-text label-link"
         onClick={() => {
-          console.log("Hello!");
           props.setParentView({
             current: "request_list",
           });
@@ -200,7 +183,7 @@ const NewRequest = (props) => {
                   <CheckoutForm
                     returnUrl={`http://localhost:3000/api/user/project/${encodeURIComponent(
                       props.project.name
-                    )}/request/${createdRequest._id}/contribution`}
+                    )}/request/${requestId}/contribution`}
                   />
                 </Elements>
               )}

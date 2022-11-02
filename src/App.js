@@ -61,7 +61,7 @@ const App = () => {
                 stripeOptions={stripeOptions}
                 stripePromise={stripePromise}
                 stripeClientSecret={clientSecret}
-                setClientSecret={setClientSecret}
+                setStripeClientSecret={setClientSecret}
                 user={user}
               />
             }

@@ -1,11 +1,10 @@
 import { Row, Col, Badge, Card } from "react-bootstrap";
 import PaginationComponent from "./Pagination";
-import { useNavigate } from "react-router-dom";
 
 const PaginatedList = (props) => {
   return (
     <div>
-      {props.data.results == null && (
+      {props.data.results.length === 0 && (
         <div>
           <h3
             style={{

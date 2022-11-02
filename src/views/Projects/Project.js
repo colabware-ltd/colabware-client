@@ -13,7 +13,6 @@ import { get } from "../../utils/Api";
 
 const Project = (props) => {
   const params = useParams();
-
   const ref = useRef(null);
 
   let [view, setView] = useState({});
@@ -50,11 +49,11 @@ const Project = (props) => {
       setProject(project);
       const balances = (await get("balances", project.projectAddress)).data;
       setToken(balances);
-      const requests = (await get("requests", params.projectId, 1, 10)).data;
-      setRequests({
-        results: requests.results,
-        total: requests.total,
-      });
+      // const requests = (await get("requests", params.projectId, 1, 10)).data;
+      // setRequests({
+      //   results: requests.results,
+      //   total: requests.total,
+      // });
     })();
   }, [params.projectId]);
 
@@ -75,7 +74,12 @@ const Project = (props) => {
                     {project.categories != null &&
                       project.categories.map((o, i) => {
                         return (
-                          <Badge pill bg="primary" className="margin-right-sm">
+                          <Badge
+                            key={i}
+                            pill
+                            bg="primary"
+                            className="margin-right-sm"
+                          >
                             {o}
                           </Badge>
                         );
@@ -165,6 +169,7 @@ const Project = (props) => {
           <Tab eventKey="requests" title="Requests" className="tab-margin-top">
             <ProjectRequests
               requests={requests}
+              setRequests={setRequests}
               project={project}
               stripeOptions={props.stripeOptions}
               stripePromise={props.stripePromise}
