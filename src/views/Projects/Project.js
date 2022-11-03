@@ -35,7 +35,8 @@ const Project = (props) => {
       hostLogoUrl: "https://yourdapp.com/yourlogo.png", // 150 ETH in wei
       userAddress: props.user.current.wallet_address,
       url: 'https://ri-widget-staging.firebaseapp.com/',
-      fiatCurrency: 'GBP', 
+      fiatCurrency: 'GBP',
+      swapAsset: 'GOERLI_TEST',
       fiatValue: 0.01,
     })
       .on("*", (event) => console.log(event))
