@@ -5,7 +5,6 @@ import {
   InputGroup,
   Row,
   Col,
-  FloatingLabel,
   Modal,
 } from "react-bootstrap";
 import { useState } from "react";
@@ -34,16 +33,13 @@ const NewRequest = (props) => {
   let [createdRequest, setCreatedRequest] = useState({
     _id: "",
   });
-  let [request, updateRequest] = useState({
+  let [request, setRequest] = useState({
     name: "",
     description: "",
     categories: [],
     expiry: defaultExpiry.toISOString(),
-    github: {
-      repoOwner: "",
-      repoName: "",
-    },
-    bountyContributions: [],
+    contributions: [],
+    status: "open",
   });
 
   let createRequest = () => {
@@ -60,9 +56,6 @@ const NewRequest = (props) => {
         console.log(err);
       }
     );
-    // props.setParentView({
-    //   current: "request_list",
-    // });
   };
 
   const createPaymentIntent = () => {
@@ -72,7 +65,7 @@ const NewRequest = (props) => {
     };
     axios.post(url, transaction, headers).then(
       (res) => {
-        props.setStripeClientSecret(res.data.clientSecret);
+        props.setStripeClientSecret(res.data.client_secret);
         handleShowPayment();
       },
       (err) => {
@@ -104,7 +97,7 @@ const NewRequest = (props) => {
               type="title"
               placeholder="Title"
               onChange={(e) => {
-                updateRequest((previous) => ({
+                setRequest((previous) => ({
                   ...previous,
                   name: e.target.value,
                 }));
@@ -115,7 +108,7 @@ const NewRequest = (props) => {
             <Form.Select
               aria-label="Default select example"
               onChange={(e) => {
-                updateRequest((previous) => ({
+                setRequest((previous) => ({
                   ...previous,
                   categories: [e.target.value],
                 }));
@@ -138,7 +131,7 @@ const NewRequest = (props) => {
               placeholder="Description"
               rows={3}
               onChange={(e) => {
-                updateRequest((previous) => ({
+                setRequest((previous) => ({
                   ...previous,
                   description: e.target.value,
                 }));
@@ -183,7 +176,7 @@ const NewRequest = (props) => {
                     className="form-control"
                     selected={startDate}
                     onChange={(date) => {
-                      updateRequest((previous) => ({
+                      setRequest((previous) => ({
                         ...previous,
                         expiry: date.toISOString(),
                       }));
@@ -194,62 +187,6 @@ const NewRequest = (props) => {
               </Form.Group>
             </Col>
           </Row>
-
-          <Form.Group style={{ marginBottom: "40px" }}>
-            <h5>Merge options</h5>
-            <p>
-              Specify a fork where you would like the requested changes merged
-            </p>
-            <Row>
-              <Form.Group as={Col} controlId="newProject.repositoryOwner">
-                <FloatingLabel
-                  controlId="floatingInput"
-                  label="GitHub repository owner"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="colabware"
-                    onChange={(e) => {
-                      this.props.updateRequest((previous) => ({
-                        ...previous,
-                        github: {
-                          ...previous.github,
-                          repoOwner: e.target.value,
-                        },
-                      }));
-                    }}
-                  />
-                </FloatingLabel>
-              </Form.Group>
-              <Form.Group as={Col} controlId="newProject.repositoryName">
-                <FloatingLabel
-                  controlId="floatingInput"
-                  label="GitHub repository name"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="my-project"
-                    onChange={(e) => {
-                      this.props.updateRequest((previous) => ({
-                        ...previous,
-                        github: {
-                          ...previous.github,
-                          repoName: e.target.value,
-                        },
-                      }));
-                    }}
-                  />
-                </FloatingLabel>
-              </Form.Group>
-            </Row>
-            <p style={{ fontWeight: "600" }}>
-              If no fork is specified, any changes made as part of your feature
-              request will only be merged into the original project, subject to
-              a vote by token holders.
-            </p>
-          </Form.Group>
           <Button variant="primary" onClick={createRequest}>
             Submit
           </Button>
@@ -263,7 +200,7 @@ const NewRequest = (props) => {
                   <CheckoutForm
                     returnUrl={`http://localhost:3000/api/user/project/${encodeURIComponent(
                       props.project.name
-                    )}/request/${createdRequest._id}/bounty`}
+                    )}/request/${createdRequest._id}/contribution`}
                   />
                 </Elements>
               )}

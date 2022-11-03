@@ -1,7 +1,18 @@
 import { Button, Container, Row, Col } from "react-bootstrap";
 import Header from "../components/Header";
+import axios from "axios";
 
 const Home = (props) => {
+  const stripeHandler = async () => {
+    const url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/stripe`;
+    try {
+      let res = await axios.get(url);
+      window.location.href = res.data.url;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   const authView = () => {
     if (!props.user.authorized) {
       return <h3>Welcome to Colabware</h3>;
@@ -15,6 +26,13 @@ const Home = (props) => {
                 @{props.user.current.login}
               </span>
             </h3>
+          </Row>
+          <Row>
+            <Col>
+              <Button variant="outline-secondary" onClick={stripeHandler}>
+                Connect Stripe
+              </Button>
+            </Col>
           </Row>
         </div>
       );
