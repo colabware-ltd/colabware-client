@@ -21,12 +21,25 @@ import axios from "axios";
 import ProjectRequests from "./Request/ProjectRequests";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../../components/forms/CheckoutForm";
+import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk';
 
 const Project = (props) => {
   const ref = useRef(null);
   let [payment, setPayment] = useState(false);
   const handleClosePayment = () => {
     setPayment(false);
+  };
+  const buyUSDT = () => {
+    new RampInstantSDK({
+      hostAppName: "your dApp",
+      hostLogoUrl: "https://yourdapp.com/yourlogo.png", // 150 ETH in wei
+      userAddress: props.user.current.wallet_address,
+      url: 'https://ri-widget-staging.firebaseapp.com/',
+      fiatCurrency: 'GBP', 
+      fiatValue: 0.01,
+    })
+      .on("*", (event) => console.log(event))
+      .show();
   };
   const handleShowPayment = () => setPayment(true);
   let [transaction, setTransaction] = useState({
@@ -150,14 +163,13 @@ const Project = (props) => {
   };
 
   const createPaymentIntent = () => {
-    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/payment-intent`;
+    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/token-payment`;
     let headers = {
       "Content-Type": "application/x-www-form-urlencoded",
     };
     axios.post(url, transaction, headers).then(
       (res) => {
-        props.setStripeClientSecret(res.data.clientSecret);
-        handleShowPayment();
+        console.log('token payment in progress')
       },
       (err) => {
         console.log(err);
@@ -236,7 +248,7 @@ const Project = (props) => {
                     }));
                   }}
                 />
-                <Button onClick={createPaymentIntent}>
+                <Button onClick={buyUSDT}>
                   Purchase {project.token.symbol}
                 </Button>
               </Card>
