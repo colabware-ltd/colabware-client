@@ -115,7 +115,7 @@ const Project = (props) => {
             <Row>
               <Col xs={8} className="container-divided">
                 <Card className="full-length margin-btm-md card-content">
-                  <h4>Funding and finances</h4>
+                  <h4 className="secondary-text">Funding and finances</h4>
                   <p>
                     Overview of this project's finances and funding activity
                   </p>
@@ -135,7 +135,7 @@ const Project = (props) => {
                   </Row>
                 </Card>
                 <Card className="full-length card-content">
-                  <h3>Roadmap and requests</h3>
+                  <h4 className="secondary-text">Roadmap and requests</h4>
                   <p>Overview of this project's development activity</p>
                   <Row style={{ textAlign: "center", marginTop: "20px" }}>
                     <Col>
@@ -155,7 +155,7 @@ const Project = (props) => {
               </Col>
               <Col xs={4}>
                 <Card className="card-content text-align-center">
-                  <h4>Distribution of control</h4>
+                  <h4 className="secondary-text">Distribution of control</h4>
                   <p>
                     View the distribution of controlling tokens allocated for
                     this project.

@@ -6,12 +6,11 @@ import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-
 const Header = (props) => {
   let navigate = useNavigate();
 
   const loginHandler = async () => {
-    const url = `http://${process.env.REACT_APP_BACKEND_URL}/api/login`;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/login`;
     try {
       let res = await axios.get(url);
       window.location.href = res.data.url;
@@ -21,7 +20,7 @@ const Header = (props) => {
   };
 
   const logoutHandler = async () => {
-    const url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/logout`;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/user/logout`;
     try {
       let res = await axios.get(url);
       window.location.reload();
@@ -75,7 +74,16 @@ const Header = (props) => {
   };
 
   return (
-    <Navbar expand="lg" style={{ borderBottom: "1px solid #efefef" }}>
+    <Navbar
+      sticky="top"
+      expand="lg"
+      style={{
+        backgroundColor: "white",
+        borderBottom: "1px solid #f2f2f2",
+        height: "75px",
+        boxShadow: "0px 0px 5px #f2f2f2",
+      }}
+    >
       <Container>
         <Navbar.Brand href="/">
           <img alt="colabware-logo-main" src={logo} className="logo" />

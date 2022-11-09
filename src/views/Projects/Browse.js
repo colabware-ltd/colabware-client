@@ -106,6 +106,7 @@ const Browse = (props) => {
                     {categories.map((o, i) => {
                       return (
                         <Badge
+                          key={i}
                           pill
                           bg="primary"
                           className="margin-right-sm"
