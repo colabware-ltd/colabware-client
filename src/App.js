@@ -1,14 +1,12 @@
-import Header from "./components/Header";
 import "./App.css";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NewProject from "./views/Projects/NewProject";
 import Project from "./views/Projects/Project";
 import Home from "./views/Home";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Browse from "./views/Projects/Browse";
+import { get } from "./utils/Api";
 
 const App = () => {
   let [user, setUser] = useState({
@@ -28,25 +26,20 @@ const App = () => {
   };
 
   useEffect(() => {
-    const getUser = async () => {
-      // TODO: Update request URL
-      let url = `${process.env.REACT_APP_BACKEND_URL}/user/`;
-      try {
-        const res = await axios.get(url, {
-          validateStatus: function (status) {
-            return (status >= 200 && status <= 302) || status == 401;
-          },
+    (async () => {
+      const res = await get("user");
+      if (res.data === null) {
+        setUser({
+          authorized: false,
+          current: {},
         });
-        if (res.status == 302)
-          setUser({
-            authorized: true,
-            current: res.data,
-          });
-      } catch (err) {
-        console.log(err);
+      } else {
+        setUser({
+          authorized: true,
+          current: res.data,
+        });
       }
-    };
-    getUser();
+    })();
   }, []);
 
   return (

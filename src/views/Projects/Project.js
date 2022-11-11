@@ -17,8 +17,18 @@ const Project = (props) => {
 
   let [view, setView] = useState({});
   let [requests, setRequests] = useState({
-    total: 0,
-    results: [],
+    open: {
+      total: 0,
+      results: [],
+    },
+    pending: {
+      total: 0,
+      results: [],
+    },
+    closed: {
+      total: 0,
+      results: [],
+    },
   });
   let [project, setProject] = useState({
     _id: "",
@@ -49,11 +59,19 @@ const Project = (props) => {
       setProject(project);
       const balances = (await get("balances", project.projectAddress)).data;
       setToken(balances);
-      // const requests = (await get("requests", params.projectId, 1, 10)).data;
-      // setRequests({
-      //   results: requests.results,
-      //   total: requests.total,
-      // });
+      const openRequests = (await get("requests", project._id, 1, 10, "open"))
+        .data;
+      const pendingRequests = (
+        await get("requests", project._id, 1, 10, "pending")
+      ).data;
+      const closedRequests = (
+        await get("requests", project._id, 1, 10, "closed")
+      ).data;
+      setRequests({
+        open: openRequests,
+        pending: pendingRequests,
+        closed: closedRequests,
+      });
     })();
   }, [params.projectId]);
 
@@ -139,15 +157,15 @@ const Project = (props) => {
                   <p>Overview of this project's development activity</p>
                   <Row style={{ textAlign: "center", marginTop: "20px" }}>
                     <Col>
-                      <h2>8</h2>
+                      <h2>{requests.open.total}</h2>
                       <p>Open requests</p>
                     </Col>
                     <Col>
-                      <h2>2</h2>
+                      <h2>{requests.pending.total}</h2>
                       <p>Pending requests</p>
                     </Col>
                     <Col>
-                      <h2>13</h2>
+                      <h2>{requests.closed.total}</h2>
                       <p>Closed requests</p>
                     </Col>
                   </Row>

@@ -4,29 +4,19 @@ import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { get } from "../utils/Api";
 
 const Header = (props) => {
   let navigate = useNavigate();
 
   const loginHandler = async () => {
-    const url = `${process.env.REACT_APP_BACKEND_URL}/login`;
-    try {
-      let res = await axios.get(url);
-      window.location.href = res.data.url;
-    } catch (err) {
-      console.log(err);
-    }
+    const res = await get("login");
+    window.location.href = res.data.url;
   };
 
   const logoutHandler = async () => {
-    const url = `${process.env.REACT_APP_BACKEND_URL}/user/logout`;
-    try {
-      let res = await axios.get(url);
-      window.location.reload();
-    } catch (err) {
-      console.log(err);
-    }
+    await get("logout");
+    window.location.reload();
   };
 
   const authView = () => {

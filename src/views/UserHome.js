@@ -247,7 +247,7 @@ const UserHome = (props) => {
                       Connect your account to Stripe and start receiving payouts
                       for any work you complete.
                     </Col>
-                    <Col>
+                    <Col style={{ textAlign: "right" }}>
                       <Button variant="outline-primary" onClick={stripeHandler}>
                         Connect account
                       </Button>
@@ -256,6 +256,7 @@ const UserHome = (props) => {
                 </Card>
               </Tab.Pane>
             </Tab.Content>
+            <Footer />
           </div>
         </Col>
       </Row>

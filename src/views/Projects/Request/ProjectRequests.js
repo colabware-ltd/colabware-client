@@ -16,14 +16,13 @@ const ProjectRequests = (props) => {
   const updatePage = async (page) => {
     setPageCurrent(page);
     if (props.project !== null && props.project._id !== "") {
-      console.log(props.project);
       const requests = (
         await get("requests", props.project._id, pageCurrent, pageLimit)
       ).data;
-      props.setRequests({
-        results: requests.results,
-        total: requests.total,
-      });
+      props.setRequests((prev) => ({
+        ...prev,
+        open: requests,
+      }));
     }
   };
 
@@ -57,7 +56,7 @@ const ProjectRequests = (props) => {
           </Row>
           <Row>
             <PaginatedList
-              data={props.requests}
+              data={props.requests.open}
               pageLimit={pageLimit}
               pageCurrent={pageCurrent}
               updatePage={updatePage}
