@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Badge, Form, Card } from "react-bootstrap";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import axios from "axios";
 import PaginatedList from "../../components/PaginatedList";
-
+import { get } from "../../utils/Api";
 
 const Browse = (props) => {
   let navigate = useNavigate();
@@ -37,22 +36,9 @@ const Browse = (props) => {
   ];
 
   const getProjects = async (page, limit) => {
-    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/project/list?page=${page}&limit=${limit}`;
     if (page >= 1) {
-      try {
-        const res = await axios.get(url, {
-          validateStatus: function (status) {
-            return (status >= 200 && status <= 302) || status == 401;
-          },
-        });
-        if (res.status == 302)
-          setData({
-            results: res.data.results,
-            total: res.data.total,
-          });
-      } catch (err) {
-        console.log(err);
-      }
+      const res = await get("projects", page, limit);
+      setData(res.data);
     }
   };
 
@@ -107,6 +93,7 @@ const Browse = (props) => {
                     {categories.map((o, i) => {
                       return (
                         <Badge
+                          key={i}
                           pill
                           bg="primary"
                           className="margin-right-sm"

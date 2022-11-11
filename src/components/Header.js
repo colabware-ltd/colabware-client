@@ -4,29 +4,19 @@ import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { get } from "../utils/Api";
 
 const Header = (props) => {
   let navigate = useNavigate();
 
   const loginHandler = async () => {
-    const url = `http://${process.env.REACT_APP_BACKEND_URL}/api/login`;
-    try {
-      let res = await axios.get(url);
-      window.location.href = res.data.url;
-    } catch (err) {
-      console.log(err);
-    }
+    const res = await get("login");
+    window.location.href = res.data.url;
   };
 
   const logoutHandler = async () => {
-    const url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/logout`;
-    try {
-      let res = await axios.get(url);
-      window.location.reload();
-    } catch (err) {
-      console.log(err);
-    }
+    await get("logout");
+    window.location.reload();
   };
 
   const authView = () => {
@@ -74,7 +64,16 @@ const Header = (props) => {
   };
 
   return (
-    <Navbar expand="lg" style={{ borderBottom: "1px solid #efefef" }}>
+    <Navbar
+      sticky="top"
+      expand="lg"
+      style={{
+        backgroundColor: "white",
+        borderBottom: "1px solid #f2f2f2",
+        height: "75px",
+        boxShadow: "0px 0px 5px #f2f2f2",
+      }}
+    >
       <Container>
         <Navbar.Brand href="/">
           <img alt="colabware-logo-main" src={logo} className="logo" />

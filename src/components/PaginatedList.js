@@ -1,11 +1,10 @@
-import { Row, Col, Badge, Card } from "react-bootstrap";
+import { Row, Col, Badge } from "react-bootstrap";
 import PaginationComponent from "./Pagination";
-import { useNavigate } from "react-router-dom";
 
 const PaginatedList = (props) => {
   return (
     <div>
-      {props.data.results == null && (
+      {props.data.results.length === 0 && (
         <div>
           <h3
             style={{
@@ -23,6 +22,7 @@ const PaginatedList = (props) => {
           props.data.results.map((item, id) => {
             return (
               <div
+                key={id}
                 style={{
                   borderBottom: "1px solid #ced4da",
                   paddingTop: "15px",
@@ -51,7 +51,12 @@ const PaginatedList = (props) => {
                     {item.categories != null &&
                       item.categories.map((o, i) => {
                         return (
-                          <Badge pill bg="primary" className="margin-right-sm">
+                          <Badge
+                            key={i}
+                            pill
+                            bg="primary"
+                            className="margin-right-sm"
+                          >
                             {o}
                           </Badge>
                         );
@@ -59,7 +64,7 @@ const PaginatedList = (props) => {
                   </Col>
                 </Row>
                 <Row>
-                  <p id="project-desc-trunc">{item.description}</p>
+                  <p className="desc-trunc">{item.description}</p>
                 </Row>
               </div>
             );

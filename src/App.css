@@ -1,3 +1,29 @@
+:root {
+  --header-height: 75px;
+}
+
+.nav-link {
+  color: red;
+}
+
+.nav.nav-pills .nav-link.active {
+  background-color: #2a66ff;
+  color: white;
+}
+
+.nav.nav-pills .nav-link {
+  color: #2a66ff;
+}
+
+#home-nav {
+  width: "10px";
+}
+
+#side-nav-sticky {
+  position: sticky;
+  top: calc(var(--header-height) + 20px);
+}
+
 #form-progress-container {
   width: 350px;
   background-color: #e0e0e0;
@@ -20,7 +46,7 @@
   height: calc(3.5rem + 2px);
 }
 
-#project-desc-trunc {
+.desc-trunc {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

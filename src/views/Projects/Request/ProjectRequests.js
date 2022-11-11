@@ -1,12 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { Button, Col, Row, Form } from "react-bootstrap";
 import PaginatedList from "../../../components/PaginatedList";
 import NewRequest from "./NewRequest";
 import ViewRequest from "./ViewRequest";
-import axios from "axios";
+import { get } from "../../../utils/Api";
 
 const ProjectRequests = (props) => {
-  const ref = useRef(null);
   let [view, setView] = useState({
     current: "request_list",
   });
@@ -14,9 +13,17 @@ const ProjectRequests = (props) => {
   let [pageCurrent, setPageCurrent] = useState(1);
   let [pageLimit, setPageLimit] = useState(10);
 
-  const updatePage = (page) => {
+  const updatePage = async (page) => {
     setPageCurrent(page);
-    props.getRequests(page, pageLimit);
+    if (props.project !== null && props.project._id !== "") {
+      const requests = (
+        await get("requests", props.project._id, pageCurrent, pageLimit)
+      ).data;
+      props.setRequests((prev) => ({
+        ...prev,
+        open: requests,
+      }));
+    }
   };
 
   return (
@@ -26,7 +33,7 @@ const ProjectRequests = (props) => {
         marginRight: "120px",
       }}
     >
-      {view.current == "request_list" && (
+      {view.current === "request_list" && (
         <div>
           <Row style={{ marginBottom: "15px" }}>
             <Col xs={10}>
@@ -49,7 +56,7 @@ const ProjectRequests = (props) => {
           </Row>
           <Row>
             <PaginatedList
-              data={props.requests}
+              data={props.requests.open}
               pageLimit={pageLimit}
               pageCurrent={pageCurrent}
               updatePage={updatePage}
@@ -60,11 +67,9 @@ const ProjectRequests = (props) => {
           </Row>
         </div>
       )}
-      {view.current == "request_new" && (
+      {view.current === "request_new" && (
         <NewRequest
-          ref={ref}
           setParentView={setView}
-          projectId={props.projectId}
           project={props.project}
           stripeOptions={props.stripeOptions}
           stripePromise={props.stripePromise}
@@ -72,7 +77,7 @@ const ProjectRequests = (props) => {
           setStripeClientSecret={props.setStripeClientSecret}
         />
       )}
-      {view.current == "request_view" && (
+      {view.current === "request_view" && (
         <ViewRequest
           setParentView={setView}
           request={selectedRequest}

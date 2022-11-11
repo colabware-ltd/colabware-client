@@ -1,6 +1,5 @@
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
-import { useEffect, useState } from "react";
 
 const DoughnutChart = (props) => {
   !props.tooltip
