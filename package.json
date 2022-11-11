@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ramp-network/ramp-instant-sdk": "^3.2.3",
     "@stripe/react-stripe-js": "^1.10.0",
     "@stripe/stripe-js": "^1.36.0",
     "@testing-library/jest-dom": "^5.16.3",
