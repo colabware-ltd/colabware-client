@@ -6,20 +6,21 @@ import NewProjectForm from "../../components/forms/NewProjectForm";
 import axios from "axios";
 import DoughnutChart from "../../components/DoughnutChart";
 import { useNavigate } from "react-router-dom";
+import { post } from "../../utils/Api";
 
 const NewProject = () => {
   let navigate = useNavigate();
-  let [form, updateForm] = useState({
+  let [form, setForm] = useState({
     currentPage: 0,
     progress: "0%",
     maintainerAllocation: 20,
     error: "",
   });
-  let [project, updateProject] = useState({
+  let [project, setProject] = useState({
     name: "",
     github: {
-      repoOwner: "",
-      repoName: "",
+      repo_owner: "",
+      repo_name: "",
     },
     description: "",
     categories: [""],
@@ -30,8 +31,8 @@ const NewProject = () => {
       name: "",
       symbol: "",
       price: 1.0,
-      totalSupply: 1000,
-      maintainerSupply: 200,
+      total_supply: 1000,
+      maintainer_supply: 200,
     },
   });
   let [fieldInvalid, updateFieldInvalid] = useState({
@@ -56,7 +57,7 @@ const NewProject = () => {
   };
 
   const getProject = async () => {
-    const url = `https://api.github.com/repos/${project.github.repoOwner}/${project.github.repoName}`;
+    const url = `https://api.github.com/repos/${project.github.repo_owner}/${project.github.repo_name}`;
     // const headers = {
     //   Accept: "application/vnd.github+json",
     // };
@@ -77,16 +78,16 @@ const NewProject = () => {
       case 0:
         var projectNameInvalid = project.name == "" ? true : false;
         var repositoryOwnerInvalid =
-          project.github.repoOwner == "" ? true : false;
+          project.github.repo_owner == "" ? true : false;
         var repositoryNameInvalid =
-          project.github.repoName == "" ? true : false;
+          project.github.repo_name == "" ? true : false;
 
         // TODO: Make request to GitHub API to validate repo details
         getProject().then((data) => {
           if (data.status == 404) {
             repositoryNameInvalid = true;
             repositoryOwnerInvalid = true;
-            updateForm((previous) => ({
+            setForm((previous) => ({
               ...previous,
               error:
                 "Please ensure the details of your GitHub repository have been entered correctly.",
@@ -94,7 +95,7 @@ const NewProject = () => {
           } else {
             repositoryNameInvalid = false;
             repositoryOwnerInvalid = false;
-            updateForm((previous) => ({
+            setForm((previous) => ({
               ...previous,
               error: "",
             }));
@@ -109,7 +110,7 @@ const NewProject = () => {
             !repositoryNameInvalid &&
             !repositoryOwnerInvalid
           ) {
-            updateForm((previous) => ({
+            setForm((previous) => ({
               ...previous,
               currentPage: form.currentPage + 1,
               progress:
@@ -124,7 +125,7 @@ const NewProject = () => {
         var tokenSymbolInvalid = project.token.symbol == "" ? true : false;
         var tokenPriceInvalid = project.token.price == null ? true : false;
         var tokenSupplyInvalid =
-          project.token.totalSupply == null ? true : false;
+          project.token.total_supply == null ? true : false;
         var maintainerAllocationInvalid =
           form.maintainerAllocation == null ? true : false;
 
@@ -143,7 +144,7 @@ const NewProject = () => {
           !tokenSupplyInvalid &&
           !maintainerAllocationInvalid
         ) {
-          updateForm((previous) => ({
+          setForm((previous) => ({
             ...previous,
             currentPage: form.currentPage + 1,
             progress:
@@ -156,7 +157,7 @@ const NewProject = () => {
 
   let prevStep = () => {
     if (form.currentPage > 0) {
-      updateForm((previous) => ({
+      setForm((previous) => ({
         ...previous,
         currentPage: form.currentPage - 1,
         progress:
@@ -165,20 +166,12 @@ const NewProject = () => {
     }
   };
 
-  let launchProject = () => {
-    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/project`;
-    let headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-    };
-    axios.post(url, project, headers).then(
-      (res) => {
-        console.log(res);
-        navigate(`/project/${encodeURI(res.data.name)}`);
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+  let launchProject = async () => {
+    const res = await post("newProject", {
+      body: project,
+    });
+    console.log(res);
+    navigate(`/project/${encodeURI(res.data.name)}`);
   };
 
   return (
@@ -216,9 +209,9 @@ const NewProject = () => {
                 >
                   <NewProjectForm
                     form={form}
-                    updateForm={updateForm}
+                    setForm={setForm}
                     project={project}
-                    updateProject={updateProject}
+                    setProject={setProject}
                     fieldInvalid={fieldInvalid}
                   />
                 </CSSTransition>

@@ -7,6 +7,7 @@ const endpoints = {
   logout: (entrypoint) => `${entrypoint}/user/logout`,
   project: (entrypoint, project) =>
     `${entrypoint}/project/${encodeURI(project)}`,
+  newProject: (entrypoint) => `${entrypoint}/user/project`,
   projects: (entrypoint, page, limit) =>
     `${entrypoint}/project/list?page=${page}&limit=${limit}`,
   branches: (entrypoint, owner, repo) =>

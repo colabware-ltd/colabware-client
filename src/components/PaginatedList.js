@@ -4,7 +4,7 @@ import PaginationComponent from "./Pagination";
 const PaginatedList = (props) => {
   return (
     <div>
-      {props.data.results.length === 0 && (
+      {props.data.results == null && (
         <div>
           <h3
             style={{

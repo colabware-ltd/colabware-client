@@ -1,9 +1,6 @@
 import { Button, Card, Col, Row, Form, Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
-import { Elements } from "@stripe/react-stripe-js";
-import CheckoutForm from "./forms/CheckoutForm";
-
-import { post } from "../utils/Api";
+import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
 
 const TokenPreview = (props) => {
   let [paymentView, setPaymentView] = useState(false);
@@ -15,10 +12,24 @@ const TokenPreview = (props) => {
     type: "token",
   });
 
+  const buyUSDT = () => {
+    new RampInstantSDK({
+      hostAppName: "your dApp",
+      hostLogoUrl: "https://yourdapp.com/yourlogo.png", // 150 ETH in wei
+      userAddress: props.user.current.wallet_address,
+      // url: "https://ri-widget-staging.firebaseapp.com/",
+      fiatCurrency: "USD",
+      swapAsset: "ETH_USDT",
+      fiatValue: 100.0,
+    })
+      .on("*", (event) => console.log(event))
+      .show();
+  };
+
   const contractDeployed = () => {
     return (
-      props.token.maintainerBalance !== null &&
-      props.token.investorBalance !== null
+      props.token.maintainer_balance !== null &&
+      props.token.investor_balance !== null
     );
   };
 
@@ -38,8 +49,8 @@ const TokenPreview = (props) => {
               {contractDeployed() && (
                 <h2>
                   {(
-                    props.token.maintainerBalance -
-                    props.token.maintainerReserved
+                    props.token.maintainer_balance -
+                    props.token.maintainer_reserved
                   ).toLocaleString("en")}
                 </h2>
               )}
@@ -53,9 +64,9 @@ const TokenPreview = (props) => {
               {contractDeployed() && (
                 <h2>
                   {Math.round(
-                    (props.token.maintainerReserved /
-                      (props.token.maintainerBalance +
-                        props.token.investorBalance)) *
+                    (props.token.maintainer_reserved /
+                      (props.token.maintainer_balance +
+                        props.token.investor_balance)) *
                       100
                   )}
                   %
@@ -93,31 +104,11 @@ const TokenPreview = (props) => {
           <Button disabled>Contract pending deployment</Button>
         )}
         {contractDeployed() && (
-          <Button
-            onClick={() => {
-              console.log("TODO");
-            }}
-          >
+          <Button onClick={buyUSDT}>
             Purchase {props.token.symbol} tokens
           </Button>
         )}
       </Card>
-      <Modal show={paymentView} onHide={handleClosePayment}>
-        <div style={{ padding: "40px" }}>
-          {props.stripeClientSecret && (
-            <Elements
-              options={props.stripeOptions}
-              stripe={props.stripePromise}
-            >
-              <CheckoutForm
-                returnUrl={`http://localhost:3000/project/${encodeURIComponent(
-                  props.project.name
-                )}`}
-              />
-            </Elements>
-          )}
-        </div>
-      </Modal>
     </div>
   );
 };

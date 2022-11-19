@@ -13,9 +13,9 @@ const TokenDistribution = (props) => {
         label: "# of Votes",
         data: [
           // TODO: Populate with 5 largest investors + rest
-          props.token.maintainerBalance - props.token.maintainerReserved,
-          props.token.maintainerReserved,
-          props.token.investorBalance,
+          props.token.maintainer_balance - props.token.maintainer_reserved,
+          props.token.maintainer_reserved,
+          props.token.investor_balance,
         ],
         backgroundColor: [
           "rgba(75, 192, 192, 0.5)",

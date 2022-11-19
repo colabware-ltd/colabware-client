@@ -11,10 +11,6 @@ import TokenDistribution from "../../components/TokenDistribution";
 
 import { get } from "../../utils/Api";
 
-import { Elements } from "@stripe/react-stripe-js";
-import CheckoutForm from "../../components/forms/CheckoutForm";
-import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk';
-
 const Project = (props) => {
   const params = useParams();
   const ref = useRef(null);
@@ -23,25 +19,7 @@ const Project = (props) => {
   const handleClosePayment = () => {
     setPayment(false);
   };
-  const buyUSDT = () => {
-    new RampInstantSDK({
-      hostAppName: "your dApp",
-      hostLogoUrl: "https://yourdapp.com/yourlogo.png", // 150 ETH in wei
-      userAddress: props.user.current.wallet_address,
-      url: 'https://ri-widget-staging.firebaseapp.com/',
-      fiatCurrency: 'GBP',
-      swapAsset: 'GOERLI_TEST',
-      fiatValue: 0.01,
-    })
-      .on("*", (event) => console.log(event))
-      .show();
-  };
-  const handleShowPayment = () => setPayment(true);
-  let [transaction, setTransaction] = useState({
-    tokens: 1,
-    project: "",
-    type: "token",
-  });
+
   let [view, setView] = useState({});
   let [requests, setRequests] = useState({
     open: {
@@ -57,49 +35,18 @@ const Project = (props) => {
       results: [],
     },
   });
-  let [project, setProject] = useState({
-    _id: "",
-    name: "",
-    categories: ["", ""],
-    description: "",
-    github: {
-      repoowner: "",
-      reponame: "",
-    },
-    token: {
-      name: "",
-      symbol: "",
-      price: 0,
-      totalsupply: 0,
-      maintainersupply: 0,
-    },
-  });
+  let [project, setProject] = useState({});
   let [token, setToken] = useState({
-    investorBalance: null,
+    investor_alance: null,
     maintainerBalance: null,
     maintainerReserved: null,
   });
-
-  const createPaymentIntent = () => {
-    let url = `http://${process.env.REACT_APP_BACKEND_URL}/api/user/token-payment`;
-    let headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-    };
-    axios.post(url, transaction, headers).then(
-      (res) => {
-        console.log('token payment in progress')
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
-  };
 
   useEffect(() => {
     (async () => {
       const project = (await get("project", params.projectId)).data;
       setProject(project);
-      const balances = (await get("balances", project.projectAddress)).data;
+      const balances = (await get("balances", project.address)).data;
       setToken(balances);
       const openRequests = (await get("requests", project._id, 1, 10, "open"))
         .data;
@@ -155,24 +102,8 @@ const Project = (props) => {
                 token={token}
                 project={project}
                 setClientSecret={props.setClientSecret}
+                user={props.user}
               />
-              <Card id="project-header-card" className="card-content">
-                <Form.Control
-                  type="number"
-                  placeholder="Tokens"
-                  className="margin-btm-sm"
-                  value={transaction.tokens}
-                  onChange={(e) => {
-                    setTransaction((previous) => ({
-                      ...previous,
-                      tokens: parseInt(e.target.value),
-                    }));
-                  }}
-                />
-                <Button onClick={buyUSDT}>
-                  Purchase {project.token.symbol}
-                </Button>
-              </Card>
             </Col>
           </Row>
         </Container>
