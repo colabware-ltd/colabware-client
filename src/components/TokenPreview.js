@@ -1,6 +1,7 @@
 import { Button, Card, Col, Row, Form, Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
+import { post } from "../utils/Api";
 
 const TokenPreview = (props) => {
   let [paymentView, setPaymentView] = useState(false);
@@ -17,12 +18,29 @@ const TokenPreview = (props) => {
       hostAppName: "your dApp",
       hostLogoUrl: "https://yourdapp.com/yourlogo.png", // 150 ETH in wei
       userAddress: props.user.current.wallet_address,
-      // url: "https://ri-widget-staging.firebaseapp.com/",
+      // Special URL to use staging RAMP, do not change until reaching production
+      url: 'https://ri-widget-staging.firebaseapp.com/',
       fiatCurrency: "USD",
-      swapAsset: "ETH_USDT",
+      // ETH has low liquidity on testing network, hencing using GOERLI_TEST instead
+      swapAsset: 'GOERLI_TEST',
       fiatValue: 100.0,
     })
-      .on("*", (event) => console.log(event))
+      .on("PURCHASE_CREATED", (event) => {
+        let bodyContent = {
+          purchase_id: event.payload.purchase.id,
+          purchase_secret: event.payload.purchaseViewToken,
+          project_wallet_id: props.project.wallet,
+          user_wallet_addr: props.user.current.wallet_address,
+          crypto_amount: 5,
+        }
+        console.log(bodyContent)
+        const res = post("purchaseToken", { 
+          body: bodyContent
+        });
+        console.log(res);
+        
+      }
+        )
       .show();
   };
 

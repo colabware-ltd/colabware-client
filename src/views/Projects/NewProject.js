@@ -167,6 +167,7 @@ const NewProject = () => {
   };
 
   let launchProject = async () => {
+    console.log(project)
     const res = await post("newProject", {
       body: project,
     });

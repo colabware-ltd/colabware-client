@@ -8,6 +8,7 @@ const endpoints = {
   project: (entrypoint, project) =>
     `${entrypoint}/project/${encodeURI(project)}`,
   newProject: (entrypoint) => `${entrypoint}/user/project`,
+  purchaseToken: (entrypoint) => `${entrypoint}/user/purchase-token`,
   projects: (entrypoint, page, limit) =>
     `${entrypoint}/project/list?page=${page}&limit=${limit}`,
   branches: (entrypoint, owner, repo) =>
