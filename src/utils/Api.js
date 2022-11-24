@@ -19,6 +19,8 @@ const endpoints = {
     `${entrypoint}/project/${project}/request/list?page=${page}&limit=${limit}&status=${status}`,
   request: (entrypoint, project) =>
     `${entrypoint}/user/project/${project}/request`,
+  approveRequest: (entrypoint, request) =>
+    `${entrypoint}/user/request/${request}/approve`,
   paymentIntent: (entrypoint) => `${entrypoint}/user/payment-intent`,
   proposal: (entrypoint, request) =>
     `${entrypoint}/user/request/${request}/proposal`,
@@ -28,6 +30,8 @@ const endpoints = {
     `${entrypoint}/user/request/${request}/proposal/${proposal}/select`,
   contributions: (entrypoint, request) =>
     `${entrypoint}/request/${request}/contributions`,
+  tokenHolding: (entrypoint, token) =>
+    `${entrypoint}/user/token/${token}/holding`,
 };
 
 export const getCsrApi = (name, ...params) =>
