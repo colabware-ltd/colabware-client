@@ -37,10 +37,11 @@ const Project = (props) => {
   });
   let [project, setProject] = useState({});
   let [token, setToken] = useState({
-    investor_alance: null,
-    maintainerBalance: null,
-    maintainerReserved: null,
+    investor_balance: null,
+    maintainer_balance: null,
+    maintainer_reserved: null,
   });
+  let [tokenHolding, setTokenHolding] = useState({});
 
   useEffect(() => {
     (async () => {
@@ -61,6 +62,9 @@ const Project = (props) => {
         pending: pendingRequests,
         closed: closedRequests,
       });
+      const tokenHolding = (await get("tokenHolding", project.token.address))
+        .data;
+      setTokenHolding(tokenHolding);
     })();
   }, [params.projectId]);
 
@@ -183,6 +187,8 @@ const Project = (props) => {
               stripePromise={props.stripePromise}
               stripeClientSecret={props.stripeClientSecret}
               setStripeClientSecret={props.setStripeClientSecret}
+              tokenHolding={tokenHolding}
+              token={token}
               user={props.user}
             />
           </Tab>

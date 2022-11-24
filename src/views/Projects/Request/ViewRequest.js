@@ -10,6 +10,7 @@ import {
   InputGroup,
   Form,
   Modal,
+  ProgressBar,
 } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { Elements } from "@stripe/react-stripe-js";
@@ -86,6 +87,14 @@ const ViewRequest = (props) => {
     });
   };
 
+  const approveRequest = async () => {
+    const res = await get("approveRequest", props.request._id);
+    props.setSelectedRequest((previous) => ({
+      ...previous,
+      approved: res.data.approved,
+    }));
+  };
+
   useEffect(() => {
     getProposals();
     getContributions();
@@ -156,10 +165,68 @@ const ViewRequest = (props) => {
                 </Button>
               </Col>
               <Col style={{ textAlign: "right" }}>
-                <Button onClick={showNewProposal}>Submit code</Button>
+                <Button onClick={showNewProposal} disabled>
+                  Submit code
+                </Button>
               </Col>
             </Row>
             <Row>
+              <div
+                style={{
+                  borderTop: "1px solid #ced4da",
+                  marginTop: "40px",
+                  marginBottom: "20px",
+                }}
+              />
+              <div>
+                <h5>Roadmap approval</h5>
+                <ProgressBar
+                  style={{ marginTop: "20px", marginBottom: "20px" }}
+                >
+                  <ProgressBar variant="primary" now={35} key={2} />
+                  <ProgressBar variant="secondary" now={10} key={2} />
+                </ProgressBar>
+                <Card>
+                  <Row style={{ margin: "20px" }}>
+                    <Col md={4}>
+                      {" "}
+                      <div className="text-align-center">
+                        <h2>{props.tokenHolding.balance}</h2>
+                        <p>Tokens held</p>
+                      </div>
+                    </Col>
+                    <Col md={4}>
+                      {" "}
+                      <div className="text-align-center">
+                        <h2>
+                          {(props.tokenHolding.balance /
+                            (props.token.investor_balance +
+                              props.token.maintainer_balance +
+                              props.token.maintainer_reserved)) *
+                            100}
+                          %
+                        </h2>
+                        <p>Stake</p>
+                      </div>
+                    </Col>
+                    <Col md={4}>
+                      <Row>
+                        <Button onClick={approveRequest}>
+                          Approve request
+                        </Button>
+                      </Row>
+                      <Row>
+                        <Button
+                          variant="outline-secondary"
+                          style={{ marginTop: "10px" }}
+                        >
+                          Purchase tokens
+                        </Button>
+                      </Row>
+                    </Col>
+                  </Row>
+                </Card>
+              </div>
               <div
                 style={{
                   borderTop: "1px solid #ced4da",

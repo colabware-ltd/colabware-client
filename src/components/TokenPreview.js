@@ -104,9 +104,26 @@ const TokenPreview = (props) => {
           <Button disabled>Contract pending deployment</Button>
         )}
         {contractDeployed() && (
-          <Button onClick={buyUSDT}>
-            Purchase {props.token.symbol} tokens
-          </Button>
+          <Row>
+            <Col>
+              <Button onClick={buyUSDT} style={{ width: "100%" }}>
+                Purchase tokens
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                variant="outline-secondary"
+                style={{ width: "100%" }}
+                onClick={() => {
+                  window.open(
+                    `https://mumbai.polygonscan.com/token/${props.project.token.address}`
+                  );
+                }}
+              >
+                View contract
+              </Button>
+            </Col>
+          </Row>
         )}
       </Card>
     </div>

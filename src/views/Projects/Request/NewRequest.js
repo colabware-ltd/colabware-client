@@ -37,6 +37,7 @@ const NewRequest = (props) => {
     description: "",
     categories: [],
     expiry: defaultExpiry.toISOString(),
+    is_approved: false,
     contributions: [],
     status: "open",
   });

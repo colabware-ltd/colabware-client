@@ -27,6 +27,12 @@ const NewProject = () => {
     maintainers: [""],
     requests: [""],
     roadmap: [""],
+    // TODO: Update project creation form to include this
+    // Deploy this information to smart contract?
+    approval_config: {
+      tokens_required: 0.5,
+      maintainer_required: true,
+    },
     token: {
       name: "",
       symbol: "",
