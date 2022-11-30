@@ -27,12 +27,6 @@ const NewProject = () => {
     maintainers: [""],
     requests: [""],
     roadmap: [""],
-    // TODO: Update project creation form to include this
-    // Deploy this information to smart contract?
-    approval_config: {
-      tokens_required: 0.5,
-      maintainer_required: true,
-    },
     token: {
       name: "",
       symbol: "",
@@ -129,9 +123,8 @@ const NewProject = () => {
       case 1:
         var tokenNameInvalid = project.token.name == "" ? true : false;
         var tokenSymbolInvalid = project.token.symbol == "" ? true : false;
-        var tokenPriceInvalid = project.token.price == null ? true : false;
-        var tokenSupplyInvalid =
-          project.token.total_supply == null ? true : false;
+        var tokenPriceInvalid = project.token.price == 0 ? true : false;
+        var tokenSupplyInvalid = project.token.total_supply == 0 ? true : false;
         var maintainerAllocationInvalid =
           form.maintainerAllocation == null ? true : false;
 
@@ -173,7 +166,7 @@ const NewProject = () => {
   };
 
   let launchProject = async () => {
-    console.log(project)
+    console.log(project);
     const res = await post("newProject", {
       body: project,
     });
