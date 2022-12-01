@@ -62,7 +62,7 @@ const Project = (props) => {
         pending: pendingRequests,
         closed: closedRequests,
       });
-      const tokenHolding = (await get("tokenHolding", project.token.address))
+      const tokenHolding = (await get("tokenHolding", project._id))
         .data;
       setTokenHolding(tokenHolding);
     })();
@@ -177,7 +177,7 @@ const Project = (props) => {
               </Col>
             </Row>
           </Tab>
-          <Tab eventKey="roadmap" title="Roadmap" disabled></Tab>
+          {/* <Tab eventKey="roadmap" title="Roadmap" disabled></Tab> */}
           <Tab eventKey="requests" title="Requests" className="tab-margin-top">
             <ProjectRequests
               requests={requests}
@@ -192,7 +192,7 @@ const Project = (props) => {
               user={props.user}
             />
           </Tab>
-          <Tab eventKey="manage" title="Manage" disabled></Tab>
+          {/* <Tab eventKey="manage" title="Manage" disabled></Tab> */}
         </Tabs>
       </Container>
       <Footer />

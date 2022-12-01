@@ -30,8 +30,8 @@ const endpoints = {
     `${entrypoint}/user/request/${request}/proposal/${proposal}/select`,
   contributions: (entrypoint, request) =>
     `${entrypoint}/request/${request}/contributions`,
-  tokenHolding: (entrypoint, token) =>
-    `${entrypoint}/user/token/${token}/holding`,
+  tokenHolding: (entrypoint, project) =>
+    `${entrypoint}/user/project/${project}/tokens`,
 };
 
 export const getCsrApi = (name, ...params) =>

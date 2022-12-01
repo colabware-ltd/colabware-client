@@ -199,11 +199,10 @@ const ViewRequest = (props) => {
                       {" "}
                       <div className="text-align-center">
                         <h2>
-                          {(props.tokenHolding.balance /
+                          {((props.tokenHolding.balance /
                             (props.token.investor_balance +
-                              props.token.maintainer_balance +
-                              props.token.maintainer_reserved)) *
-                            100}
+                              props.token.maintainer_balance)) *
+                            100).toFixed(2)}
                           %
                         </h2>
                         <p>Stake</p>
