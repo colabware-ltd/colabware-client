@@ -48,6 +48,7 @@ const ViewRequest = (props) => {
     type: "bounty",
   });
   const [contributions, setContributions] = useState([]);
+  const [approvers, setApprovers] = useState(0);
 
   const createPaymentIntent = async () => {
     const res = await post("paymentIntent", {
@@ -73,6 +74,11 @@ const ViewRequest = (props) => {
     }));
   };
 
+  const getApprovers = async () => {
+    const res = await get("approvers", props.request._id);
+    setApprovers(res.data);
+  };
+
   const getContributions = async () => {
     const res = await get("contributions", props.request._id);
     setContributions(res.data);
@@ -93,11 +99,13 @@ const ViewRequest = (props) => {
       ...previous,
       approved: res.data.approved,
     }));
+    getApprovers();
   };
 
   useEffect(() => {
     getProposals();
     getContributions();
+    getApprovers();
   }, []);
 
   return (
@@ -165,9 +173,25 @@ const ViewRequest = (props) => {
                 </Button>
               </Col>
               <Col style={{ textAlign: "right" }}>
-                <Button onClick={showNewProposal} disabled>
-                  Submit code
-                </Button>
+                {props.request.approved && (
+                  <Button onClick={showNewProposal}>Submit code</Button>
+                )}
+                {!props.request.approved && (
+                  <OverlayTrigger
+                    key="top"
+                    placement="top"
+                    overlay={
+                      <Tooltip id="tooltip-top">
+                        At least{" "}
+                        {props.project.approval_config.tokens_required * 100}%
+                        of token holders must approve this request before any
+                        code submissions can be made.
+                      </Tooltip>
+                    }
+                  >
+                    <Button style={{ opacity: 0.65 }}>Submit code</Button>
+                  </OverlayTrigger>
+                )}
               </Col>
             </Row>
             <Row>
@@ -183,15 +207,28 @@ const ViewRequest = (props) => {
                 <ProgressBar
                   style={{ marginTop: "20px", marginBottom: "20px" }}
                 >
-                  <ProgressBar variant="primary" now={35} key={2} />
-                  <ProgressBar variant="secondary" now={10} key={2} />
+                  <ProgressBar
+                    variant="primary"
+                    now={
+                      (approvers /
+                        (props.project.approval_config.tokens_required *
+                          (props.token.maintainer_balance +
+                            props.token.investor_balance))) *
+                      100
+                    }
+                    key={2}
+                  />
                 </ProgressBar>
                 <Card>
                   <Row style={{ margin: "20px" }}>
                     <Col md={4}>
                       {" "}
                       <div className="text-align-center">
-                        <h2>{props.tokenHolding.balance}</h2>
+                        <h2>
+                          {props.tokenHolding.balance != null
+                            ? props.tokenHolding.balance.toLocaleString("en")
+                            : 0}
+                        </h2>
                         <p>Tokens held</p>
                       </div>
                     </Col>
@@ -199,10 +236,14 @@ const ViewRequest = (props) => {
                       {" "}
                       <div className="text-align-center">
                         <h2>
-                          {((props.tokenHolding.balance /
-                            (props.token.investor_balance +
-                              props.token.maintainer_balance)) *
-                            100).toFixed(2)}
+                          {props.tokenHolding.balance != null
+                            ? (
+                                (props.tokenHolding.balance /
+                                  (props.token.investor_balance +
+                                    props.token.maintainer_balance)) *
+                                100
+                              ).toFixed(2)
+                            : 0}
                           %
                         </h2>
                         <p>Stake</p>

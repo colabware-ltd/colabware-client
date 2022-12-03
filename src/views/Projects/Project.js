@@ -36,11 +36,7 @@ const Project = (props) => {
     },
   });
   let [project, setProject] = useState({});
-  let [token, setToken] = useState({
-    investor_balance: null,
-    maintainer_balance: null,
-    maintainer_reserved: null,
-  });
+  let [token, setToken] = useState({});
   let [tokenHolding, setTokenHolding] = useState({});
 
   useEffect(() => {
@@ -62,8 +58,7 @@ const Project = (props) => {
         pending: pendingRequests,
         closed: closedRequests,
       });
-      const tokenHolding = (await get("tokenHolding", project._id))
-        .data;
+      const tokenHolding = (await get("tokenHolding", project._id)).data;
       setTokenHolding(tokenHolding);
     })();
   }, [params.projectId]);
