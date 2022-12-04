@@ -48,7 +48,10 @@ const ViewRequest = (props) => {
     type: "bounty",
   });
   const [contributions, setContributions] = useState([]);
-  const [approvers, setApprovers] = useState(0);
+  const [approvers, setApprovers] = useState({
+    tokens: 0,
+    approverList: [],
+  });
 
   const createPaymentIntent = async () => {
     const res = await post("paymentIntent", {
@@ -76,7 +79,14 @@ const ViewRequest = (props) => {
 
   const getApprovers = async () => {
     const res = await get("approvers", props.request._id);
-    setApprovers(res.data);
+    setApprovers({
+      tokens: res.data.tokens,
+      approverList: res.data.approvers,
+    });
+    props.setSelectedRequest((previous) => ({
+      ...previous,
+      approved: res.data.approved,
+    }));
   };
 
   const getContributions = async () => {
@@ -100,6 +110,14 @@ const ViewRequest = (props) => {
       approved: res.data.approved,
     }));
     getApprovers();
+  };
+
+  const isApprover = () => {
+    if (approvers.approverList == null) return false;
+    const approvingUsers = approvers.approverList.map(
+      ({ wallet_address }) => wallet_address
+    );
+    return approvingUsers.includes(props.user.current.wallet_address);
   };
 
   useEffect(() => {
@@ -189,7 +207,7 @@ const ViewRequest = (props) => {
                       </Tooltip>
                     }
                   >
-                    <Button style={{ opacity: 0.65 }}>Submit code</Button>
+                    <Button style={{ opacity: 0.65 }}>Pending approval</Button>
                   </OverlayTrigger>
                 )}
               </Col>
@@ -210,7 +228,7 @@ const ViewRequest = (props) => {
                   <ProgressBar
                     variant="primary"
                     now={
-                      (approvers /
+                      (approvers.tokens /
                         (props.project.approval_config.tokens_required *
                           (props.token.maintainer_balance +
                             props.token.investor_balance))) *
@@ -251,9 +269,12 @@ const ViewRequest = (props) => {
                     </Col>
                     <Col md={4}>
                       <Row>
-                        <Button onClick={approveRequest}>
-                          Approve request
-                        </Button>
+                        {!isApprover() && (
+                          <Button onClick={approveRequest}>
+                            Approve request
+                          </Button>
+                        )}
+                        {isApprover() && <Button disabled>Approved</Button>}
                       </Row>
                       <Row>
                         <Button
