@@ -120,6 +120,18 @@ const ViewRequest = (props) => {
     return approvingUsers.includes(props.user.current.wallet_address);
   };
 
+  const isTokenHolder = () => {
+    return props.tokenHolding.balance == 0 ? false : true;
+  };
+
+  const isContributor = () => {
+    if (contributions == null) return false;
+    const contributingUsers = contributions.map(
+      ({ creator_name }) => creator_name
+    );
+    return contributingUsers.includes(props.user.current.login);
+  };
+
   useEffect(() => {
     getProposals();
     getContributions();
@@ -269,10 +281,26 @@ const ViewRequest = (props) => {
                     </Col>
                     <Col md={4}>
                       <Row>
-                        {!isApprover() && (
+                        {!isApprover() && isTokenHolder() && (
                           <Button onClick={approveRequest}>
                             Approve request
                           </Button>
+                        )}
+                        {!isApprover() && !isTokenHolder() && (
+                          <OverlayTrigger
+                            key="top"
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-top">
+                                You must be a token holder to approve this
+                                request.
+                              </Tooltip>
+                            }
+                          >
+                            <Button style={{ opacity: 0.5 }}>
+                              No tokens held
+                            </Button>
+                          </OverlayTrigger>
                         )}
                         {isApprover() && <Button disabled>Approved</Button>}
                       </Row>
@@ -318,12 +346,12 @@ const ViewRequest = (props) => {
                               )}
                               %
                             </b>{" "}
-                            pledged{" "}
+                            funds allocated{" "}
                             <OverlayTrigger
                               placement="bottom"
                               overlay={
                                 <Tooltip id="button-tooltip-2">
-                                  Proportion of funds raised pledged to this
+                                  Proportion of funds raised allocated to this
                                   submission.
                                 </Tooltip>
                               }
@@ -353,16 +381,17 @@ const ViewRequest = (props) => {
                             >
                               View
                             </Button>
-                            {item._id != proposal.selected && (
-                              <Button
-                                style={{ width: "90px" }}
-                                onClick={() => {
-                                  selectProposal(item._id);
-                                }}
-                              >
-                                Select
-                              </Button>
-                            )}
+                            {item._id != proposal.selected &&
+                              isContributor() && (
+                                <Button
+                                  style={{ width: "90px" }}
+                                  onClick={() => {
+                                    selectProposal(item._id);
+                                  }}
+                                >
+                                  Select
+                                </Button>
+                              )}
                             {item._id == proposal.selected && (
                               <Button style={{ width: "90px" }} disabled>
                                 Selected

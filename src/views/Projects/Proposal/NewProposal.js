@@ -17,7 +17,7 @@ const NewProposal = (props) => {
     const res = await post("proposal", {
       params: [props.request._id],
       body: {
-        repository: `${props.project.github.repoOwner}/${props.project.github.repoName}`,
+        repository: `${props.project.github.repo_owner}/${props.project.github.repo_name}`,
         pull_request: {
           title: `[Colabware] Submission for ${props.request.name}`,
           body: proposal.description,

@@ -37,7 +37,11 @@ const Project = (props) => {
   });
   let [project, setProject] = useState({});
   let [token, setToken] = useState({});
-  let [tokenHolding, setTokenHolding] = useState({});
+  let [tokenHolding, setTokenHolding] = useState({
+    wallet_address: "",
+    token_address: "",
+    balance: 0,
+  });
 
   useEffect(() => {
     (async () => {
@@ -59,7 +63,9 @@ const Project = (props) => {
         closed: closedRequests,
       });
       const tokenHolding = (await get("tokenHolding", project._id)).data;
-      setTokenHolding(tokenHolding);
+      if (tokenHolding != "") {
+        setTokenHolding(tokenHolding);
+      }
     })();
   }, [params.projectId]);
 
