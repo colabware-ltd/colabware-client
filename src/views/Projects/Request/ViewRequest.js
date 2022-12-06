@@ -117,11 +117,20 @@ const ViewRequest = (props) => {
     const approvingUsers = approvers.approverList.map(
       ({ wallet_address }) => wallet_address
     );
-    return approvingUsers.includes(props.user.current.wallet_address);
+
+    if (isMaintainer) {
+      return approvingUsers.includes(props.project.wallet_address);
+    } else {
+      return approvingUsers.includes(props.user.current.wallet_address);
+    }
   };
 
   const isTokenHolder = () => {
     return props.tokenHolding.balance == 0 ? false : true;
+  };
+
+  const isMaintainer = () => {
+    return props.project.maintainers.includes(props.user.current._id);
   };
 
   const isContributor = () => {
