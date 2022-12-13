@@ -39,7 +39,7 @@ const NewRequest = (props) => {
     expiry: defaultExpiry.toISOString(),
     is_approved: false,
     contributions: [],
-    status: "open",
+    // status: "open",
   });
 
   let createRequest = async () => {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Col, Row, Form } from "react-bootstrap";
+import { Button, Col, Row, Form, Nav, Tab } from "react-bootstrap";
 import PaginatedList from "../../../components/PaginatedList";
 import NewRequest from "./NewRequest";
 import ViewRequest from "./ViewRequest";
@@ -36,34 +36,76 @@ const ProjectRequests = (props) => {
       {view.current === "request_list" && (
         <div>
           <Row style={{ marginBottom: "15px" }}>
-            <Col xs={10}>
-              <Form.Control type="search" placeholder="Search for an issue" />
-            </Col>
-            <Col xs={2}>
+            <Col md={2}>
               <Button
                 variant="outline-primary"
-                size="sm"
                 onClick={() => {
                   setView({
                     current: "request_new",
                   });
                 }}
-                style={{ height: "100%" }}
+                style={{ height: "100%", width: "100%" }}
               >
                 New Request
               </Button>
             </Col>
+            <Col md={10}>
+              <Form.Control type="search" placeholder="Search for an issue" />
+            </Col>
           </Row>
           <Row>
-            <PaginatedList
-              data={props.requests.open}
-              pageLimit={pageLimit}
-              pageCurrent={pageCurrent}
-              updatePage={updatePage}
-              request={true}
-              setParentView={setView}
-              setSelectedRequest={setSelectedRequest}
-            />
+            <Tab.Container defaultActiveKey="home">
+              <Col md={2}>
+                <Nav variant="pills" className="flex-column">
+                  <Nav.Item>
+                    <Nav.Link eventKey="open">Open</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link eventKey="pending">Pending</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link eventKey="closed">Closed</Nav.Link>
+                  </Nav.Item>
+                </Nav>
+              </Col>
+              <Col>
+                <Tab.Content>
+                  <Tab.Pane eventKey="open">
+                    <PaginatedList
+                      data={props.requests.open}
+                      pageLimit={pageLimit}
+                      pageCurrent={pageCurrent}
+                      updatePage={updatePage}
+                      request={true}
+                      setParentView={setView}
+                      setSelectedRequest={setSelectedRequest}
+                    />
+                  </Tab.Pane>
+                  <Tab.Pane eventKey="pending">
+                    <PaginatedList
+                      data={props.requests.pending}
+                      pageLimit={pageLimit}
+                      pageCurrent={pageCurrent}
+                      updatePage={updatePage}
+                      request={true}
+                      setParentView={setView}
+                      setSelectedRequest={setSelectedRequest}
+                    />
+                  </Tab.Pane>
+                  <Tab.Pane eventKey="closed">
+                    <PaginatedList
+                      data={props.requests.closed}
+                      pageLimit={pageLimit}
+                      pageCurrent={pageCurrent}
+                      updatePage={updatePage}
+                      request={true}
+                      setParentView={setView}
+                      setSelectedRequest={setSelectedRequest}
+                    />
+                  </Tab.Pane>
+                </Tab.Content>
+              </Col>
+            </Tab.Container>
           </Row>
         </div>
       )}
