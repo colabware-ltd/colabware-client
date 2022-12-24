@@ -8,34 +8,34 @@ import DoughnutChart from "../../components/DoughnutChart";
 import { useNavigate } from "react-router-dom";
 import { post } from "../../utils/Api";
 
-const NewProject = () => {
-  let navigate = useNavigate();
-  let [form, setForm] = useState({
+const NewProject = (props) => {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
     currentPage: 0,
     progress: "0%",
     maintainerAllocation: 20,
     error: "",
   });
-  let [project, setProject] = useState({
-    name: "",
+  const [project, setProject] = useState({
+    // name: "",
     github: {
       repo_owner: "",
       repo_name: "",
     },
-    description: "",
-    categories: [""],
-    maintainers: [""],
-    requests: [""],
-    roadmap: [""],
+    // description: "",
+    // categories: [""],
+    // maintainers: [""],
+    // requests: [""],
+    // roadmap: [""],
     token: {
-      name: "",
-      symbol: "",
+      // name: "",
+      // symbol: "",
       price: 1.0,
       total_supply: 1000,
       maintainer_supply: 200,
     },
   });
-  let [fieldInvalid, updateFieldInvalid] = useState({
+  const [fieldInvalid, updateFieldInvalid] = useState({
     projectName: false,
     repositoryOwner: false,
     repositoryName: false,
@@ -45,7 +45,7 @@ const NewProject = () => {
     tokenSupply: false,
     maintainerAllocation: false,
   });
-  let progressData = {
+  const progressData = {
     datasets: [
       {
         data: [form.currentPage, 3 - form.currentPage],
@@ -208,6 +208,7 @@ const NewProject = () => {
                   classNames="fade"
                 >
                   <NewProjectForm
+                    categories={props.categories}
                     form={form}
                     setForm={setForm}
                     project={project}

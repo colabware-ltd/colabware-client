@@ -24,6 +24,22 @@ const App = () => {
     clientSecret,
     appearance,
   };
+  const projectCategories = [
+    "Blockchain",
+    "Security",
+    "E-commerce",
+    "Multimedia",
+    "Other",
+    "Database",
+    "Education",
+    "Software development",
+    "System development",
+    "Internet",
+    "Business",
+    "Communications",
+    "Science and Engineering",
+    "Text editors",
+  ].sort();
 
   useEffect(() => {
     (async () => {
@@ -60,8 +76,16 @@ const App = () => {
             }
             exact
           />
-          <Route path="/browse" element={<Browse user={user} />} exact />
-          <Route path="/project/new" element={<NewProject />} exact />
+          <Route
+            path="/browse"
+            element={<Browse categories={projectCategories} user={user} />}
+            exact
+          />
+          <Route
+            path="/project/new"
+            element={<NewProject categories={projectCategories} />}
+            exact
+          />
         </Routes>
       </div>
     </BrowserRouter>

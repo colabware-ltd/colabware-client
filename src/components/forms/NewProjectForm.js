@@ -125,8 +125,8 @@ const NewProjectForm = (props) => {
             <div className="dropdown-multiselect">
               <DropdownMultiselect
                 placeholder="Select a category"
-                options={["Blockchain", "Security", "Networking"]}
-                name="countries"
+                options={props.categories}
+                name="category"
                 handleOnChange={(selected) => {
                   props.setProject((previous) => ({
                     ...previous,

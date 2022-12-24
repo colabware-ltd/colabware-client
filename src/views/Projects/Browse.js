@@ -17,38 +17,85 @@ const Browse = (props) => {
   let [pageLimit, setPageLimit] = useState(10);
   let [parameters, setParameters] = useState({
     categories: [],
-    orderBy: "Date created",
-    descending: false,
+    orderBy: "created",
+    descending: true,
   });
 
   const sortOptions = [
-    { name: "Date created", id: 1 },
-    { name: "Number of investors", id: 2 },
-    { name: "Number of maintainers", id: 3 },
+    { name: "Most recently created", field: "created", descending: true },
+    {
+      name: "Least recently created",
+      field: "created",
+      descending: false,
+    },
+    { name: "Most requests", field: "request_count", descending: true },
+    { name: "Least requests", field: "request_count", descending: false },
   ];
 
-  const categories = [
-    { name: "Blockchain", id: 1 },
-    { name: "CRM", id: 2 },
-    { name: "Development", id: 3 },
-    { name: "Multimedia", id: 4 },
-    { name: "Security", id: 5 },
-  ];
+  const updateCategories = (option) => {
+    let c = parameters.categories;
+    if (!parameters.categories.includes(option)) {
+      c.push(option);
+    } else {
+      let index = parameters.categories.indexOf(option);
+      if (index > -1) {
+        c.splice(index, 1);
+      }
+    }
+    setParameters((prev) => ({
+      ...prev,
+      categories: c,
+    }));
+    getProjects(
+      pageCurrent,
+      pageLimit,
+      parameters.orderBy,
+      parameters.descending,
+      c.toString()
+    );
+  };
 
-  const getProjects = async (page, limit) => {
+  const updateSort = (option) => {
+    setParameters((prev) => ({
+      ...prev,
+      orderBy: option.field,
+      descending: option.descending,
+    }));
+    getProjects(
+      pageCurrent,
+      pageLimit,
+      option.field,
+      option.descending,
+      parameters.categories.toString()
+    );
+  };
+
+  const getProjects = async (page, limit, orderBy, desc, filterBy) => {
     if (page >= 1) {
-      const res = await get("projects", page, limit);
+      const res = await get("projects", page, limit, orderBy, desc, filterBy);
       setData(res.data);
     }
   };
 
   const updatePage = (page) => {
     setPageCurrent(page);
-    getProjects(page, pageLimit);
+    getProjects(
+      page,
+      pageLimit,
+      parameters.orderBy,
+      parameters.descending,
+      parameters.categories.toString()
+    );
   };
 
   useEffect(() => {
-    getProjects(pageCurrent, pageLimit);
+    getProjects(
+      pageCurrent,
+      pageLimit,
+      parameters.orderBy,
+      parameters.descending,
+      parameters.categories.toString()
+    );
   }, []);
 
   return (
@@ -70,19 +117,20 @@ const Browse = (props) => {
               }}
             >
               <Form.Group>
-                <Form.Select style={{ marginBottom: "20px" }}>
-                  <option>Most recently created</option>
-                  <option>Least recently created</option>
-                  <option>Most investors</option>
-                  <option>Fewest investors</option>
-                  <option>Most contributors</option>
-                  <option>Fewest contributors</option>
-                </Form.Select>
-                <Form.Control
-                  type="email"
-                  placeholder="Search"
+                <Form.Select
                   style={{ marginBottom: "20px" }}
-                />
+                  onChange={(e) => {
+                    updateSort(JSON.parse(e.target.value));
+                  }}
+                >
+                  {sortOptions.map((o, i) => {
+                    return (
+                      <option key={i} value={JSON.stringify(o)}>
+                        {o.name}
+                      </option>
+                    );
+                  })}
+                </Form.Select>
               </Form.Group>
               <Card>
                 <Card.Body>
@@ -90,7 +138,7 @@ const Browse = (props) => {
                     Filter by project type
                   </p>
                   <div style={{ marginTop: "10px", marginBottom: "10px" }}>
-                    {categories.map((o, i) => {
+                    {props.categories.map((o, i) => {
                       return (
                         <Badge
                           key={i}
@@ -98,7 +146,7 @@ const Browse = (props) => {
                           bg="primary"
                           className="margin-right-sm"
                           style={
-                            parameters.categories.includes(o.name)
+                            parameters.categories.includes(o)
                               ? {
                                   marginRight: "5px",
                                   marginBottom: "3px",
@@ -114,19 +162,10 @@ const Browse = (props) => {
                                 }
                           }
                           onClick={() => {
-                            let c = parameters.categories;
-                            if (!parameters.categories.includes(o.name)) {
-                              c.push(o.name);
-                            } else {
-                              let index = parameters.categories.indexOf(o.name);
-                              if (index > -1) {
-                                c.splice(index, 1);
-                              }
-                            }
-                            setParameters({ categories: c });
+                            updateCategories(o);
                           }}
                         >
-                          {o.name}
+                          {o}
                         </Badge>
                       );
                     })}

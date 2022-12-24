@@ -9,8 +9,8 @@ const endpoints = {
     `${entrypoint}/project/${encodeURI(project)}`,
   newProject: (entrypoint) => `${entrypoint}/user/project`,
   purchaseToken: (entrypoint) => `${entrypoint}/user/purchase-token`,
-  projects: (entrypoint, page, limit) =>
-    `${entrypoint}/project/list?page=${page}&limit=${limit}`,
+  projects: (entrypoint, page, limit, orderBy, desc, filterBy) =>
+    `${entrypoint}/project/list?page=${page}&limit=${limit}&orderBy=${orderBy}&desc=${desc}&filterBy=${filterBy}`,
   branches: (entrypoint, owner, repo) =>
     `${entrypoint}/user/project/branches/${owner}/${repo}`,
   balances: (entrypoint, address) =>
@@ -34,6 +34,8 @@ const endpoints = {
     `${entrypoint}/user/project/${project}/tokens`,
   approvers: (entrypoint, request) =>
     `${entrypoint}/request/${request}/approvers`,
+  mergeProposal: (entrypoint, request, proposal) =>
+    `${entrypoint}/user/request/${request}/proposal/${proposal}/merge`,
 };
 
 export const getCsrApi = (name, ...params) =>

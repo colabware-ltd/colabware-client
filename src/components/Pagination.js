@@ -34,7 +34,7 @@ const PaginationComponent = ({
   };
 
   const setLastPageAsCurrent = () => {
-    if (currentPage > pagesCount) {
+    if (currentPage > pagesCount && pagesCount != 0) {
       setCurrentPage(pagesCount);
     }
   };

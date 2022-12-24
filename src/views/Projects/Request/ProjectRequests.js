@@ -54,7 +54,7 @@ const ProjectRequests = (props) => {
             </Col>
           </Row>
           <Row>
-            <Tab.Container defaultActiveKey="home">
+            <Tab.Container defaultActiveKey="open">
               <Col md={2}>
                 <Nav variant="pills" className="flex-column">
                   <Nav.Item>
