@@ -49,13 +49,14 @@ const Project = (props) => {
       setProject(project);
       const balances = (await get("balances", project.address)).data;
       setToken(balances);
-      const openRequests = (await get("requests", project._id, 1, 10, "open"))
-        .data;
+      const openRequests = (
+        await get("projectRequests", project._id, 1, 10, "open")
+      ).data;
       const pendingRequests = (
-        await get("requests", project._id, 1, 10, "pending")
+        await get("projectRequests", project._id, 1, 10, "pending")
       ).data;
       const closedRequests = (
-        await get("requests", project._id, 1, 10, "closed")
+        await get("projectRequests", project._id, 1, 10, "closed")
       ).data;
       setRequests({
         open: openRequests,
@@ -70,8 +71,7 @@ const Project = (props) => {
   }, [params.projectId]);
 
   return (
-    <div>
-      <Header user={props.user} />
+    <div style={{ marginBottom: "80px" }}>
       <div className="secondary-background">
         <Container>
           <Row>
@@ -196,7 +196,6 @@ const Project = (props) => {
           {/* <Tab eventKey="manage" title="Manage" disabled></Tab> */}
         </Tabs>
       </Container>
-      <Footer />
     </div>
   );
 };

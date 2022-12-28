@@ -15,8 +15,10 @@ const endpoints = {
     `${entrypoint}/user/project/branches/${owner}/${repo}`,
   balances: (entrypoint, address) =>
     `${entrypoint}/project/${address}/balances`,
-  requests: (entrypoint, project, page, limit, status) =>
+  projectRequests: (entrypoint, project, page, limit, status) =>
     `${entrypoint}/project/${project}/request/list?page=${page}&limit=${limit}&status=${status}`,
+  userRequests: (entrypoint) => `${entrypoint}/user/request/list`,
+  userTokens: (entrypoint) => `${entrypoint}/user/token/list`,
   request: (entrypoint, project) =>
     `${entrypoint}/user/project/${project}/request`,
   approveRequest: (entrypoint, request) =>

@@ -17,7 +17,7 @@ const ProjectRequests = (props) => {
     setPageCurrent(page);
     if (props.project !== null && props.project._id !== "") {
       const requests = (
-        await get("requests", props.project._id, pageCurrent, pageLimit)
+        await get("projectRequests", props.project._id, pageCurrent, pageLimit)
       ).data;
       props.setRequests((prev) => ({
         ...prev,

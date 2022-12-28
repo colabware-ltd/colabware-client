@@ -99,97 +99,91 @@ const Browse = (props) => {
   }, []);
 
   return (
-    <div>
-      <Header user={props.user} />
-      <Container
-        style={{
-          paddingTop: "35px",
-          paddingLeft: "120px",
-          paddingRight: "120px",
-        }}
-      >
-        <Row>
-          <Col xs={3}>
-            <div
-              style={{
-                height: "100%",
-                paddingRight: "15px",
-              }}
-            >
-              <Form.Group>
-                <Form.Select
-                  style={{ marginBottom: "20px" }}
-                  onChange={(e) => {
-                    updateSort(JSON.parse(e.target.value));
-                  }}
-                >
-                  {sortOptions.map((o, i) => {
+    <Container
+      style={{
+        paddingTop: "35px",
+        paddingLeft: "120px",
+        paddingRight: "120px",
+      }}
+    >
+      <Row>
+        <Col xs={3}>
+          <div
+            style={{
+              height: "100%",
+              paddingRight: "15px",
+            }}
+          >
+            <Form.Group>
+              <Form.Select
+                style={{ marginBottom: "20px" }}
+                onChange={(e) => {
+                  updateSort(JSON.parse(e.target.value));
+                }}
+              >
+                {sortOptions.map((o, i) => {
+                  return (
+                    <option key={i} value={JSON.stringify(o)}>
+                      {o.name}
+                    </option>
+                  );
+                })}
+              </Form.Select>
+            </Form.Group>
+            <Card>
+              <Card.Body>
+                <p style={{ fontWeight: "600", marginBottom: 0 }}>
+                  Filter by project type
+                </p>
+                <div style={{ marginTop: "10px", marginBottom: "10px" }}>
+                  {props.categories.map((o, i) => {
                     return (
-                      <option key={i} value={JSON.stringify(o)}>
-                        {o.name}
-                      </option>
+                      <Badge
+                        key={i}
+                        pill
+                        bg="primary"
+                        className="margin-right-sm"
+                        style={
+                          parameters.categories.includes(o)
+                            ? {
+                                marginRight: "5px",
+                                marginBottom: "3px",
+                                cursor: "pointer",
+                                transition: "0.2s",
+                              }
+                            : {
+                                marginRight: "5px",
+                                marginBottom: "3px",
+                                cursor: "pointer",
+                                opacity: "0.4",
+                                transition: "0.2s",
+                              }
+                        }
+                        onClick={() => {
+                          updateCategories(o);
+                        }}
+                      >
+                        {o}
+                      </Badge>
                     );
                   })}
-                </Form.Select>
-              </Form.Group>
-              <Card>
-                <Card.Body>
-                  <p style={{ fontWeight: "600", marginBottom: 0 }}>
-                    Filter by project type
-                  </p>
-                  <div style={{ marginTop: "10px", marginBottom: "10px" }}>
-                    {props.categories.map((o, i) => {
-                      return (
-                        <Badge
-                          key={i}
-                          pill
-                          bg="primary"
-                          className="margin-right-sm"
-                          style={
-                            parameters.categories.includes(o)
-                              ? {
-                                  marginRight: "5px",
-                                  marginBottom: "3px",
-                                  cursor: "pointer",
-                                  transition: "0.2s",
-                                }
-                              : {
-                                  marginRight: "5px",
-                                  marginBottom: "3px",
-                                  cursor: "pointer",
-                                  opacity: "0.4",
-                                  transition: "0.2s",
-                                }
-                          }
-                          onClick={() => {
-                            updateCategories(o);
-                          }}
-                        >
-                          {o}
-                        </Badge>
-                      );
-                    })}
-                  </div>
-                </Card.Body>
-              </Card>
-            </div>
-          </Col>
-          <Col xs={9}>
-            <h3 style={{ marginBottom: "15px" }}>
-              {data.total} projects found
-            </h3>
-            <PaginatedList
-              data={data}
-              pageLimit={pageLimit}
-              pageCurrent={pageCurrent}
-              updatePage={updatePage}
-              project={navigate}
-            />
-          </Col>
-        </Row>
-      </Container>
-      <Footer />
-    </div>
+                </div>
+              </Card.Body>
+            </Card>
+          </div>
+        </Col>
+        <Col xs={9}>
+          <h3 style={{ marginBottom: "15px" }}>{data.total} projects found</h3>
+          <PaginatedList
+            data={data}
+            pageLimit={pageLimit}
+            pageCurrent={pageCurrent}
+            updatePage={updatePage}
+            project={navigate}
+          />
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

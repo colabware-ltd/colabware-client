@@ -7,6 +7,8 @@ import Home from "./views/Home";
 import { useEffect, useState } from "react";
 import Browse from "./views/Projects/Browse";
 import { get } from "./utils/Api";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 const App = () => {
   let [user, setUser] = useState({
@@ -61,32 +63,36 @@ const App = () => {
   return (
     <BrowserRouter>
       <div className="App">
-        <Routes>
-          <Route path="/" element={<Home user={user} />} exact />
-          <Route
-            path="/project/:projectId"
-            element={
-              <Project
-                stripeOptions={stripeOptions}
-                stripePromise={stripePromise}
-                stripeClientSecret={clientSecret}
-                setStripeClientSecret={setClientSecret}
-                user={user}
-              />
-            }
-            exact
-          />
-          <Route
-            path="/browse"
-            element={<Browse categories={projectCategories} user={user} />}
-            exact
-          />
-          <Route
-            path="/project/new"
-            element={<NewProject categories={projectCategories} />}
-            exact
-          />
-        </Routes>
+        <Header user={user} />
+        <div className="body-container">
+          <Routes>
+            <Route path="/" element={<Home user={user} />} exact />
+            <Route
+              path="/project/:projectId"
+              element={
+                <Project
+                  stripeOptions={stripeOptions}
+                  stripePromise={stripePromise}
+                  stripeClientSecret={clientSecret}
+                  setStripeClientSecret={setClientSecret}
+                  user={user}
+                />
+              }
+              exact
+            />
+            <Route
+              path="/browse"
+              element={<Browse categories={projectCategories} user={user} />}
+              exact
+            />
+            <Route
+              path="/project/new"
+              element={<NewProject categories={projectCategories} />}
+              exact
+            />
+          </Routes>
+        </div>
+        <Footer />
       </div>
     </BrowserRouter>
   );

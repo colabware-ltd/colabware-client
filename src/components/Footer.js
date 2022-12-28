@@ -5,14 +5,8 @@ import logo from "../assets/c.svg";
 class Footer extends Component {
   render() {
     return (
-      <Navbar style={{ marginTop: "80px" }}>
-        <Container
-          style={{
-            borderTop: "0.5px solid #e0e0e0",
-            paddingTop: "10px",
-            paddingBottom: "10px",
-          }}
-        >
+      <Navbar className="footer">
+        <Container>
           <Navbar.Brand
             href="/"
             className="my-auto"
