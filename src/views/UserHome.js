@@ -12,9 +12,15 @@ import {
 } from "react-bootstrap";
 import axios from "axios";
 import Footer from "../components/Footer";
-import projectImg from "../assets/project.png";
+import { get } from "../utils/Api";
+import { useEffect, useState } from "react";
+import TokenHolding from "../components/TokenHolding";
+import RequestPreview from "../components/RequestPreview";
 
 const UserHome = (props) => {
+  const [holdings, setHoldings] = useState([]);
+  const [requests, setRequests] = useState([]);
+
   const stripeHandler = async () => {
     const url = `${process.env.REACT_APP_BACKEND_URL}/user/stripe`;
     try {
@@ -24,6 +30,29 @@ const UserHome = (props) => {
       console.log(err);
     }
   };
+
+  const userRequests = async () => {
+    const res = await get("userRequests");
+    if (res.data.results == null) {
+      setRequests([]);
+    } else {
+      setRequests(res.data.results);
+    }
+  };
+
+  const userTokens = async () => {
+    const res = await get("userTokens");
+    if (res.data.results == null) {
+      setHoldings([]);
+    } else {
+      setHoldings(res.data.results);
+    }
+  };
+
+  useEffect(() => {
+    userRequests();
+    userTokens();
+  }, []);
 
   return (
     <Tab.Container defaultActiveKey="home">
@@ -112,53 +141,10 @@ const UserHome = (props) => {
                     </Col>
                   </Row>
                   <div className="content-divider" />
-                  <Row style={{ marginTop: "20px" }}>
-                    <Row>
-                      <Col md={2}>
-                        <h5>2FA fix</h5>
-                        <p>Test project</p>
-                      </Col>
-                      <Col md={7}>
-                        <Row>
-                          <Col md="auto">
-                            <Badge pill style={{ marginBottom: "10px" }}>
-                              New feature
-                            </Badge>
-                          </Col>
-                          <Col md="auto">
-                            <Badge
-                              pill
-                              bg="secondary"
-                              style={{ marginBottom: "10px" }}
-                            >
-                              Open
-                            </Badge>
-                          </Col>
-                        </Row>
-                        <p
-                          style={{ maxWidth: "900px" }}
-                          className="text-truncate"
-                        >
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit, sed do eiusmod tempor incididunt ut labore et
-                          dolore magna aliqua. Ut enim ad minim veniam, quis
-                          nostrud exercitation ullamco laboris nisi ut aliquip
-                          ex ea commodo consequat.
-                        </p>
-                      </Col>
-                      <Col>
-                        <Row style={{ textAlign: "center" }}>
-                          <h4>$100</h4>
-                          <p className="secondary-text">Funds raised</p>
-                        </Row>
-                      </Col>
-                      <Col>
-                        <Row style={{ textAlign: "center" }}>
-                          <h4>6</h4>
-                          <p className="secondary-text">Submissions</p>
-                        </Row>
-                      </Col>
-                    </Row>
+                  <Row>
+                    {requests.map((r, i) => {
+                      return <RequestPreview request={r} />;
+                    })}
                   </Row>
                 </Card>
                 <Card
@@ -178,36 +164,11 @@ const UserHome = (props) => {
                     </Col>
                   </Row>
                   <div className="content-divider" />
-
                   <Row style={{ marginTop: "20px" }}>
-                    <Col md={3}>
-                      <Card className="text-center">
-                        <Card.Header>
-                          <b>48</b> tokens
-                        </Card.Header>
-                        <Card.Body>
-                          <img
-                            style={{ marginTop: "1rem" }}
-                            alt="project-logo"
-                            src={projectImg}
-                            id="project-img"
-                          />
-                          <Card.Body>Tcoin | TCN</Card.Body>
-                          <Card.Title style={{ marginBottom: "2rem" }}>
-                            Test project
-                          </Card.Title>
-                          <Button
-                            style={{ width: "100%" }}
-                            variant="outline-secondary"
-                          >
-                            View project
-                          </Button>
-                        </Card.Body>
-                        <Card.Footer className="text-muted">
-                          <b>5.8</b>% project stake
-                        </Card.Footer>
-                      </Card>
-                    </Col>
+                    {holdings.map((h, i) => {
+                      return <TokenHolding key={i} holding={h} />;
+                    })}
+                    {holdings.length == 0 && <div>No holdings</div>}
                   </Row>
                 </Card>
               </Tab.Pane>
@@ -255,7 +216,6 @@ const UserHome = (props) => {
                 </Card>
               </Tab.Pane>
             </Tab.Content>
-            <Footer />
           </div>
         </Col>
       </Row>
