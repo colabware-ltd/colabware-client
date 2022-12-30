@@ -134,15 +134,15 @@ const Project = (props) => {
                   </p>
                   <Row style={{ textAlign: "center", marginTop: "20px" }}>
                     <Col>
-                      <h2>$1,000</h2>
+                      <h2>$--</h2>
                       <p>Funds raised</p>
                     </Col>
                     <Col>
-                      <h2>$750</h2>
+                      <h2>$--</h2>
                       <p>Treasury balance</p>
                     </Col>
                     <Col>
-                      <h2>14</h2>
+                      <h2>--</h2>
                       <p>Token holders</p>
                     </Col>
                   </Row>

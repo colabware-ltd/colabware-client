@@ -9,17 +9,25 @@ import {
   OverlayTrigger,
   Tooltip,
   Badge,
+  InputGroup,
 } from "react-bootstrap";
 import axios from "axios";
 import Footer from "../components/Footer";
-import { get } from "../utils/Api";
+import { get, post } from "../utils/Api";
 import { useEffect, useState } from "react";
 import TokenHolding from "../components/TokenHolding";
 import RequestPreview from "../components/RequestPreview";
+import NoResults from "../components/NoResults";
 
 const UserHome = (props) => {
   const [holdings, setHoldings] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [accountDetails, setAccountDetails] = useState({
+    name: props.user.current.name || "",
+    email: props.user.current.email || "",
+    location: props.user.current.location || "",
+    bio: props.user.current.bio || "",
+  });
 
   const stripeHandler = async () => {
     const url = `${process.env.REACT_APP_BACKEND_URL}/user/stripe`;
@@ -47,6 +55,35 @@ const UserHome = (props) => {
     } else {
       setHoldings(res.data.results);
     }
+  };
+
+  const stripeSetup = () => {
+    const status =
+      props.user.current.stripe_account == {}
+        ? ""
+        : props.user.current.stripe_account.status;
+
+    if (status == "linked") {
+      return (
+        <Button variant="outline-primary" disabled>
+          Account linked
+        </Button>
+      );
+    } else {
+      return (
+        <Button variant="outline-primary" onClick={stripeHandler}>
+          Connect account
+        </Button>
+      );
+    }
+  };
+
+  const updateAccountDetails = async () => {
+    const res = await post("userDetails", {
+      body: accountDetails,
+    });
+    console.log(res);
+    window.location.reload(false);
   };
 
   useEffect(() => {
@@ -83,9 +120,7 @@ const UserHome = (props) => {
                   placement="right"
                   overlay={<Tooltip>Coming soon!</Tooltip>}
                 >
-                  <Nav.Link style={{ color: "#a8a8a8" }}>
-                    Token holdings
-                  </Nav.Link>
+                  <Nav.Link style={{ color: "#a8a8a8" }}>My projects</Nav.Link>
                 </OverlayTrigger>{" "}
               </Nav.Item>
               <Nav.Item style={{ marginBottom: "10px", cursor: "pointer" }}>
@@ -105,7 +140,7 @@ const UserHome = (props) => {
           </div>
         </Col>
         <Col style={{ margin: "40px" }}>
-          <div style={{ height: "100%", position: "relative" }}>
+          <div style={{ minHeight: "100vh", position: "relative" }}>
             <Tab.Content>
               <Tab.Pane eventKey="home">
                 <Card
@@ -136,8 +171,8 @@ const UserHome = (props) => {
                     <Col md="auto" className="my-auto">
                       <h3 style={{ marginBottom: 0 }}>Project requests</h3>
                     </Col>
-                    <Col className="my-auto">
-                      See your recent request activity
+                    <Col className="my-auto secondary-text">
+                      See your project request activity
                     </Col>
                   </Row>
                   <div className="content-divider" />
@@ -145,6 +180,9 @@ const UserHome = (props) => {
                     {requests.map((r, i) => {
                       return <RequestPreview request={r} />;
                     })}
+                    {requests.length == 0 && (
+                      <NoResults note="You have not created any project requests." />
+                    )}
                   </Row>
                 </Card>
                 <Card
@@ -159,8 +197,8 @@ const UserHome = (props) => {
                     <Col md="auto" className="my-auto">
                       <h3 style={{ marginBottom: 0 }}>Token holdings</h3>
                     </Col>
-                    <Col className="my-auto">
-                      View your current token holdings
+                    <Col className="my-auto secondary-text">
+                      View your project token holdings
                     </Col>
                   </Row>
                   <div className="content-divider" />
@@ -168,7 +206,9 @@ const UserHome = (props) => {
                     {holdings.map((h, i) => {
                       return <TokenHolding key={i} holding={h} />;
                     })}
-                    {holdings.length == 0 && <div>No holdings</div>}
+                    {holdings.length == 0 && (
+                      <NoResults note="You have not purchased any project tokens." />
+                    )}
                   </Row>
                 </Card>
               </Tab.Pane>
@@ -185,20 +225,116 @@ const UserHome = (props) => {
                     <Col md="auto" className="my-auto">
                       <h3 style={{ marginBottom: 0 }}>Account settings</h3>
                     </Col>
-                    <Col className="my-auto">
+                    <Col className="my-auto secondary-text">
                       View and edit your account information
                     </Col>
                   </Row>
                   <div className="content-divider" />
                   <Form className="mb-5">
-                    <Form.Group className="mb-4" controlId="formBasicEmail">
-                      <Form.Label>Email address</Form.Label>
-                      <Form.Control type="email" placeholder="Enter email" />
-                      <Form.Text className="text-muted">
-                        We'll never share your email with anyone else.
-                      </Form.Text>
-                    </Form.Group>
-                    <Button variant="outline-secondary">Save changes</Button>
+                    <Row>
+                      <Col>
+                        <Form.Group
+                          className="mb-4"
+                          controlId="accountDetails.Username"
+                        >
+                          <Form.Label>GitHub username</Form.Label>
+                          <InputGroup>
+                            <InputGroup.Text>@</InputGroup.Text>
+                            <Form.Control
+                              type="text"
+                              value={props.user.current.login}
+                              disabled
+                            />
+                          </InputGroup>
+                        </Form.Group>
+                      </Col>
+                      <Col>
+                        <Form.Group
+                          className="mb-4"
+                          controlId="accountDetails.Name"
+                        >
+                          <Form.Label>Name</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter your name"
+                            value={accountDetails.name}
+                            onChange={(e) => {
+                              setAccountDetails((prev) => ({
+                                ...prev,
+                                name: e.target.value,
+                              }));
+                            }}
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <Form.Group
+                          className="mb-4"
+                          controlId="accountDetails.Email"
+                        >
+                          <Form.Label>Email</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter your email address"
+                            value={accountDetails.email}
+                            onChange={(e) => {
+                              setAccountDetails((prev) => ({
+                                ...prev,
+                                email: e.target.value,
+                              }));
+                            }}
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col>
+                        <Form.Group
+                          className="mb-4"
+                          controlId="accountDetails.Mobile"
+                        >
+                          <Form.Label>Location</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter your location"
+                            value={accountDetails.location}
+                            onChange={(e) => {
+                              setAccountDetails((prev) => ({
+                                ...prev,
+                                location: e.target.value,
+                              }));
+                            }}
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Form.Group
+                        className="mb-4"
+                        controlId="accountDetails.Bio"
+                      >
+                        <Form.Label>Bio</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={2}
+                          placeholder="Tell us a little bit about yourself"
+                          value={accountDetails.bio}
+                          onChange={(e) => {
+                            setAccountDetails((prev) => ({
+                              ...prev,
+                              bio: e.target.value,
+                            }));
+                          }}
+                        />
+                      </Form.Group>
+                    </Row>
+
+                    <Button
+                      variant="outline-secondary"
+                      onClick={updateAccountDetails}
+                    >
+                      Save changes
+                    </Button>
                   </Form>
                   <h5>Stripe Connect</h5>
                   <div className="content-divider" />
@@ -207,11 +343,7 @@ const UserHome = (props) => {
                       Connect your account to Stripe and start receiving payouts
                       for any work you complete.
                     </Col>
-                    <Col style={{ textAlign: "right" }}>
-                      <Button variant="outline-primary" onClick={stripeHandler}>
-                        Connect account
-                      </Button>
-                    </Col>
+                    <Col style={{ textAlign: "right" }}>{stripeSetup()}</Col>
                   </Row>
                 </Card>
               </Tab.Pane>

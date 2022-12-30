@@ -13,11 +13,11 @@ const Home = (props) => {
         <div className="background-light">
           <Row className="gradient-hero text-align-center padding-lg">
             <h1 className="h0-light margin-btm-sm">
-              Smart contracts for smarter open source
+              The decentralised software management platform
             </h1>
             <p className="margin-btm-md p-lg">
-              Colabware makes it easy to fund and collaborate on the development
-              of open source software, powered by transparency.
+              Colabware makes it easy to sustain the future of open source
+              software.
             </p>
             <div className="margin-btm-sm">
               <Button size="lg">Fund a project</Button>
@@ -27,12 +27,12 @@ const Home = (props) => {
             <Row className="align-items-center padding-lg">
               <Col id="about-text-container">
                 <h1 className="h1-dark margin-btm-md">
-                  We're building a sustainable future for open source software
+                  Smart contracts for smarter open source development
                 </h1>
                 <p className="p-md margin-btm-md">
-                  By harnessing the power of Ethereum, secure the future
-                  development of critical software projects through transparent
-                  ownership and collaboration.
+                  By harnessing the power of Ethereum, secure the future of open
+                  source software through transparent funding, ownership and
+                  collaboration.
                 </p>
                 <Button
                   variant="outline-secondary"

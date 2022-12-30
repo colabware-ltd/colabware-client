@@ -66,7 +66,7 @@
 }
 
 .content-divider {
-  border: 0.5px solid #e0e0e0;
+  border: 1px solid #f2f2f2;
   margin-top: 25px;
   margin-bottom: 25px;
 }
@@ -196,7 +196,7 @@
 
 .gradient-hero {
   color: #fff;
-  background: linear-gradient(-45deg, #8338ec, #fb5607, #ffbe0b);
+  background: linear-gradient(-45deg, #8338ec, #fb5607, #ffbe0b, #0dbf9e);
   background-size: 400% 400%;
   -webkit-animation: Gradient 15s ease infinite;
   -moz-animation: Gradient 15s ease infinite;
@@ -285,6 +285,10 @@
   padding: 80px;
 }
 
+.padding-sm {
+  padding: 20px;
+}
+
 .h0-light {
   font-weight: bold;
   color: #ffffff;
@@ -322,5 +326,13 @@
 
 .h1-dark {
   font-weight: bold;
+  color: #1f2638;
+}
+
+h5 {
+  color: #1f2638;
+}
+
+h3 {
   color: #1f2638;
 }

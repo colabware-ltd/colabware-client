@@ -38,6 +38,7 @@ const endpoints = {
     `${entrypoint}/request/${request}/approvers`,
   mergeProposal: (entrypoint, request, proposal) =>
     `${entrypoint}/user/request/${request}/proposal/${proposal}/merge`,
+  userDetails: (entrypoint) => `${entrypoint}/user/update`,
 };
 
 export const getCsrApi = (name, ...params) =>
