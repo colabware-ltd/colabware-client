@@ -35,7 +35,12 @@ const Project = (props) => {
       results: [],
     },
   });
-  let [project, setProject] = useState({});
+  let [project, setProject] = useState({
+    token: {
+      symbol: "",
+      price: "",
+    },
+  });
   let [token, setToken] = useState({});
   let [tokenHolding, setTokenHolding] = useState({
     wallet_address: "",
@@ -75,7 +80,7 @@ const Project = (props) => {
       <div className="secondary-background">
         <Container>
           <Row>
-            <Col xs={8} className="my-auto">
+            <Col xs={7} className="my-auto">
               <div>
                 <Row>
                   <Col xs={2} className="my-auto">
@@ -102,7 +107,7 @@ const Project = (props) => {
                 <p>{project.description}</p>
               </div>
             </Col>
-            <Col xs={4} className="my-auto">
+            <Col xs={5} className="my-auto">
               <TokenPreview
                 token={token}
                 project={project}

@@ -24,9 +24,9 @@ const PaginatedList = (props) => {
               <div
                 key={id}
                 style={{
-                  borderBottom: "1px solid #ced4da",
-                  paddingTop: "15px",
-                  paddingBottom: "15px",
+                  borderBottom: "1px solid #f2f2f2",
+                  paddingTop: "20px",
+                  paddingBottom: "20px",
                 }}
               >
                 <Row>
