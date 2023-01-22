@@ -6,7 +6,7 @@ import Project from "./views/Projects/Project";
 import Home from "./views/Home";
 import { useEffect, useState } from "react";
 import Browse from "./views/Projects/Browse";
-import { get } from "./utils/Api";
+import { get } from "./api/Colabware";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 

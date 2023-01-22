@@ -9,7 +9,7 @@ import {
 } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
-import { post } from "../utils/Api";
+import { post } from "../api/Colabware";
 
 const TokenPreview = (props) => {
   let [paymentView, setPaymentView] = useState(false);

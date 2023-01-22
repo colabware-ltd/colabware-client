@@ -15,7 +15,7 @@ import {
 import { useState, useEffect } from "react";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../../../components/forms/CheckoutForm";
-import { get, post } from "../../../utils/Api";
+import { get, post } from "../../../api/Colabware";
 import NewProposal from "../Proposal/NewProposal";
 import PayoutConfirmation from "./PayoutConfirmation";
 

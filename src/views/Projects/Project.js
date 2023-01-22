@@ -9,7 +9,7 @@ import ProjectRequests from "./Request/ProjectRequests";
 import TokenPreview from "../../components/TokenPreview";
 import TokenDistribution from "../../components/TokenDistribution";
 
-import { get } from "../../utils/Api";
+import { get } from "../../api/Colabware";
 
 const Project = (props) => {
   const params = useParams();
@@ -36,6 +36,7 @@ const Project = (props) => {
     },
   });
   let [project, setProject] = useState({
+    token_holders: [],
     token: {
       symbol: "",
       price: "",
@@ -50,25 +51,25 @@ const Project = (props) => {
 
   useEffect(() => {
     (async () => {
-      const project = (await get("project", params.projectId)).data;
-      setProject(project);
-      const balances = (await get("balances", project.address)).data;
+      const project = await get("project", params.projectId);
+      if (!project.isError) setProject(project.data);
+      const balances = (await get("balances", project.data.address)).data;
       setToken(balances);
       const openRequests = (
-        await get("projectRequests", project._id, 1, 10, "open")
+        await get("projectRequests", project.data._id, 1, 10, "open")
       ).data;
       const pendingRequests = (
-        await get("projectRequests", project._id, 1, 10, "pending")
+        await get("projectRequests", project.data._id, 1, 10, "pending")
       ).data;
       const closedRequests = (
-        await get("projectRequests", project._id, 1, 10, "closed")
+        await get("projectRequests", project.data._id, 1, 10, "closed")
       ).data;
       setRequests({
         open: openRequests,
         pending: pendingRequests,
         closed: closedRequests,
       });
-      const tokenHolding = (await get("tokenHolding", project._id)).data;
+      const tokenHolding = (await get("tokenHolding", project.data._id)).data;
       if (tokenHolding != "") {
         setTokenHolding(tokenHolding);
       }
@@ -139,15 +140,21 @@ const Project = (props) => {
                   </p>
                   <Row style={{ textAlign: "center", marginTop: "20px" }}>
                     <Col>
-                      <h2>$--</h2>
+                      <h2>
+                        ${project.usdc_balance}{" "}
+                        <span style={{ fontSize: "18px" }}>USDC</span>
+                      </h2>
                       <p>Funds raised</p>
                     </Col>
                     <Col>
-                      <h2>$--</h2>
+                      <h2>
+                        ${project.usdc_balance}{" "}
+                        <span style={{ fontSize: "18px" }}>USDC</span>
+                      </h2>
                       <p>Treasury balance</p>
                     </Col>
                     <Col>
-                      <h2>--</h2>
+                      <h2>{project.token_holders.length}</h2>
                       <p>Token holders</p>
                     </Col>
                   </Row>

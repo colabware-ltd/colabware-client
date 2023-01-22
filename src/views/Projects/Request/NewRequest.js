@@ -12,7 +12,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../../../components/forms/CheckoutForm";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { post } from "../../../utils/Api";
+import { post } from "../../../api/Colabware";
 
 const NewRequest = (props) => {
   const defaultExpiry = new Date();

@@ -1,6 +1,6 @@
 import { Row, Button, Form } from "react-bootstrap";
 import { useState } from "react";
-import { post } from "../../../utils/Api";
+import { post } from "../../../api/Colabware";
 import GitHubBranch from "../../../components/GitHubBranch";
 
 const NewProposal = (props) => {

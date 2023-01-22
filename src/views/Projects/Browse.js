@@ -4,7 +4,7 @@ import { Container, Row, Col, Badge, Form, Card } from "react-bootstrap";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import PaginatedList from "../../components/PaginatedList";
-import { get } from "../../utils/Api";
+import { get } from "../../api/Colabware";
 
 const Browse = (props) => {
   let navigate = useNavigate();

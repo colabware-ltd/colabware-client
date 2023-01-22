@@ -13,7 +13,7 @@ import {
 } from "react-bootstrap";
 import axios from "axios";
 import Footer from "../components/Footer";
-import { get, post } from "../utils/Api";
+import { get, post } from "../api/Colabware";
 import { useEffect, useState } from "react";
 import TokenHolding from "../components/TokenHolding";
 import RequestPreview from "../components/RequestPreview";
@@ -58,24 +58,29 @@ const UserHome = (props) => {
   };
 
   const stripeSetup = () => {
-    const status =
-      props.user.current.stripe_account == {}
-        ? ""
-        : props.user.current.stripe_account.status;
+    return (
+      <Button variant="outline-primary" onClick={stripeHandler}>
+        Connect account
+      </Button>
+    );
+    // const status =
+    //   props.user.current.stripe_account == {}
+    //     ? ""
+    //     : props.user.current.stripe_account.status;
 
-    if (status == "linked") {
-      return (
-        <Button variant="outline-primary" disabled>
-          Account linked
-        </Button>
-      );
-    } else {
-      return (
-        <Button variant="outline-primary" onClick={stripeHandler}>
-          Connect account
-        </Button>
-      );
-    }
+    // if (status == "linked") {
+    //   return (
+    //     <Button variant="outline-primary" disabled>
+    //       Account linked
+    //     </Button>
+    //   );
+    // } else {
+    //   return (
+    //     <Button variant="outline-primary" onClick={stripeHandler}>
+    //       Connect account
+    //     </Button>
+    //   );
+    // }
   };
 
   const updateAccountDetails = async () => {
@@ -178,7 +183,7 @@ const UserHome = (props) => {
                   <div className="content-divider" />
                   <Row>
                     {requests.map((r, i) => {
-                      return <RequestPreview request={r} />;
+                      return <RequestPreview key={i} request={r} />;
                     })}
                     {requests.length == 0 && (
                       <NoResults note="You have not created any project requests." />

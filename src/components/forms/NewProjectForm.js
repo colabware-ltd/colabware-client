@@ -454,6 +454,13 @@ const NewProjectForm = (props) => {
                 </Col>
               </Row>
             </Tab.Container>
+            {props.form.error != "" && (
+              <Row>
+                <Form.Group>
+                  <Alert variant="danger">{props.form.error}</Alert>
+                </Form.Group>
+              </Row>
+            )}
           </div>
         </Form>
       )}

@@ -3,7 +3,7 @@ import { Button, Col, Row, Form, Nav, Tab } from "react-bootstrap";
 import PaginatedList from "../../../components/PaginatedList";
 import NewRequest from "./NewRequest";
 import ViewRequest from "./ViewRequest";
-import { get } from "../../../utils/Api";
+import { get } from "../../../api/Colabware";
 
 const ProjectRequests = (props) => {
   let [view, setView] = useState({

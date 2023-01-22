@@ -6,7 +6,7 @@ import NewProjectForm from "../../components/forms/NewProjectForm";
 import axios from "axios";
 import DoughnutChart from "../../components/DoughnutChart";
 import { useNavigate } from "react-router-dom";
-import { post } from "../../utils/Api";
+import { post } from "../../api/Colabware";
 
 const NewProject = (props) => {
   const navigate = useNavigate();
@@ -166,12 +166,22 @@ const NewProject = (props) => {
   };
 
   let launchProject = async () => {
-    console.log(project);
     const res = await post("newProject", {
       body: project,
     });
-    console.log(res);
-    navigate(`/project/${encodeURI(res.data.name)}`);
+
+    if (res.isError) {
+      setForm((previous) => ({
+        ...previous,
+        error: res.data.message,
+      }));
+    } else {
+      setForm((previous) => ({
+        ...previous,
+        error: "",
+      }));
+      navigate(`/project/${encodeURI(res.data.name)}`);
+    }
   };
 
   return (

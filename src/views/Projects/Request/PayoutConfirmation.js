@@ -1,5 +1,5 @@
 import { Button, Row, Col, Badge } from "react-bootstrap";
-import { get } from "../../../utils/Api";
+import { get } from "../../../api/Colabware";
 
 const PayoutConfirmation = (props) => {
   const mergeProposal = async () => {

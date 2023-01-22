@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Col, Row, Form } from "react-bootstrap";
-import { get } from "../utils/Api";
+import { get } from "../api/Colabware";
 
 const GitHubBranch = (props) => {
   const [repository, setRepository] = useState({
